@@ -21,12 +21,12 @@ class LSM9DS0_XM:
     # ACCELEROMETER/MAGNETOMETER BIT REGISTERS                        #
     # Reference: https://cdn-shop.adafruit.com/datasheets/LSM9DS0.pdf #
 	# 																  #
-    # ***Register names: L when pins are pulled LOW. H for HIGH.***   #
+    # ***Register names: L Stands for LOW BYTE, H for HIGH***         #
     ###################################################################
 
-    # Temperature Sensor Data
-    OUT_TEMP_L_XM = 0x05 # Low
-    OUT_TEMP_H_XM = 0x06 # High
+    # Temperature Sensor Data. 12 bit, two's complement, right-justified
+    OUT_TEMP_L_XM = 0x05 # Low - 8 bits are the 8 LSBs.
+    OUT_TEMP_H_XM = 0x06 # High - Last 4 bits are MSBs. First 4 are useless.
 
     STATUS_REG_M = 0x07
 
@@ -334,6 +334,55 @@ class LSM9DS0_XM:
     	"""
     	self.device.write8(FIFO_CTRL_REG, 0x00) # Bypass Mode by Default
 
+    # Returns Temperature (deg C)
+    def getTemp(self):
+    	# 12 Bit Precision, Right-Justified
+    	temp_MSBs = self.device.read8(OUT_TEMP_H_XM)
+    	temp_LSBs = self.device.read8(OUT_TEMP_L_XM)
+    	return (temp_MSBs << 8 | temp_LSBs) >> 4
+
+    # Returns x Acceleration (m*s^-2)
+    def getxAccel(self):
+    	# 16 Bit Precision, Left-Justified
+    	xAccel_MSBs = self.device.read8(OUT_X_H_A)
+    	xAccel_LSBs = self.device.read8(OUT_X_L_A)
+    	return xAccel_MSBs << 8 | xAccel_LSBs
+
+    # Returns y Acceleration (m*s^-2)
+    def getyAccel(self):
+    	# 16 Bit Precision, Left-Justified
+    	yAccel_MSBs = self.device.read8(OUT_Y_H_A)
+    	yAccel_LSBs = self.device.read8(OUT_Y_L_A)
+    	return yAccel_MSBs << 8 | yAccel_LSBs
+
+    # Returns z Acceleration (m*s^-2)
+    def getzAccel(self):
+    	# 16 Bit Precision, Left-Justified
+    	zAccel_MSBs = self.device.read8(OUT_Z_H_A)
+    	zAccel_LSBs = self.device.read8(OUT_Z_L_A)
+    	return zAccel_MSBs << 8 | zAccel_LSBs
+
+    # Returns x Magnetometer Data (mgauss)
+    def getxMag(self):
+    	# 16 Bit Precision, Left-Justified
+    	xMag_MSBs = self.device.read8(OUT_X_H_M)
+    	xMag_LSBs = self.device.read8(OUT_X_L_M)
+    	return xMag_MSBs << 8 | xMag_LSBs
+
+    # Returns y Magnetometer Data (mgauss)
+    def getyMag(self):
+    	# 16 Bit Precision, Left-Justified
+    	yMag_MSBs = self.device.read8(OUT_Y_H_M)
+    	yMag_LSBs = self.device.read8(OUT_Y_L_M)
+    	return yMag_MSBs << 8 | yMag_LSBs
+
+    # Returns z Magnetometer Data (mgauss)
+    def getzMag(self):
+    	# 16 Bit Precision, Left-Justified
+    	zMag_MSBs = self.device.read8(OUT_Z_H_M)
+    	zMag_LSBs = self.device.read8(OUT_Z_L_M)
+    	return zMag_MSBs << 8 | zMag_LSBs
+
 # Class Definition for the Gyro part of the LSM9DS0
 class LSM9DS0_G:
 
@@ -341,12 +390,13 @@ class LSM9DS0_G:
     # GYRO BIT REGISTERS 											  #
     # Reference: https://cdn-shop.adafruit.com/datasheets/LSM9DS0.pdf #
 	# 																  #
-    # ***Register names: L when pins are pulled LOW. H for HIGH.***   #
+    # ***Register names: L Stands for LOW BYTE, H for HIGH***         #
     ###################################################################
     
     # Device Identification for Gyro
     WHO_AM_I_G = 0x0F
     
+    # Control Registers
     CTRL_REG_1_G = 0x20 
     CTRL_REG_2_G = 0x21
     CTRL_REG_3_G = 0x22
@@ -548,3 +598,21 @@ class LSM9DS0_G:
 		0 0 | Default
     	"""
     	self.device.write8(CTRL_REG5_G, 0x00) # All Defaults
+
+    # Returns x Gyro Data
+    def getxGyro(self):
+    	xGyro_MSBs = self.device.read8(OUT_X_H_G)
+    	xGyro_LSBs = self.device.read8(OUT_X_L_G)
+    	return xGyro_MSBs << 8 | xGyro_LSBs
+
+    # Returns y Gyro Data
+    def getyGyro(self):
+    	yGyro_MSBs = self.device.read8(OUT_Y_H_G)
+    	yGyro_LSBs = self.device.read8(OUT_Y_L_G)
+    	return yGyro_MSBs << 8 | yGyro_LSBs
+
+    # Returns z Gyro Data
+    def getzGyro(self):
+    	zGyro_MSBs = self.device.read8(OUT_Z_H_G)
+    	zGyro_LSBs = self.device.read8(OUT_Z_L_G)
+    	return zGyro_MSBs << 8 | zGyro_LSBs
