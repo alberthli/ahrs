@@ -6,14 +6,17 @@ Albert Li | 2017
 Description: Flight Controller for a Raspberry Pi-controlled quadcopter
 
 Sensors:
-LSM9DS0 9 DOF Accel/Gyro/Mag Board | Using I2C for communication/configuration
+(1) LSM9DS0 9 DOF Accel/Gyro/Mag Board | Using I2C for communication/configuration
 
-*** CONFIGURATION ***
+	*** CONFIGURATION ***
 	You must manually enter the hex code corresponding to the desired settings
 	in the control bit registers. The accelerometer and magnetometer seem to be
 	on one shared board, while the gyro is on its own
 
-Adafruit Ultimate GPS Breakout (MTK3339 Chipset)
+	DO NOT INITIALIZE THE GYRO WITHOUT INITIALIZING THE XM. The FIFO configuration
+	register for the entire board is only configured in the XM init function.
+
+(2) Adafruit Ultimate GPS Breakout (MTK3339 Chipset)
 """
 
 import Adafruit_Python_GPIO.Adafruit_GPIO.I2C as i2c
@@ -40,8 +43,9 @@ class LSM9DS0_XM:
 
     # Temperature Sensor Data. 12 bit, two's complement, right-justified
     OUT_TEMP_L_XM = 0x05 # Low - 8 bits are the 8 LSBs.
-    OUT_TEMP_H_XM = 0x06 # High - Last 4 bits are MSBs. First 4 are useless.
+    OUT_TEMP_H_XM = 0x06 # High - Last 4 bits are MSBs. First 4 are useless, need to be masked out
 
+    # Magnetometer Status Info (OVERRUN AND AVAILABILITY)
     STATUS_REG_M = 0x07
 
     # Magnetic Data Values. 16 bit, two's complement, left-justified
@@ -55,6 +59,7 @@ class LSM9DS0_XM:
     # Device Identification for Accel/Mag
     WHO_AM_I_XM = 0x0F
 
+    # Interrupt Registers
     INT_CTRL_REG_M = 0x12
     INT_SRC_REG_M = 0x13
     INT_THS_L_M= 0x14
@@ -83,6 +88,7 @@ class LSM9DS0_XM:
     CTRL_REG6_XM = 0x25
     CTRL_REG7_XM = 0x26
 
+    # Accelerometer Status Info (OVERRUN AND AVAILABILITY)
     STATUS_REG_A = 0x27
 
     # Acceleration Data Values. 16 bit, two's complement, left-justified
@@ -93,27 +99,33 @@ class LSM9DS0_XM:
     OUT_Z_L_A = 0x2C
     OUT_Z_H_A = 0x2D
 
+    # FIFO Registers
     FIFO_CTRL_REG = 0x2E
     FIFO_SRC_REG = 0x2F
 
+    # Inertial Interrupt Generator 1 Registers
     INT_GEN_1_REG = 0x30
     INT_GEN_1_SRC = 0x31
     INT_GEN_1_THS = 0x32
     INT_GEN_1_DURATION = 0x33
 
+    # Inertial Interrupt Generator 2 Registers
     INT_GEN_2_REG = 0x34
     INT_GEN_2_SRC = 0x35
     INT_GEN_2_THS = 0x36
     INT_GEN_2_DURATION = 0x37
 
+    # Interrupt Click Registers
     CLICK_CFG = 0x38
     CLICK_SRC = 0x39
     CLICK_THS = 0x3A
 
+    # Time Data Registers
     TIME_LIMIT = 0x3B
     TIME_LATENCY = 0x3C
     TIME_WINDOW = 0x3D
 
+    # Activation Registers
     ACT_THS = 0x3E
     ACT_DUR = 0x3F
 
@@ -473,8 +485,10 @@ class LSM9DS0_G:
     CTRL_REG_4_G = 0x23
     CTRL_REG_5_G = 0x24
     
+    # References for Interrupts
     DATACAPTURE_G = 0x25
     
+    # Gyro Status Info (OVERRUN AND AVAILABILITY)
     STATUS_REG_G = 0x27
 
     # Angular Rate Data
@@ -485,9 +499,11 @@ class LSM9DS0_G:
     OUT_Z_L_G = 0x2C # Z
     OUT_Z_H_G = 0x2D
 
+    # FIFO Registers
     FIFO_CTRL_REG_G = 0x2E
     FIFO_SRC_REG_G = 0x2F
 
+    # Interrupt Registers
     INT1_CFG_G = 0x30
     INT1_SRC_G = 0x31
     INT1_THS_XH_G = 0x32
