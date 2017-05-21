@@ -22,6 +22,9 @@ import Adafruit_Python_GPIO.Adafruit_GPIO.I2C as i2c
 XM_ADDRESS = 0x1D
 G_ADDRESS = 0x6B
 
+# Guess at the intercept for the temperature sensor
+TEMP_INTERCEPT = 21.0
+
 # Physical Constants
 GRAV_ACCEL = 9.80665 # Value of acceleration due to gravity (m*s^-2)
 
@@ -299,10 +302,10 @@ class LSM9DS0_XM:
     	0 | Not Latched
     	1 | Latched
     	--------------------
-		Temperature Gain: ALWAYS 8. DO NOT CHANGE.
+		Temperature Gain: ALWAYS 1/8. DO NOT CHANGE.
     	"""
     	self.device.write8(self.CTRL_REG5_XM, 0xF4) # Temperature Enabled, High Mag Res, 100 Hz Sampling, No Latched Ints
-    	self.TEMP_GAIN = 8
+    	self.TEMP_GAIN = 0.125
 
     	"""
     	CTRL_REG6_XM Configuration:
@@ -371,7 +374,12 @@ class LSM9DS0_XM:
     	# 12 Bit Precision, Right-Justified
     	temp_MSBs = self.device.readU8(self.OUT_TEMP_H_XM)
     	temp_LSBs = self.device.readU8(self.OUT_TEMP_L_XM)
-    	return ((temp_MSBs << 8 | temp_LSBs) >> 4) * self.TEMP_GAIN
+    	bitTemp = (temp_MSBs << 8 | temp_LSBs) & 0xFFF
+
+    	if bitTemp > 2047:
+    		bitTemp -= 4096
+    		
+    	return TEMP_INTERCEPT + ((temp_MSBs << 8 | temp_LSBs) & 0xFFF) * self.TEMP_GAIN
 
     # Returns x Acceleration (m*s^-2)
     def getxAccel(self):
@@ -539,7 +547,7 @@ class LSM9DS0_G:
     	0 | Disable
     	1 | Enable
     	"""
-    	self.device.write8(self.CTRL_REG1_G, 0x0F) # Default ODR and Bandwidth, Normal Mode, All Axes Enabled
+    	self.device.write8(self.CTRL_REG_1_G, 0x0F) # Default ODR and Bandwidth, Normal Mode, All Axes Enabled
 
     	"""
     	CTRL_REG2_G Configuration:
@@ -567,7 +575,7 @@ class LSM9DS0_G:
     	1000 |    0.018  |    0.045   |    0.09    |    0.18
     	1001 |    0.009  |    0.018   |    0.045   |    0.09
     	"""
-    	self.device.write8(self.CTRL_REG2_G, 0x00) # Normal Mode, 7.2 Hz HPF Cutoff Frequency
+    	self.device.write8(self.CTRL_REG_2_G, 0x00) # Normal Mode, 7.2 Hz HPF Cutoff Frequency
 
     	"""
     	CTRL_REG3_G Configuration:
@@ -604,7 +612,7 @@ class LSM9DS0_G:
     	0 | Disable
     	1 | Enable
     	"""
-    	self.device.write8(self.CTRL_REG3_G, 0x00) # All Defaults
+    	self.device.write8(self.CTRL_REG_3_G, 0x00) # All Defaults
 
     	"""
     	CTRL_REG4_G Configuration:
@@ -641,7 +649,7 @@ class LSM9DS0_G:
 		500 dps  | gyroGain = 0.0175
 		2000 dps | gyroGain = 0.07
     	"""
-    	self.device.write8(self.CTRL_REG4_G, 0x00) # All Defaults, scale set to 245 dps
+    	self.device.write8(self.CTRL_REG_4_G, 0x00) # All Defaults, scale set to 245 dps
     	self.gyroGain = 0.00875
 
     	"""
@@ -667,7 +675,7 @@ class LSM9DS0_G:
 		OUT Selection Configuration (Bits 7-8):
 		0 0 | Default
     	"""
-    	self.device.write8(self.CTRL_REG5_G, 0x00) # All Defaults
+    	self.device.write8(self.CTRL_REG_5_G, 0x00) # All Defaults
 
     # Returns x Gyro Data
     def getxGyro(self):
