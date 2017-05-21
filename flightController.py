@@ -380,7 +380,7 @@ class LSM9DS0_XM:
     	xAccel_LSBs = self.device.readU8(self.OUT_X_L_A)
     	xBitAccel = xAccel_MSBs << 8 | xAccel_LSBs
 
-    	if xBitAccel > 32767
+    	if xBitAccel > 32767:
     		xBitAccel -= 65536
 
     	return xBitAccel * self.accelGain * GRAV_ACCEL
@@ -392,7 +392,7 @@ class LSM9DS0_XM:
     	yAccel_LSBs = self.device.readU8(self.OUT_Y_L_A)
     	yBitAccel = yAccel_MSBs << 8 | yAccel_LSBs
 
-    	if yBitAccel > 32767
+    	if yBitAccel > 32767:
     		yBitAccel -= 65536
 
     	return yBitAccel * self.accelGain * GRAV_ACCEL
@@ -404,7 +404,7 @@ class LSM9DS0_XM:
     	zAccel_LSBs = self.device.readU8(self.OUT_Z_L_A)
     	zBitAccel = zAccel_MSBs << 8 | zAccel_LSBs
 
-    	if zBitAccel > 32767
+    	if zBitAccel > 32767:
     		zBitAccel -= 65536
 
     	return zBitAccel * self.accelGain * GRAV_ACCEL
@@ -416,7 +416,7 @@ class LSM9DS0_XM:
     	xMag_LSBs = self.device.readU8(self.OUT_X_L_M)
     	xBitMag = xMag_MSBs << 8 | xMag_LSBs
 
-    	if xBitMag > 32767
+    	if xBitMag > 32767:
     		xBitMag -= 65536
 
     	return xBitMag * self.magGain
@@ -428,7 +428,7 @@ class LSM9DS0_XM:
     	yMag_LSBs = self.device.readU8(self.OUT_Y_L_M)
     	yBitMag = yMag_MSBs << 8 | yMag_LSBs
 
-    	if yBitMag > 32767
+    	if yBitMag > 32767:
     		yBitMag -= 65536
 
     	return yBitMag * self.magGain
@@ -440,7 +440,7 @@ class LSM9DS0_XM:
     	zMag_LSBs = self.device.readU8(self.OUT_Z_L_M)
     	zBitMag = zMag_MSBs << 8 | zMag_LSBs
 
-    	if zBitMag > 32767
+    	if zBitMag > 32767:
     		zBitMag -= 65536
 
     	return zBitMag * self.magGain
@@ -675,7 +675,7 @@ class LSM9DS0_G:
     	xGyro_LSBs = self.device.readU8(self.OUT_X_L_G)
     	xBitGyro = xGyro_MSBs << 8 | xGyro_LSBs
 
-    	if xBitGyro > 32767
+    	if xBitGyro > 32767:
     		xBitGyro -= 65536
 
     	return xBitGyro * self.gyroGain
@@ -686,7 +686,7 @@ class LSM9DS0_G:
     	yGyro_LSBs = self.device.readU8(self.OUT_Y_L_G)
     	yBitGyro = yGyro_MSBs << 8 | yGyro_LSBs
 
-    	if yBitGyro > 32767
+    	if yBitGyro > 32767:
     		yBitGyro -= 65536
 
     	return yBitGyro * self.gyroGain
@@ -697,7 +697,7 @@ class LSM9DS0_G:
     	zGyro_LSBs = self.device.readU8(self.OUT_Z_L_G)
     	zBitGyro = zGyro_MSBs << 8 | zGyro_LSBs
 
-    	if zBitGyro > 32767
+    	if zBitGyro > 32767:
     		zBitGyro -= 65536
 
     	return zBitGyro * self.gyroGain
