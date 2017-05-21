@@ -378,8 +378,8 @@ class LSM9DS0_XM:
 
     	if bitTemp > 2047:
     		bitTemp -= 4096
-    		
-    	return TEMP_INTERCEPT + ((temp_MSBs << 8 | temp_LSBs) & 0xFFF) * self.TEMP_GAIN
+
+    	return TEMP_INTERCEPT + bitTemp * self.TEMP_GAIN
 
     # Returns x Acceleration (m*s^-2)
     def getxAccel(self):
