@@ -1,5 +1,5 @@
 """
-							*** FLIGHT CONTROLLER ***
+*** FLIGHT CONTROLLER ***
 
 Albert Li | 2017
 
@@ -8,7 +8,7 @@ Description: Flight Controller for a Raspberry Pi-controlled quadcopter
 Sensors:
 LSM9DS0 9 DOF Accel/Gyro/Mag Board | Using I2C for communication/configuration
 
-								*** CONFIGURATION ***
+*** CONFIGURATION ***
 	You must manually enter the hex code corresponding to the desired settings
 	in the control bit registers. The accelerometer and magnetometer seem to be
 	on one shared board, while the gyro is on its own
