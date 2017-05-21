@@ -1,11 +1,19 @@
 """
-***FLIGHT CONTROLLER***
+							*** FLIGHT CONTROLLER ***
+
 Albert Li | 2017
 
-Flight Controller for a Raspberry Pi-controlled quadcopter
+Description: Flight Controller for a Raspberry Pi-controlled quadcopter
 
 Sensors:
 LSM9DS0 9 DOF Accel/Gyro/Mag Board | Using I2C for communication/configuration
+
+								*** CONFIGURATION ***
+	You must manually enter the hex code corresponding to the desired settings
+	in the control bit registers. The accelerometer and magnetometer seem to be
+	on one shared board, while the gyro is on its own
+
+Adafruit Ultimate GPS Breakout (MTK3339 Chipset)
 """
 
 import Adafruit_Python_GPIO.Adafruit_GPIO.I2C as i2c
@@ -13,6 +21,9 @@ import Adafruit_Python_GPIO.Adafruit_GPIO.I2C as i2c
 # Addresses for the XM and G when the SCL/SDA lines are pulled up (THEY SHOULD ALWAYS BE)
 XM_ADDRESS = 0x1D
 G_ADDRESS = 0x6B
+
+# Physical Constants
+GRAV_ACCEL = 9.80665 # Value of acceleration due to gravity (m*s^-2)
 
 # Class Definition for the Accelerometer/Magnetometer part of the LSM9DS0
 class LSM9DS0_XM:
@@ -208,8 +219,18 @@ class LSM9DS0_XM:
 		Serial Interface Mode Selection (Bit 8):
 		0 | 4 Wire Interface
 		1 | 3 Wire Interface
+
+		--------------------
+		Accelerometer Gain Configuration
+		NOTE: YOU MUST CHANGE THE ACCELEROMETER GAIN IF YOU CHANGE THE SCALE SELECTION!
+		+/- 2g  | 0.000061
+		+/- 4g  | 0.000122
+		+/- 6g  | 0.000183
+		+/- 8g  | 0.000244
+		+/- 16g | 0.000732
     	"""
     	self.device.write8(CTRL_REG2_XM, 0x08) # 773 Hz AAFB, +/- 4g, Normal Self-Test, 4 Wire Interface
+    	self.accelGain = 0.000122
 
     	"""
     	CTRL_REG3_XM/CTRL_REG4_XM Configuration:
@@ -277,8 +298,11 @@ class LSM9DS0_XM:
     	Latch Interrupt Request On INT1_SRC Register
     	0 | Not Latched
     	1 | Latched
+    	--------------------
+		Temperature Gain: ALWAYS 8. DO NOT CHANGE.
     	"""
     	self.device.write8(CTRL_REG5_XM, 0xF4) # Temperature Enabled, High Mag Res, 100 Hz Sampling, No Latched Ints
+    	self.TEMP_GAIN = 8
 
     	"""
     	CTRL_REG6_XM Configuration:
@@ -290,8 +314,16 @@ class LSM9DS0_XM:
 		0 1 | +/- 4 Gauss
 		1 0 | +/- 8 Gauss
 		1 1 | +/- 12 Gauss
+		--------------------
+		Magnetometer Gain Configuration
+		NOTE: YOU MUST CHANGE THE MAGNETOMETER GAIN IF YOU CHANGE THE SCALE SELECTION!
+		+/- 2 Gauss  | 0.08
+		+/- 4 Gauss  | 0.16
+		+/- 8 Gauss  | 0.32
+		+/- 12 Gauss | 0.48
     	"""
     	self.device.write8(CTRL_REG6_XM, 0x00) # +/- 2 Gauss Scale
+    	self.magGain = 0.08
 
     	"""
     	CTRL_REG7_XM Configuration:
@@ -339,49 +371,49 @@ class LSM9DS0_XM:
     	# 12 Bit Precision, Right-Justified
     	temp_MSBs = self.device.read8(OUT_TEMP_H_XM)
     	temp_LSBs = self.device.read8(OUT_TEMP_L_XM)
-    	return (temp_MSBs << 8 | temp_LSBs) >> 4
+    	return ((temp_MSBs << 8 | temp_LSBs) >> 4) * TEMP_GAIN
 
     # Returns x Acceleration (m*s^-2)
     def getxAccel(self):
     	# 16 Bit Precision, Left-Justified
     	xAccel_MSBs = self.device.read8(OUT_X_H_A)
     	xAccel_LSBs = self.device.read8(OUT_X_L_A)
-    	return xAccel_MSBs << 8 | xAccel_LSBs
+    	return (xAccel_MSBs << 8 | xAccel_LSBs) * accelGain * GRAV_ACCEL
 
     # Returns y Acceleration (m*s^-2)
     def getyAccel(self):
     	# 16 Bit Precision, Left-Justified
     	yAccel_MSBs = self.device.read8(OUT_Y_H_A)
     	yAccel_LSBs = self.device.read8(OUT_Y_L_A)
-    	return yAccel_MSBs << 8 | yAccel_LSBs
+    	return (yAccel_MSBs << 8 | yAccel_LSBs) * accelGain * GRAV_ACCEL
 
     # Returns z Acceleration (m*s^-2)
     def getzAccel(self):
     	# 16 Bit Precision, Left-Justified
     	zAccel_MSBs = self.device.read8(OUT_Z_H_A)
     	zAccel_LSBs = self.device.read8(OUT_Z_L_A)
-    	return zAccel_MSBs << 8 | zAccel_LSBs
+    	return (zAccel_MSBs << 8 | zAccel_LSBs) * accelGain * GRAV_ACCEL
 
     # Returns x Magnetometer Data (mgauss)
     def getxMag(self):
     	# 16 Bit Precision, Left-Justified
     	xMag_MSBs = self.device.read8(OUT_X_H_M)
     	xMag_LSBs = self.device.read8(OUT_X_L_M)
-    	return xMag_MSBs << 8 | xMag_LSBs
+    	return (xMag_MSBs << 8 | xMag_LSBs) * magGain
 
     # Returns y Magnetometer Data (mgauss)
     def getyMag(self):
     	# 16 Bit Precision, Left-Justified
     	yMag_MSBs = self.device.read8(OUT_Y_H_M)
     	yMag_LSBs = self.device.read8(OUT_Y_L_M)
-    	return yMag_MSBs << 8 | yMag_LSBs
+    	return (yMag_MSBs << 8 | yMag_LSBs) * magGain
 
     # Returns z Magnetometer Data (mgauss)
     def getzMag(self):
     	# 16 Bit Precision, Left-Justified
     	zMag_MSBs = self.device.read8(OUT_Z_H_M)
     	zMag_LSBs = self.device.read8(OUT_Z_L_M)
-    	return zMag_MSBs << 8 | zMag_LSBs
+    	return (zMag_MSBs << 8 | zMag_LSBs) * magGain
 
 # Class Definition for the Gyro part of the LSM9DS0
 class LSM9DS0_G:
@@ -555,7 +587,7 @@ class LSM9DS0_G:
 		0 | Data LSB @ Lower Address
 		1 | Data MSB @ Lower Address
 
-		Full-Scale Selection (Bits 3-4):
+		Full-Scale Selection (Bits 3-4) [SEE NOTE BELOW ABOUT THIS]:
 		0 0 | 245 dps
 		0 1 | 500 dps
 		1 0 | 2000 dps
@@ -571,8 +603,16 @@ class LSM9DS0_G:
 		Serial Interface Mode Selection (Bit 8):
 		0 | 4 Wire Interface
 		1 | 3 Wire Interface
+
+		--------------------
+		Gyro Gain Configuration
+		NOTE: YOU MUST CHANGE THE GYRO GAIN IF YOU CHANGE THE FULL SCALE SELECTION!
+		245 dps  | gyroGain = 0.00875
+		500 dps  | gyroGain = 0.0175
+		2000 dps | gyroGain = 0.07
     	"""
     	self.device.write8(CTRL_REG4_G, 0x00) # All Defaults, scale set to 245 dps
+    	self.gyroGain = 0.00875
 
     	"""
     	CTRL_REG5_G Configuration:
@@ -603,16 +643,16 @@ class LSM9DS0_G:
     def getxGyro(self):
     	xGyro_MSBs = self.device.read8(OUT_X_H_G)
     	xGyro_LSBs = self.device.read8(OUT_X_L_G)
-    	return xGyro_MSBs << 8 | xGyro_LSBs
+    	return (xGyro_MSBs << 8 | xGyro_LSBs) * gyroGain
 
     # Returns y Gyro Data
     def getyGyro(self):
     	yGyro_MSBs = self.device.read8(OUT_Y_H_G)
     	yGyro_LSBs = self.device.read8(OUT_Y_L_G)
-    	return yGyro_MSBs << 8 | yGyro_LSBs
+    	return (yGyro_MSBs << 8 | yGyro_LSBs) * gyroGain
 
     # Returns z Gyro Data
     def getzGyro(self):
     	zGyro_MSBs = self.device.read8(OUT_Z_H_G)
     	zGyro_LSBs = self.device.read8(OUT_Z_L_G)
-    	return zGyro_MSBs << 8 | zGyro_LSBs
+    	return (zGyro_MSBs << 8 | zGyro_LSBs) * gyroGain
