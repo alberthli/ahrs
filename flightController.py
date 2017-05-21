@@ -320,13 +320,13 @@ class LSM9DS0_XM:
 		--------------------
 		Magnetometer Gain Configuration
 		NOTE: YOU MUST CHANGE THE MAGNETOMETER GAIN IF YOU CHANGE THE SCALE SELECTION!
-		+/- 2 Gauss  | 0.08
-		+/- 4 Gauss  | 0.16
-		+/- 8 Gauss  | 0.32
-		+/- 12 Gauss | 0.48
+		+/- 2 Gauss  | 0.00008
+		+/- 4 Gauss  | 0.00016
+		+/- 8 Gauss  | 0.00032
+		+/- 12 Gauss | 0.00048
     	"""
     	self.device.write8(self.CTRL_REG6_XM, 0x00) # +/- 2 Gauss Scale
-    	self.magGain = 0.08
+    	self.magGain = 0.00008
 
     	"""
     	CTRL_REG7_XM Configuration:
