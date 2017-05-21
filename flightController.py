@@ -23,7 +23,7 @@ XM_ADDRESS = 0x1D
 G_ADDRESS = 0x6B
 
 # Guess at the intercept for the temperature sensor
-TEMP_INTERCEPT = 21.0
+TEMP_INTERCEPT = 24.0
 
 # Physical Constants
 GRAV_ACCEL = 9.80665 # Value of acceleration due to gravity (m*s^-2)
@@ -35,7 +35,7 @@ class LSM9DS0_XM:
     # ACCELEROMETER/MAGNETOMETER BIT REGISTERS                        #
     # Reference: https://cdn-shop.adafruit.com/datasheets/LSM9DS0.pdf #
 	# 																  #
-    # ***Register names: L Stands for LOW BYTE, H for HIGH***         #
+    # *** Register names: L Stands for LOW BYTE, H for HIGH ***       #
     ###################################################################
 
     # Temperature Sensor Data. 12 bit, two's complement, right-justified
@@ -460,7 +460,7 @@ class LSM9DS0_G:
     # GYRO BIT REGISTERS 											  #
     # Reference: https://cdn-shop.adafruit.com/datasheets/LSM9DS0.pdf #
 	# 																  #
-    # ***Register names: L Stands for LOW BYTE, H for HIGH***         #
+    # *** Register names: L Stands for LOW BYTE, H for HIGH ***       #
     ###################################################################
     
     # Device Identification for Gyro
