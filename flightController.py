@@ -417,7 +417,7 @@ class LSM9DS0_XM:
 
     	return zBitAccel * self.accelGain * GRAV_ACCEL
 
-    # Returns x Magnetometer Data (mgauss)
+    # Returns x Magnetometer Data (gauss)
     def getxMag(self):
     	# 16 Bit Precision, Left-Justified
     	xMag_MSBs = self.device.readU8(self.OUT_X_H_M)
@@ -429,7 +429,7 @@ class LSM9DS0_XM:
 
     	return xBitMag * self.magGain
 
-    # Returns y Magnetometer Data (mgauss)
+    # Returns y Magnetometer Data (gauss)
     def getyMag(self):
     	# 16 Bit Precision, Left-Justified
     	yMag_MSBs = self.device.readU8(self.OUT_Y_H_M)
@@ -441,7 +441,7 @@ class LSM9DS0_XM:
 
     	return yBitMag * self.magGain
 
-    # Returns z Magnetometer Data (mgauss)
+    # Returns z Magnetometer Data (gauss)
     def getzMag(self):
     	# 16 Bit Precision, Left-Justified
     	zMag_MSBs = self.device.readU8(self.OUT_Z_H_M)
