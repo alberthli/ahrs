@@ -540,25 +540,25 @@ public:
 	LSM9DS0();
 	virtual ~LSM9DS0();
 
-	initXM(uint8_t xmaddress);
-	initG(uint8_t gaddress);
+	void initXM(uint8_t xmaddress);
+	void initG(uint8_t gaddress);
 
-	getTemp();
+	double getTemp();
 
-	getxAccel();
-	getyAccel();
-	getzAccel();
+	double getxAccel();
+	double getyAccel();
+	double getzAccel();
 
-	getxMag();
-	getyMag();
-	getzMag();
+	double getxMag();
+	double getyMag();
+	double getzMag();
 
-	getxGyro();
-	getyGyro();
-	getzGyro();
+	double getxGyro();
+	double getyGyro();
+	double getzGyro();
 
-	readByte(uint8_t devAddress, uint8_t regAddress);
-	writeByte(uint8_t devAddress, uint8_t regAddress, uint8_t byte);
+	uint8_t readByte(uint8_t devAddress, uint8_t regAddress);
+	void writeByte(uint8_t devAddress, uint8_t regAddress, uint8_t byte);
 
 private:
 	// Private XM variables

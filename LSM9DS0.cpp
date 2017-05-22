@@ -1,7 +1,7 @@
 #include <LSM9DS0.h>
 #include <Wire.h>
 
-LSM9DS0::LSM9DS0 {
+LSM9DS0::LSM9DS0() {
 	Wire.begin();
 
 	initXM();
