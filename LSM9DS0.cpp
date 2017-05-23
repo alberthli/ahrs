@@ -1,4 +1,4 @@
-#include <LSM9DS0.h>
+#include "LSM9DS0.h"
 #include <Wire.h>
 
 LSM9DS0::LSM9DS0() {
