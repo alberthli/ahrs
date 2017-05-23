@@ -8,6 +8,10 @@ LSM9DS0::LSM9DS0() {
 	initG(G_ADDRESS);
 }
 
+LSM9DS0::~LSM9DS0() {
+	
+}
+
 // Initializing desired settings on the XM
 void LSM9DS0::initXM(uint8_t xmaddress) {
 	// Bit Register Configuration Info in Header File
