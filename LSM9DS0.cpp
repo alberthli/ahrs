@@ -3,7 +3,6 @@
 #include <Arduino.h>
 
 LSM9DS0::LSM9DS0() {
-	Serial.println("firsttest");
 	Wire.begin();
 
 	initXM(XM_ADDRESS);
@@ -17,18 +16,16 @@ LSM9DS0::~LSM9DS0() {
 // Initializing desired settings on the XM
 void LSM9DS0::initXM(uint8_t xmaddress) {
 	// Bit Register Configuration Info in Header File
-	Serial.println("testxm");
-	writeByte(XM_ADDRESS, CTRL_REG0_XM, 0x00); // All disabled, defaults
-	writeByte(XM_ADDRESS, CTRL_REG1_XM, 0x57); // 100 Hz Accel. Sampling Rate, Continuous Update, All Axes Enabled
-	writeByte(XM_ADDRESS, CTRL_REG2_XM, 0x08); // 773 Hz AAFB, +/- 4g, Normal Self-Test, 4 Wire Interface
-	writeByte(XM_ADDRESS, CTRL_REG3_XM, 0x00); // Disable interrupts for now
-	writeByte(XM_ADDRESS, CTRL_REG4_XM, 0x00);
-	writeByte(XM_ADDRESS, CTRL_REG5_XM, 0xF4); // Temperature Enabled, High Mag Res, 100 Hz Sampling, No Latched Ints
-	writeByte(XM_ADDRESS, CTRL_REG6_XM, 0x00); // +/- 2 Gauss Scale
-	writeByte(XM_ADDRESS, CTRL_REG7_XM, 0x00); // Defaults
+	writeByte(xmaddress, CTRL_REG0_XM, 0x00); // All disabled, defaults
+	writeByte(xmaddress, CTRL_REG1_XM, 0x57); // 100 Hz Accel. Sampling Rate, Continuous Update, All Axes Enabled
+	writeByte(xmaddress, CTRL_REG2_XM, 0x08); // 773 Hz AAFB, +/- 4g, Normal Self-Test, 4 Wire Interface
+	writeByte(xmaddress, CTRL_REG3_XM, 0x00); // Disable interrupts for now
+	writeByte(xmaddress, CTRL_REG4_XM, 0x00);
+	writeByte(xmaddress, CTRL_REG5_XM, 0xF4); // Temperature Enabled, High Mag Res, 100 Hz Sampling, No Latched Ints
+	writeByte(xmaddress, CTRL_REG6_XM, 0x00); // +/- 2 Gauss Scale
+	writeByte(xmaddress, CTRL_REG7_XM, 0x00); // Defaults
 
-	writeByte(XM_ADDRESS, FIFO_CTRL_REG, 0x00); // Defaults
-	Serial.println("testxmend");
+	writeByte(xmaddress, FIFO_CTRL_REG, 0x00); // Defaults
 	// These values need to be changed if you change the operating range of the sensors!
 	accelGain = 0.000122;
 	magGain = 0.00008;
@@ -37,11 +34,11 @@ void LSM9DS0::initXM(uint8_t xmaddress) {
 // Initializing desired settings on the G
 void LSM9DS0::initG(uint8_t gaddress) {
 	// Bit Register Configuration Info in Header File
-	writeByte(G_ADDRESS, CTRL_REG_1_G, 0x0F); // Default ODR and Bandwidth, Normal Mode, All Axes Enabled
-	writeByte(G_ADDRESS, CTRL_REG_2_G, 0x00); // Normal Mode, 7.2 Hz HPF Cutoff Frequency
-	writeByte(G_ADDRESS, CTRL_REG_3_G, 0x00); // Defaults
-	writeByte(G_ADDRESS, CTRL_REG_4_G, 0x00); // Defaults, Gyro Scale +/- 245 DPS
-	writeByte(G_ADDRESS, CTRL_REG_5_G, 0x00); // Defaults
+	writeByte(gaddress, CTRL_REG_1_G, 0x0F); // Default ODR and Bandwidth, Normal Mode, All Axes Enabled
+	writeByte(gaddress, CTRL_REG_2_G, 0x00); // Normal Mode, 7.2 Hz HPF Cutoff Frequency
+	writeByte(gaddress, CTRL_REG_3_G, 0x00); // Defaults
+	writeByte(gaddress, CTRL_REG_4_G, 0x00); // Defaults, Gyro Scale +/- 245 DPS
+	writeByte(gaddress, CTRL_REG_5_G, 0x00); // Defaults
 
 	// This value needs to be changed if you change the operating range of the gyro!
 	gyroGain = 0.00875;
@@ -52,10 +49,8 @@ uint8_t LSM9DS0::readByte(uint8_t devAddress, uint8_t regAddress) {
 	Wire.beginTransmission(devAddress);
 	Wire.write(regAddress);
 	Wire.endTransmission(false);
-	Wire.requestFrom(regAddress, (uint8_t) 1);
-	uint8_t read = Wire.read();
-	Wire.endTransmission(true);
-	return read;
+	Wire.requestFrom(devAddress, (uint8_t) 1);
+	return Wire.read();
 }
 
 // Writes a byte to device with devAddress to the regAddress register
