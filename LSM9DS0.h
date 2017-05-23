@@ -1,5 +1,5 @@
-#ifndef LSM9DS0
-#define LSM9DS0
+#ifndef LSM9DS0_H
+#define LSM9DS0_H
 
 #include <Arduino.h>
 
