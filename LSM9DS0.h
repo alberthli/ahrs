@@ -535,6 +535,9 @@ const uint8_t INT1_DURATION_G = 0x38;
 const float TEMP_INTERCEPT = 24.0;
 const double GRAV_ACCEL = 9.80665;
 
+// Temperature gain is always .125 for this sensor
+const double TEMP_GAIN = .125;
+
 class LSM9DS0 {
 public:
 	LSM9DS0();
@@ -565,7 +568,6 @@ private:
 	double accelxoffset, accelyoffset, accelzoffset;
 	double magxoffset, magyoffset, magzoffset;
 	double accelGain, magGain;
-	const double TEMP_GAIN;
 
 	// Private G variables
 	double gyroxoffset, gyroyoffset, gyrozoffset;
