@@ -9,7 +9,7 @@ LSM9DS0::LSM9DS0() {
 }
 
 LSM9DS0::~LSM9DS0() {
-	
+
 }
 
 // Initializing desired settings on the XM
@@ -50,7 +50,9 @@ uint8_t LSM9DS0::readByte(uint8_t devAddress, uint8_t regAddress) {
 	Wire.write(regAddress);
 	Wire.endTransmission(false);
 	Wire.requestFrom(regAddress, (uint8_t) 1);
-	return Wire.read();
+	read = Wire.read();
+	Wire.endTransmission(true);
+	return read;
 }
 
 // Writes a byte to device with devAddress to the regAddress register
