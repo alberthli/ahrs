@@ -1,5 +1,6 @@
 #include "LSM9DS0.h"
 #include <Wire.h>
+#include <Arduino.h>
 
 LSM9DS0::LSM9DS0() {
 	Wire.begin();
@@ -15,6 +16,7 @@ LSM9DS0::~LSM9DS0() {
 // Initializing desired settings on the XM
 void LSM9DS0::initXM(uint8_t xmaddress) {
 	// Bit Register Configuration Info in Header File
+	Serial.println("testxm");
 	writeByte(XM_ADDRESS, CTRL_REG0_XM, 0x00); // All disabled, defaults
 	writeByte(XM_ADDRESS, CTRL_REG1_XM, 0x57); // 100 Hz Accel. Sampling Rate, Continuous Update, All Axes Enabled
 	writeByte(XM_ADDRESS, CTRL_REG2_XM, 0x08); // 773 Hz AAFB, +/- 4g, Normal Self-Test, 4 Wire Interface
@@ -25,7 +27,7 @@ void LSM9DS0::initXM(uint8_t xmaddress) {
 	writeByte(XM_ADDRESS, CTRL_REG7_XM, 0x00); // Defaults
 
 	writeByte(XM_ADDRESS, FIFO_CTRL_REG, 0x00); // Defaults
-
+	Serial.println("testxmend");
 	// These values need to be changed if you change the operating range of the sensors!
 	accelGain = 0.000122;
 	magGain = 0.00008;
