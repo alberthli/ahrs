@@ -3,6 +3,7 @@
 #include <Arduino.h>
 
 LSM9DS0::LSM9DS0() {
+	Serial.println("firsttest")
 	Wire.begin();
 
 	initXM(XM_ADDRESS);
