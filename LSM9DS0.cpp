@@ -4,12 +4,12 @@
 LSM9DS0::LSM9DS0() {
 	Wire.begin();
 
-	initXM();
-	initG();
+	initXM(XM_ADDRESS);
+	initG(G_ADDRESS);
 }
 
 // Initializing desired settings on the XM
-void LSM9DS0::initXM(uint8_t xmaddress = XM_ADDRESS) {
+void LSM9DS0::initXM(uint8_t xmaddress) {
 	// Bit Register Configuration Info in Header File
 	writeByte(XM_ADDRESS, CTRL_REG0_XM, 0x00); // All disabled, defaults
 	writeByte(XM_ADDRESS, CTRL_REG1_XM, 0x57); // 100 Hz Accel. Sampling Rate, Continuous Update, All Axes Enabled
@@ -28,7 +28,7 @@ void LSM9DS0::initXM(uint8_t xmaddress = XM_ADDRESS) {
 }
 
 // Initializing desired settings on the G
-void LSM9DS0::initG(uint8_t gaddress = G_ADDRESS) {
+void LSM9DS0::initG(uint8_t gaddress) {
 	// Bit Register Configuration Info in Header File
 	writeByte(G_ADDRESS, CTRL_REG_1_G, 0x0F); // Default ODR and Bandwidth, Normal Mode, All Axes Enabled
 	writeByte(G_ADDRESS, CTRL_REG_2_G, 0x00); // Normal Mode, 7.2 Hz HPF Cutoff Frequency
@@ -37,7 +37,7 @@ void LSM9DS0::initG(uint8_t gaddress = G_ADDRESS) {
 	writeByte(G_ADDRESS, CTRL_REG_5_G, 0x00); // Defaults
 
 	// This value needs to be changed if you change the operating range of the gyro!
-	gyroGain = 0.00875
+	gyroGain = 0.00875;
 }
 
 // Reads a byte from device with devAddress from the regAddress register
