@@ -16,8 +16,8 @@ LSM9DS0::~LSM9DS0() {
 // Initializing desired settings on the XM
 void LSM9DS0::initXM(uint8_t xmaddress) {
 	// Bit Register Configuration Info in Header File
-	/*
 	writeByte(xmaddress, CTRL_REG0_XM, 0x00); // All disabled, defaults
+	/*
 	writeByte(xmaddress, CTRL_REG1_XM, 0x57); // 100 Hz Accel. Sampling Rate, Continuous Update, All Axes Enabled
 	writeByte(xmaddress, CTRL_REG2_XM, 0x08); // 773 Hz AAFB, +/- 4g, Normal Self-Test, 4 Wire Interface
 	writeByte(xmaddress, CTRL_REG3_XM, 0x00); // Disable interrupts for now
