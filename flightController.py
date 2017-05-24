@@ -20,7 +20,7 @@ Sensors:
 """
 
 import Adafruit_Python_GPIO.Adafruit_GPIO.I2C as i2c
-from math import atan, sin, cos, sqrt
+from math import atan, atan2, sin, cos, sqrt
 
 # Addresses for the XM and G when the SCL/SDA lines are pulled up (THEY SHOULD ALWAYS BE)
 XM_ADDRESS = 0x1D
@@ -52,9 +52,9 @@ class LSM9DS0:
         yacc = self.xm.getyAccel()
         zacc = self.xm.getzAccel()
 
-        pitch = 180 * atan(xacc / sqrt(yacc * yacc + zacc * zacc) / PI)
-        roll = 180 * atan(yacc / sqrt(xacc * xacc + zacc * zacc) / PI)
-        yaw = 180 * atan(zacc / sqrt(xacc * xacc + zacc * zacc) / PI)
+        pitch = 180 * atan(xacc / sqrt(yacc * yacc + zacc * zacc)) / PI
+        roll = 180 * atan(yacc / sqrt(xacc * xacc + zacc * zacc)) / PI
+        yaw = 180 * atan(zacc / sqrt(xacc * xacc + zacc * zacc)) / PI
 
         print("Pitch: " + str(pitch))
         print("Roll: " + str(roll))
