@@ -35,8 +35,8 @@ GRAV_ACCEL = 9.80665 # Value of acceleration due to gravity (m*s^-2)
 class LSM9DS0:
 
     def __init__(self):
-        self.xm = LSM9DS0_XM
-        self.g = LSM9DS0_G
+        self.xm = LSM9DS0_XM()
+        self.g = LSM9DS0_G()
 
     def printData(self):
         xa = self.xm.getxAccel()
