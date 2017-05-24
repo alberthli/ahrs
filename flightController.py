@@ -725,3 +725,27 @@ class LSM9DS0_G:
     		zBitGyro -= 65536
 
     	return zBitGyro * self.gyroGain
+
+    def printData(self):
+        xa = self.getxAccel()
+        ya = self.getyAccel()
+        za = self.getzAccel()
+        xm = self.getxMag()
+        ym = self.getyMag()
+        zm = self.getzMag()
+        xg = self.getxGyro()
+        yg = self.getyGyro()
+        zg = self.getzGyro()
+        t = self.getTemp()
+
+        println("X Accel: " + xa)
+        println("Y Accel: " + ya)
+        println("Z Accel: " + za)
+        println("X Mag: " + xm)
+        println("Y Mag: " + ym)
+        println("Z Mag: " + zm)
+        println("X Gyro: " + xg)
+        println("Y Gyro: " + yg)
+        println("Z Gyro: " + zg)
+        println("Temp: " + t)
+        println()
