@@ -20,7 +20,7 @@ Sensors:
 """
 
 import Adafruit_Python_GPIO.Adafruit_GPIO.I2C as i2c
-from math import atan, sin, cos
+from math import atan, sin, cos, sqrt
 
 # Addresses for the XM and G when the SCL/SDA lines are pulled up (THEY SHOULD ALWAYS BE)
 XM_ADDRESS = 0x1D
@@ -31,7 +31,7 @@ TEMP_INTERCEPT = 24.0
 
 # Physical Constants
 GRAV_ACCEL = 9.80665 # Value of acceleration due to gravity (m*s^-2)
-PI = 3.14159265358979
+PI = 3.14159265358979323846
 
 # Number of samples to take for calibration
 CALIB_SAMPLES = 250
@@ -52,47 +52,13 @@ class LSM9DS0:
         yacc = self.xm.getyAccel()
         zacc = self.xm.getzAccel()
 
-        # Z axis angle
-        if yfield > 0:
-            zangle = PI / 2 - atan(xfield / yfield)
-        elif yfield < 0:
-            zangle = 3 * PI / 2 - atan(xfield / yfield)
-        elif yfield == 0 and xfield < 0:
-            zangle = PI
-        elif yfield == 0 and xfield > 0:
-            zangle = 0
+        pitch = 180 * atan(xacc / sqrt(yacc * yacc + zacc * zacc) / PI)
+        roll = 180 * atan(yacc / sqrt(xacc * xacc + zacc * zacc) / PI)
+        yaw = 180 * atan(zacc / sqrt(xacc * xacc + zacc * zacc) / PI)
 
-        # Y axis angle
-        if xfield > 0:
-            yangle = PI / 2 - atan(zfield / xfield)
-        elif xfield < 0:
-            yangle = 3 * PI / 2 - atan(zfield / xfield)
-        elif xfield == 0 and zfield < 0:
-            yangle = PI
-        elif xfield == 0 and zfield > 0:
-            yangle = 0
-
-        # X axis angle
-        if yfield > 0:
-            xangle = PI / 2 - atan(zfield / xfield)
-        elif yfield < 0:
-            xangle = 3 * PI / 2 - atan(zfield / xfield)
-        elif yfield == 0 and zfield < 0:
-            xangle = PI
-        elif yfield == 0 and zfield > 0:
-            xangle = 0
-
-        compxAccel = xacc - GRAV_ACCEL * sin(yangle)
-        compyAccel = yacc + GRAV_ACCEL * sin(xangle) * cos(yangle)
-        compzAccel = zacc + GRAV_ACCEL * cos(yangle) * sin(yangle)
-
-        print("X Angle (deg): " + str(xangle * 180 / PI))
-        print("Y Angle (deg): " + str(yangle * 180 / PI))
-        print("Z Angle (deg): " + str(zangle * 180 / PI))
-
-        print("Compensated X Acc: " + str(compxAccel))
-        print("Compensated Y Acc: " + str(compyAccel))
-        print("Compensated Z Acc: " + str(compzAccel))
+        print("Pitch: " + str(pitch))
+        print("Roll: " + str(roll))
+        print("Yaw: " + str(yaw))
 
     # [TODO] Do this with FIFO buffers
     # Calibration function for the accelerometer
