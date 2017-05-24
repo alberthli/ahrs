@@ -31,6 +31,9 @@ TEMP_INTERCEPT = 24.0
 # Physical Constants
 GRAV_ACCEL = 9.80665 # Value of acceleration due to gravity (m*s^-2)
 
+# Number of samples to take for calibration
+CALIB_SAMPLES = 100
+
 # Combined sensor object
 class LSM9DS0:
 
@@ -38,6 +41,40 @@ class LSM9DS0:
         self.xm = LSM9DS0_XM()
         self.g = LSM9DS0_G()
 
+    # Calibration function for the accelerometer
+    def calibAccel(self):
+        tempTotalx = 0
+        tempTotaly = 0
+        tempTotalz = 0
+
+        for sample in range(CALIB_SAMPLES):
+            tempTotalx += self.xm.getxAccel()
+            tempTotaly += self.xm.getyAccel()
+            tempTotalz += self.xm.getzAccel()
+
+        self.xm.accelxoffset = tempTotalx / CALIB_SAMPLES
+        self.xm.accelyoffset = tempTotaly / CALIB_SAMPLES
+        self.xm.accelzoffset = tempTotalz / CALIB_SAMPLES
+
+    # Calibration function for the gyro
+    def calibGyro(self):
+        tempTotalx = 0
+        tempTotaly = 0
+        tempTotalz = 0
+
+        for sample in range(CALIB_SAMPLES):
+            tempTotalx += self.g.getxGyro()
+            tempTotaly += self.g.getyGyro()
+            tempTotalz += self.g.getzGyro()
+
+        self.g.gyroxoffset = tempTotalx / CALIB_SAMPLES
+        self.g.gyroyoffset = tempTotaly / CALIB_SAMPLES
+        self.g.gyrozoffset = tempTotalz / CALIB_SAMPLES
+
+    # [TODO] Calibration function for the mag: adjust for hard-iron effect
+    def calibMag(self):
+
+    # Printing method - will print all sensor values at once
     def printData(self):
         xacc = self.xm.getxAccel()
         yacc = self.xm.getyAccel()
@@ -434,7 +471,7 @@ class LSM9DS0_XM:
     	if xBitAccel > 32767:
     		xBitAccel -= 65536
 
-    	return xBitAccel * self.accelGain * GRAV_ACCEL
+    	return xBitAccel * self.accelGain * GRAV_ACCEL - self.accelxoffset
 
     # Returns y Acceleration (m*s^-2)
     def getyAccel(self):
@@ -446,7 +483,7 @@ class LSM9DS0_XM:
     	if yBitAccel > 32767:
     		yBitAccel -= 65536
 
-    	return yBitAccel * self.accelGain * GRAV_ACCEL
+    	return yBitAccel * self.accelGain * GRAV_ACCEL - self.accelyoffset
 
     # Returns z Acceleration (m*s^-2)
     def getzAccel(self):
@@ -458,7 +495,7 @@ class LSM9DS0_XM:
     	if zBitAccel > 32767:
     		zBitAccel -= 65536
 
-    	return zBitAccel * self.accelGain * GRAV_ACCEL
+    	return zBitAccel * self.accelGain * GRAV_ACCEL - self.accelzoffset
 
     # Returns x Magnetometer Data (gauss)
     def getxMag(self):
@@ -470,7 +507,7 @@ class LSM9DS0_XM:
     	if xBitMag > 32767:
     		xBitMag -= 65536
 
-    	return xBitMag * self.magGain
+    	return xBitMag * self.magGain - self.magxoffset
 
     # Returns y Magnetometer Data (gauss)
     def getyMag(self):
@@ -482,7 +519,7 @@ class LSM9DS0_XM:
     	if yBitMag > 32767:
     		yBitMag -= 65536
 
-    	return yBitMag * self.magGain
+    	return yBitMag * self.magGain - self.magyoffset
 
     # Returns z Magnetometer Data (gauss)
     def getzMag(self):
@@ -494,7 +531,7 @@ class LSM9DS0_XM:
     	if zBitMag > 32767:
     		zBitMag -= 65536
 
-    	return zBitMag * self.magGain
+    	return zBitMag * self.magGain - self.magzoffset
 
 # Class Definition for the Gyro part of the LSM9DS0
 class LSM9DS0_G:
@@ -733,7 +770,7 @@ class LSM9DS0_G:
     	if xBitGyro > 32767:
     		xBitGyro -= 65536
 
-    	return xBitGyro * self.gyroGain
+    	return xBitGyro * self.gyroGain - self.gyroxoffset
 
     # Returns y Gyro Data
     def getyGyro(self):
@@ -744,7 +781,7 @@ class LSM9DS0_G:
     	if yBitGyro > 32767:
     		yBitGyro -= 65536
 
-    	return yBitGyro * self.gyroGain
+    	return yBitGyro * self.gyroGain - self.gyroyoffset
 
     # Returns z Gyro Data
     def getzGyro(self):
@@ -755,4 +792,4 @@ class LSM9DS0_G:
     	if zBitGyro > 32767:
     		zBitGyro -= 65536
 
-    	return zBitGyro * self.gyroGain
+    	return zBitGyro * self.gyroGain - self.gyrozoffset
