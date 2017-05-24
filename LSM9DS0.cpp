@@ -50,6 +50,8 @@ uint8_t LSM9DS0::readByte(uint8_t devAddress, uint8_t regAddress) {
 	Wire.write(regAddress);
 	Wire.endTransmission();
 	Wire.requestFrom(devAddress, (uint8_t) 1);
+	while(Wire.available() < 1);
+	
 	uint8_t read = Wire.read();
 	Wire.endTransmission();
 	return read;
