@@ -54,7 +54,7 @@ class LSM9DS0:
 
         pitch = 180 * atan(xacc / sqrt(yacc * yacc + zacc * zacc)) / PI
         roll = 180 * atan(yacc / sqrt(xacc * xacc + zacc * zacc)) / PI
-        yaw = 180 * atan(zacc / sqrt(xacc * xacc + zacc * zacc)) / PI
+        yaw = 180 * atan(zacc / sqrt(xacc * xacc + yacc * yacc)) / PI
 
         print("Pitch: " + str(pitch))
         print("Roll: " + str(roll))
