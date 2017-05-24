@@ -20,6 +20,7 @@ Sensors:
 """
 
 import Adafruit_Python_GPIO.Adafruit_GPIO.I2C as i2c
+from math import atan, sin, cos
 
 # Addresses for the XM and G when the SCL/SDA lines are pulled up (THEY SHOULD ALWAYS BE)
 XM_ADDRESS = 0x1D
@@ -30,9 +31,10 @@ TEMP_INTERCEPT = 24.0
 
 # Physical Constants
 GRAV_ACCEL = 9.80665 # Value of acceleration due to gravity (m*s^-2)
+PI = 3.14159265358979
 
 # Number of samples to take for calibration
-CALIB_SAMPLES = 100
+CALIB_SAMPLES = 250
 
 # Combined sensor object
 class LSM9DS0:
@@ -41,6 +43,54 @@ class LSM9DS0:
         self.xm = LSM9DS0_XM()
         self.g = LSM9DS0_G()
 
+    def printTiltCompAccel(self):
+        xfield = self.xm.getxMag()
+        yfield = self.xm.getyMag()
+        zfield = self.xm.getzMag()
+
+        xacc = self.xm.getxAccel()
+        yacc = self.xm.getyAccel()
+        zacc = self.xm.getzAccel()
+
+        # Z axis angle
+        if yfield > 0
+            zangle = PI / 2 - atan(xfield / yfield)
+        elif yfield < 0
+            zangle = 3 * PI / 2 - atan(xfield / yfield)
+        elif yfield == 0 and xfield < 0
+            zangle = PI
+        elif yfield == 0 and xfield > 0
+            zangle = 0
+
+        # Y axis angle
+        if xfield > 0
+            yangle = PI / 2 - atan(zfield / xfield)
+        elif xfield < 0
+            yangle = 3 * PI / 2 - atan(zfield / xfield)
+        elif xfield == 0 and zfield < 0
+            yangle = PI
+        elif xfield == 0 and zfield > 0
+            yangle = 0
+
+        # X axis angle
+        if zfield > 0
+            xangle = PI / 2 - atan(yfield / zfield)
+        elif xfield < 0
+            xangle = 3 * PI / 2 - atan(yfield / zfield)
+        elif zfield == 0 and yfield < 0
+            xangle = PI
+        elif zfield == 0 and yfield > 0
+            xangle = 0
+
+        compxAccel = xacc - GRAV_ACCEL * sin(yangle)
+        compyAccel = yacc + GRAV_ACCEL * sin(xangle) * cos(yangle)
+        compzAccel = zacc + GRAV_ACCEL * cos(yangle) * sin(yangle)
+
+        print("Compensated X Acc: " + str(compxAccel))
+        print("Compensated Y Acc: " + str(compyAccel))
+        print("Compensated Z Acc: " + str(compzAccel))
+
+    # [TODO] Do this with FIFO buffers
     # Calibration function for the accelerometer
     def calibAccel(self):
         tempTotalx = 0
@@ -74,7 +124,7 @@ class LSM9DS0:
     # [TODO] Calibration function for the mag: adjust for hard-iron effect
     def calibMag(self):
         pass
-        
+
     # Printing method - will print all sensor values at once
     def printData(self):
         xacc = self.xm.getxAccel()
