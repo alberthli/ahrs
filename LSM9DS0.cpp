@@ -63,12 +63,12 @@ uint8_t LSM9DS0::readByte(uint8_t devAddress, uint8_t regAddress) {
 
 // Writes a byte to device with devAddress to the regAddress register
 void LSM9DS0::writeByte(uint8_t devAddress, uint8_t regAddress, uint8_t byte) {
-	Wire.beginTransmission(devAddress);
+	&Wire.beginTransmission(devAddress);
 	/*
 	Wire.write(regAddress);
 	Wire.write(byte);
 	*/
-	Wire.endTransmission();
+	&Wire.endTransmission();
 }
 
 // Retrieves the temperature (deg C)
