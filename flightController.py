@@ -73,13 +73,13 @@ class LSM9DS0:
             yangle = 0
 
         # X axis angle
-        if zfield > 0:
-            xangle = PI / 2 - atan(yfield / zfield)
-        elif xfield < 0:
-            xangle = 3 * PI / 2 - atan(yfield / zfield)
-        elif zfield == 0 and yfield < 0:
+        if yfield > 0:
+            xangle = PI / 2 - atan(zfield / xfield)
+        elif yfield < 0:
+            xangle = 3 * PI / 2 - atan(zfield / xfield)
+        elif yfield == 0 and zfield < 0:
             xangle = PI
-        elif zfield == 0 and yfield > 0:
+        elif yfield == 0 and zfield > 0:
             xangle = 0
 
         compxAccel = xacc - GRAV_ACCEL * sin(yangle)
