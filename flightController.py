@@ -73,7 +73,8 @@ class LSM9DS0:
 
     # [TODO] Calibration function for the mag: adjust for hard-iron effect
     def calibMag(self):
-
+        pass
+        
     # Printing method - will print all sensor values at once
     def printData(self):
         xacc = self.xm.getxAccel()
