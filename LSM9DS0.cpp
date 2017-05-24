@@ -3,7 +3,18 @@
 #include <Arduino.h>
 
 LSM9DS0::LSM9DS0() {
+	pinMode(LED_BUILTIN, OUTPUT);
+	digitalWrite(LED_BUILTIN, HIGH);
+	delay(1000);
+	digitalWrite(LED_BUILTIN, LOW);
+	delay(1000);
 	Wire.begin();
+
+	pinMode(LED_BUILTIN, OUTPUT);
+	digitalWrite(LED_BUILTIN, HIGH);
+	delay(1000);
+	digitalWrite(LED_BUILTIN, LOW);
+	delay(1000);
 
 	initXM(XM_ADDRESS);
 	initG(G_ADDRESS);
@@ -17,7 +28,6 @@ LSM9DS0::~LSM9DS0() {
 void LSM9DS0::initXM(uint8_t xmaddress) {
 	// Bit Register Configuration Info in Header File
 	writeByte(xmaddress, CTRL_REG0_XM, 0x00); // All disabled, defaults
-	/*
 	writeByte(xmaddress, CTRL_REG1_XM, 0x57); // 100 Hz Accel. Sampling Rate, Continuous Update, All Axes Enabled
 	writeByte(xmaddress, CTRL_REG2_XM, 0x08); // 773 Hz AAFB, +/- 4g, Normal Self-Test, 4 Wire Interface
 	writeByte(xmaddress, CTRL_REG3_XM, 0x00); // Disable interrupts for now
@@ -27,7 +37,6 @@ void LSM9DS0::initXM(uint8_t xmaddress) {
 	writeByte(xmaddress, CTRL_REG7_XM, 0x00); // Defaults
 
 	writeByte(xmaddress, FIFO_CTRL_REG, 0x00); // Defaults
-	*/
 	// These values need to be changed if you change the operating range of the sensors!
 	accelGain = 0.000122;
 	magGain = 0.00008;
@@ -36,13 +45,12 @@ void LSM9DS0::initXM(uint8_t xmaddress) {
 // Initializing desired settings on the G
 void LSM9DS0::initG(uint8_t gaddress) {
 	// Bit Register Configuration Info in Header File
-	/*
 	writeByte(gaddress, CTRL_REG_1_G, 0x0F); // Default ODR and Bandwidth, Normal Mode, All Axes Enabled
 	writeByte(gaddress, CTRL_REG_2_G, 0x00); // Normal Mode, 7.2 Hz HPF Cutoff Frequency
 	writeByte(gaddress, CTRL_REG_3_G, 0x00); // Defaults
 	writeByte(gaddress, CTRL_REG_4_G, 0x00); // Defaults, Gyro Scale +/- 245 DPS
 	writeByte(gaddress, CTRL_REG_5_G, 0x00); // Defaults
-	*/
+
 	// This value needs to be changed if you change the operating range of the gyro!
 	gyroGain = 0.00875;
 }
@@ -62,9 +70,9 @@ uint8_t LSM9DS0::readByte(uint8_t devAddress, uint8_t regAddress) {
 
 // Writes a byte to device with devAddress to the regAddress register
 void LSM9DS0::writeByte(uint8_t devAddress, uint8_t regAddress, uint8_t byte) {
-	Wire.beginTransmission(0x1D);
-	Wire.write(0x1F);
-	Wire.write(0x00);
+	Wire.beginTransmission(devAddress);
+	Wire.write(regAddress);
+	Wire.write(byte);
 	Wire.endTransmission();
 }
 
