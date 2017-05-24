@@ -16,6 +16,7 @@ LSM9DS0::~LSM9DS0() {
 // Initializing desired settings on the XM
 void LSM9DS0::initXM(uint8_t xmaddress) {
 	// Bit Register Configuration Info in Header File
+	/*
 	writeByte(xmaddress, CTRL_REG0_XM, 0x00); // All disabled, defaults
 	writeByte(xmaddress, CTRL_REG1_XM, 0x57); // 100 Hz Accel. Sampling Rate, Continuous Update, All Axes Enabled
 	writeByte(xmaddress, CTRL_REG2_XM, 0x08); // 773 Hz AAFB, +/- 4g, Normal Self-Test, 4 Wire Interface
@@ -27,6 +28,7 @@ void LSM9DS0::initXM(uint8_t xmaddress) {
 
 	writeByte(xmaddress, FIFO_CTRL_REG, 0x00); // Defaults
 	// These values need to be changed if you change the operating range of the sensors!
+	*/
 	accelGain = 0.000122;
 	magGain = 0.00008;
 }
@@ -34,11 +36,13 @@ void LSM9DS0::initXM(uint8_t xmaddress) {
 // Initializing desired settings on the G
 void LSM9DS0::initG(uint8_t gaddress) {
 	// Bit Register Configuration Info in Header File
+	/*
 	writeByte(gaddress, CTRL_REG_1_G, 0x0F); // Default ODR and Bandwidth, Normal Mode, All Axes Enabled
 	writeByte(gaddress, CTRL_REG_2_G, 0x00); // Normal Mode, 7.2 Hz HPF Cutoff Frequency
 	writeByte(gaddress, CTRL_REG_3_G, 0x00); // Defaults
 	writeByte(gaddress, CTRL_REG_4_G, 0x00); // Defaults, Gyro Scale +/- 245 DPS
 	writeByte(gaddress, CTRL_REG_5_G, 0x00); // Defaults
+	*/
 
 	// This value needs to be changed if you change the operating range of the gyro!
 	gyroGain = 0.00875;
@@ -51,7 +55,7 @@ uint8_t LSM9DS0::readByte(uint8_t devAddress, uint8_t regAddress) {
 	Wire.endTransmission();
 	Wire.requestFrom(devAddress, (uint8_t) 1);
 	while(Wire.available() < 1);
-	
+
 	uint8_t read = Wire.read();
 	Wire.endTransmission();
 	return read;
