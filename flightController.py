@@ -31,6 +31,37 @@ TEMP_INTERCEPT = 24.0
 # Physical Constants
 GRAV_ACCEL = 9.80665 # Value of acceleration due to gravity (m*s^-2)
 
+# Combined sensor object
+class LSM9DS0:
+
+    def __init__(self):
+        self.xm = LSM9DS0_XM
+        self.g = LSM9DS0_G
+
+    def printData(self):
+        xa = self.xm.getxAccel()
+        ya = self.xm.getyAccel()
+        za = self.xm.getzAccel()
+        xm = self.xm.getxMag()
+        ym = self.xm.getyMag()
+        zm = self.xm.getzMag()
+        xg = self.g.getxGyro()
+        yg = self.g.getyGyro()
+        zg = self.g.getzGyro()
+        t = self.xm.getTemp()
+
+        println("X Accel: " + xa)
+        println("Y Accel: " + ya)
+        println("Z Accel: " + za)
+        println("X Mag: " + xm)
+        println("Y Mag: " + ym)
+        println("Z Mag: " + zm)
+        println("X Gyro: " + xg)
+        println("Y Gyro: " + yg)
+        println("Z Gyro: " + zg)
+        println("Temp: " + t)
+        println()
+
 # Class Definition for the Accelerometer/Magnetometer part of the LSM9DS0
 class LSM9DS0_XM:
 
@@ -725,27 +756,3 @@ class LSM9DS0_G:
     		zBitGyro -= 65536
 
     	return zBitGyro * self.gyroGain
-
-    def printData(self):
-        xa = self.getxAccel()
-        ya = self.getyAccel()
-        za = self.getzAccel()
-        xm = self.getxMag()
-        ym = self.getyMag()
-        zm = self.getzMag()
-        xg = self.getxGyro()
-        yg = self.getyGyro()
-        zg = self.getzGyro()
-        t = self.getTemp()
-
-        println("X Accel: " + xa)
-        println("Y Accel: " + ya)
-        println("Z Accel: " + za)
-        println("X Mag: " + xm)
-        println("Y Mag: " + ym)
-        println("Z Mag: " + zm)
-        println("X Gyro: " + xg)
-        println("Y Gyro: " + yg)
-        println("Z Gyro: " + zg)
-        println("Temp: " + t)
-        println()
