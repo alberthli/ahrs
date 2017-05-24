@@ -48,9 +48,11 @@ void LSM9DS0::initG(uint8_t gaddress) {
 uint8_t LSM9DS0::readByte(uint8_t devAddress, uint8_t regAddress) {
 	Wire.beginTransmission(devAddress);
 	Wire.write(regAddress);
-	Wire.endTransmission(false);
+	Wire.endTransmission();
 	Wire.requestFrom(devAddress, (uint8_t) 1);
-	return Wire.read();
+	uint8_t read = Wire.read();
+	Wire.endTransmission();
+	return read;
 }
 
 // Writes a byte to device with devAddress to the regAddress register
