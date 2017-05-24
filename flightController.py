@@ -86,9 +86,9 @@ class LSM9DS0:
         compyAccel = yacc + GRAV_ACCEL * sin(xangle) * cos(yangle)
         compzAccel = zacc + GRAV_ACCEL * cos(yangle) * sin(yangle)
 
-        print("X Angle: " + str(xangle))
-        print("Y Angle: " + str(yangle))
-        print("Z Angle: " + str(zangle))
+        print("X Angle (deg): " + str(xangle * 180 / PI))
+        print("Y Angle (deg): " + str(yangle * 180 / PI))
+        print("Z Angle (deg): " + str(zangle * 180 / PI))
 
         print("Compensated X Acc: " + str(compxAccel))
         print("Compensated Y Acc: " + str(compyAccel))
