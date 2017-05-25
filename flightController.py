@@ -67,7 +67,7 @@ class LSM9DS0:
         self.gSampled = False
 
         # Gyro measurement error, about 3 DPS (in rad/s) | beta parameter
-        self.gEpsE = (PI / 180) * 100
+        self.gEpsE = (PI / 180) * 150
         self.beta = sqrt(3 / 4) * self.gEpsE
 
         # Gyro measurement drift, guess about .2 DPSPS (in rad/s/s) | zeta parameter
@@ -177,10 +177,6 @@ class LSM9DS0:
         SEq1SEq3 = self.SEq1 * self.SEq3
         SEq2SEq4 = self.SEq2 * self.SEq4
 
-        dmx = 2 * self.mx
-        dmy = 2 * self.my
-        dmz = 2 * self.mz
-
         ##########################
         # Beginning of Algorithm #
         ##########################
@@ -195,6 +191,10 @@ class LSM9DS0:
         self.mx /= tempNorm
         self.my /= tempNorm
         self.mz /= tempNorm
+
+        dmx = 2 * self.mx
+        dmy = 2 * self.my
+        dmz = 2 * self.mz
 
         # Combined cost function + Jacobian
         # Functions from g-field
