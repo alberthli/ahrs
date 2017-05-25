@@ -65,11 +65,11 @@ class LSM9DS0:
         self.gSampled = False
 
         # Gyro measurement error, about 3 DPS (in rad/s) | beta parameter
-        self.gEpsE = (PI / 180) * 100
+        self.gEpsE = (PI / 180) * 200
         self.beta = sqrt(3 / 4) * self.gEpsE
 
         # Gyro measurement drift, guess about .2 DPSPS (in rad/s/s) | zeta parameter
-        self.gEpsD = (PI / 180) * 100
+        self.gEpsD = (PI / 180) * .2
         self.zeta = sqrt(3 / 4) * self.gEpsD
 
         # Dummy values for sensor readings
