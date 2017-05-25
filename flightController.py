@@ -307,7 +307,7 @@ class LSM9DS0:
                 pitch *= 180 / PI
                 roll *= 180 / PI
 
-                print("Sample Count: " + str(self.testCounter) + " | dt: " + str(self.dt), end = "")
+                print("Sample Count: " + str(self.testCounter++) + " | dt: " + str(self.dt), end = "")
                 print(" | Yaw (No reference): " + str(yaw), end = "")
                 print(" | Pitch: " + str(pitch), end = "")
                 print(" | Roll: " + str(roll))
