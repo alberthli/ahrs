@@ -61,7 +61,7 @@ class LSM9DS0:
         self.firstTime = True
 
         # Gyro measurement error, about 3 DPS (in rad/s) | beta parameter
-        self.gEpsE = (PI / 180) * 5
+        self.gEpsE = (PI / 180) * 200
         self.beta = sqrt(3 / 4) * self.gEpsE
 
         # Gyro measurement drift, guess about .2 DPSPS (in rad/s/s) | zeta parameter
