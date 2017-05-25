@@ -216,10 +216,10 @@ class LSM9DS0:
         self.wz -= self.wbz
 
         # Quaternion rate of change (gyro)
-        SEqdot1 = -hSEq2 * self.wx - hSEq3 * self.wy - hseq4 * self.wz
-        SEqdot2 = hSEq1 * self.wx + hseq3 * self.wz - hseq4 * self.wy
-        SEqdot3 = hSEq1 * self.wy - hseq2 * self.wz + hseq4 * self.wz
-        SEqdot4 = hSEq1 * self.wz + hseq2 * self.wy - hseq3 * self.wx
+        SEqdot1 = -hSEq2 * self.wx - hSEq3 * self.wy - hSEq4 * self.wz
+        SEqdot2 = hSEq1 * self.wx + hSEq3 * self.wz - hSEq4 * self.wy
+        SEqdot3 = hSEq1 * self.wy - hSEq2 * self.wz + hSEq4 * self.wz
+        SEqdot4 = hSEq1 * self.wz + hSEq2 * self.wy - hSEq3 * self.wx
 
         # Update orientation quaternion
         self.SEq1 += (SEqdot1 - (self.beta * SEqhatdot1)) * self.dt
