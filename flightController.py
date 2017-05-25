@@ -299,9 +299,9 @@ class LSM9DS0:
             while True:
                 self.madgwickFilterUpdate()
 
-                yaw = atan2(2 * (self.SEq2 * self.SEq3 - self.SEq1 * self.SEq4), 2 * (self.SEq1 * self.SEq1 + self.SEq2 * self.SEq2) - 1)
-                pitch = -asin(2 * (self.SEq2 * self.SEq4 + self.SEq1 * self.SEq3))
-                roll = atan2(2 * (self.SEq3 * self.SEq4 - self.SEq1 * self.SEq2), 2 * (self.SEq1 * self.SEq1 + self.SEq4 * self.SEq4) - 1)
+                yaw = atan2(2 * (self.SEq1 * self.SEq4 + self.SEq2 * self.SEq3), 1 - 2 * (self.SEq3 * self.SEq3 + self.SEq4 * self.SEq4))
+                pitch = asin(2 * (self.SEq1 * self.SEq3 - self.SEq2 * self.SEq4))
+                roll = atan2(2 * (self.SEq1 * self.SEq2 + self.SEq3 * self.SEq4), 1 - 2 * (self.SEq2 * self.SEq2 + self.SEq3 * self.SEq3))
 
                 # Convert to degrees for readability
                 yaw *= 180 / PI
