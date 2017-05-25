@@ -258,7 +258,7 @@ class LSM9DS0:
 
         try:
             while True:
-                madgwickFilterUpdate()
+                self.madgwickFilterUpdate()
 
                 yaw = atan2(2 * (self.SEq2 * self.SEq3 - self.SEq1 * self.SEq4), 2 * (self.SEq1 * self.SEq1 + self.SEq2 * self.SEq2) - 1)
                 pitch = -asin(2 * (self.SEq2 * self.SEq4 + self.SEq1 * self.SEq3))
