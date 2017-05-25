@@ -67,9 +67,16 @@ class LSM9DS0:
         self.gEpsD = (PI / 180) * .2
         self.zeta = sqrt(3 / 4) * self.gEpsD
 
-        self.ax = 0, self.ay = 0, self.az = 0 # accelerations
-        self.mx = 0, self.my = 0, self.mz = 0 # mag fields
-        self.wx = 0, self.wy = 0, self.wz = 0 # angular changes
+        # Dummy values for sensor readings
+        self.ax = 0
+        self.ay = 0
+        self.az = 0
+        self.mx = 0
+        self.my = 0
+        self.mz = 0
+        self.wx = 0
+        self.wy = 0
+        self.wz = 0
 
         # Earth mag field reference
         self.bx = 1
