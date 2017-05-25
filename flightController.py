@@ -27,8 +27,9 @@ from math import atan2, sin, cos, sqrt, asin
 XM_ADDRESS = 0x1D
 G_ADDRESS = 0x6B
 
-# Guess at the intercept for the temperature sensor
-TEMP_INTERCEPT = 24.0
+# Predefined Constants
+TEMP_INTERCEPT = 24.0 # Guess at the intercept for the temperature sensor
+DT_TARGET = 0.0105 # About 95Hz dt
 
 # Physical Constants
 GRAV_ACCEL = 9.80665 # Value of acceleration due to gravity (m*s^-2)
@@ -93,6 +94,10 @@ class LSM9DS0:
     def madgwickFilterUpdate(self):
 
         # Update times
+        currTime = time.clock()
+        delay = currTime - self.prevTime
+        if delay < DT_TARGET:
+            time.sleep(DT_TARGET - delay)
         currTime = time.clock()
         self.dt = currTime - self.prevTime
         self.prevTime = currTime
@@ -264,10 +269,15 @@ class LSM9DS0:
                 pitch = -asin(2 * (self.SEq2 * self.SEq4 + self.SEq1 * self.SEq3))
                 roll = atan2(2 * (self.SEq3 * self.SEq4 - self.SEq1 * self.SEq2), 2 * (self.SEq1 * self.SEq1 + self.SEq4 * self.SEq4) - 1)
 
-                print("dt: " + str(self.dt))
-                print("Yaw (No reference): " + str(yaw))
-                print("Pitch: " + str(pitch))
-                print("Roll: " + str(roll))
+                # Convert to degrees for readability
+                yaw *= 180 / PI
+                pitch *= 180 / PI
+                roll *= 180 / PI
+
+                print("dt: " + str(self.dt), end = "")
+                print(" | Yaw (No reference): " + str(yaw), end = "")
+                print(" | Pitch: " + str(pitch), end = "")
+                print(" | Roll: " + str(roll))
 
         except KeyboardInterrupt:
             print("Exited Test")
