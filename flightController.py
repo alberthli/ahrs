@@ -46,9 +46,7 @@ class LSM9DS0:
         self.g = LSM9DS0_G()
 
         # Timing for sampling
-        self.startTime = 0
         self.prevTime = 0
-        self.adjusted = False
 
         ##############################
         # *** Madgwick Variables *** #
@@ -295,17 +293,10 @@ class LSM9DS0:
     def activateSensor(self):
         if self.firstTime:
             self.prevTime = time.clock()
-            self.startTime = self.prevTime
             self.firstTime = False
 
         try:
             while True:
-
-                if not self.adjusted:
-                    if time.clock() - self.startTime > 5:
-                        self.beta = BETA_ADJ_VAL
-                        self.zeta = ZETA_ADJ_VAL
-
                 self.madgwickFilterUpdate()
 
                 yaw = atan2(2 * (self.SEq2 * self.SEq3 - self.SEq1 * self.SEq4), 2 * (self.SEq1 * self.SEq1 + self.SEq2 * self.SEq2) - 1)
