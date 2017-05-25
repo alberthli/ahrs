@@ -20,7 +20,8 @@ Sensors:
 """
 
 import Adafruit_Python_GPIO.Adafruit_GPIO.I2C as i2c
-from math import atan, atan2, sin, cos, sqrt
+import time
+from math import atan2, sin, cos, sqrt, asin
 
 # Addresses for the XM and G when the SCL/SDA lines are pulled up (THEY SHOULD ALWAYS BE)
 XM_ADDRESS = 0x1D
@@ -34,66 +35,235 @@ GRAV_ACCEL = 9.80665 # Value of acceleration due to gravity (m*s^-2)
 PI = 3.14159265358979323846
 
 # Number of samples to take for calibration
-CALIB_SAMPLES = 250
+CALIB_SAMPLES = 10000
 
 # Combined sensor object
 class LSM9DS0:
 
     def __init__(self):
+        # Sensor components
         self.xm = LSM9DS0_XM()
         self.g = LSM9DS0_G()
 
-    def printTiltCompAccel(self):
-        xfield = self.xm.getxMag()
-        yfield = self.xm.getyMag()
-        zfield = self.xm.getzMag()
+        # Timing for sampling
+        self.prevTime = 0
 
-        xacc = self.xm.getxAccel()
-        yacc = self.xm.getyAccel()
-        zacc = self.xm.getzAccel()
+        ##############################
+        # *** Madgwick Variables *** #
+        ##############################
 
-        pitch = 180 * atan(xacc / sqrt(yacc * yacc + zacc * zacc)) / PI
-        roll = 180 * atan(yacc / sqrt(xacc * xacc + zacc * zacc)) / PI
-        yaw = 180 * atan(zacc / sqrt(xacc * xacc + yacc * yacc)) / PI
+        # Initial orientation quaternion variables (Earth wrt sensor)
+        self.SEq1 = 1
+        self.SEq2 = 0
+        self.SEq3 = 0
+        self.SEq4 = 0
 
-        print("Pitch: " + str(pitch))
-        print("Roll: " + str(roll))
-        print("Yaw: " + str(yaw))
+        # Sampling Time - Will change with every loop
+        self.dt = .01
 
-    # [TODO] Do this with FIFO buffers
-    # Calibration function for the accelerometer
-    def calibAccel(self):
-        tempTotalx = 0
-        tempTotaly = 0
-        tempTotalz = 0
+        # Gyro measurement error, about 3 DPS (in rad/s) | beta parameter
+        self.gEpsE = (PI / 180) * 3
+        self.beta = sqrt(3 / 4) * self.gEpsE
 
-        for sample in range(CALIB_SAMPLES):
-            tempTotalx += self.xm.getxAccel()
-            tempTotaly += self.xm.getyAccel()
-            tempTotalz += self.xm.getzAccel()
+        # Gyro measurement drift, guess about .2 DPSPS (in rad/s/s) | zeta parameter
+        self.gEpsD = (PI / 180) * .2
+        self.zeta = sqrt(3 / 4) * self.gEpsD
 
-        self.xm.accelxoffset = tempTotalx / CALIB_SAMPLES
-        self.xm.accelyoffset = tempTotaly / CALIB_SAMPLES
-        self.xm.accelzoffset = tempTotalz / CALIB_SAMPLES
+        self.ax, self.ay, self.az # accelerations
+        self.mx, self.my, self.mz # mag fields
+        self.wx, self.wy, self.wz # angular changes
 
-    # Calibration function for the gyro
-    def calibGyro(self):
-        tempTotalx = 0
-        tempTotaly = 0
-        tempTotalz = 0
+        # Earth mag field reference
+        self.bx = 1
+        self.bz = 0
 
-        for sample in range(CALIB_SAMPLES):
-            tempTotalx += self.g.getxGyro()
-            tempTotaly += self.g.getyGyro()
-            tempTotalz += self.g.getzGyro()
+        # Gyro bias error estimates
+        self.wbx = 0
+        self.wby = 0
+        self.wbz = 0
 
-        self.g.gyroxoffset = tempTotalx / CALIB_SAMPLES
-        self.g.gyroyoffset = tempTotaly / CALIB_SAMPLES
-        self.g.gyrozoffset = tempTotalz / CALIB_SAMPLES
+    ################################################################################################################
+    # This algorithm adapted from Madgwick's provided code: http://x-io.co.uk/res/doc/madgwick_internal_report.pdf #
+    ################################################################################################################
+    def madgwickFilterUpdate(self):
 
-    # [TODO] Calibration function for the mag: adjust for hard-iron effect
-    def calibMag(self):
-        pass
+        # Update times
+        currTime = time.clock()
+        self.dt = currTime - self.prevTime
+        self.prevTime = currTime
+
+        # Update last sensor values
+        self.ax = self.xm.getxAccel()
+        self.ay = self.xm.getyAccel()
+        self.az = self.xm.getzAccel()
+        self.mx = self.xm.getxMag()
+        self.my = self.xm.getyMag()
+        self.mz = self.xm.getzMag()
+        self.wx = self.g.getxGyro()
+        self.wy = self.g.getyGyro()
+        self.wz = self.g.getzGyro()
+
+        #################################
+        # Useful Variable Manipulations #
+        #################################
+        hSEq1 = 0.5 * self.SEq1
+        hSEq2 = 0.5 * self.SEq2
+        hSEq3 = 0.5 * self.SEq3
+        hSEq4 = 0.5 * self.SEq4
+
+        dSEq1 = 2 * self.SEq1
+        dSEq2 = 2 * self.SEq2
+        dSEq3 = 2 * self.SEq3
+        dSEq4 = 2 * self.SEq4
+
+        sSEq3 = self.SEq3 * self.SEq3
+
+        dbx = 2 * self.bx
+        dbz = 2 * self.bz
+
+        dbxSEq1 = dbx * self.SEq1
+        dbxSEq2 = dbx * self.SEq2
+        dbxSEq3 = dbx * self.SEq3
+        dbxSEq4 = dbx * self.SEq4
+        dbzSEq1 = dbz * self.SEq1
+        dbzSEq2 = dbz * self.SEq2
+        dbzSEq3 = dbz * self.SEq3
+        dbzSEq4 = dbz * self.SEq4
+
+        SEq1SEq3 = self.SEq1 * self.SEq3
+        SEq2SEq4 = self.SEq2 * self.SEq4
+
+        dmx = 2 * self.mx
+        dmy = 2 * self.my
+        dmz = 2 * self.mz
+
+        ##########################
+        # Beginning of Algorithm #
+        ##########################
+
+        # Normalize acceleration and magnetometer values
+        tempNorm = sqrt(self.ax * self.ax + self.ay * self.ay + self.az * self.az)
+        self.ax /= tempNorm
+        self.ay /= tempNorm
+        self.az /= tempNorm
+
+        tempNorm = sqrt(self.mx * self.mx + self.my * self.my + self.mz * self.mz)
+        self.mx /= tempNorm
+        self.my /= tempNorm
+        self.mz /= tempNorm
+
+        # Combined cost function + Jacobian
+        # Functions from g-field
+        f1 = dSEq2 * self.SEq4 - dSEq1 * self.SEq3 - self.ax
+        f2 = dSEq1 * self.SEq2 + dSEq3 * self.SEq4 - self.ay
+        f3 = 1 - dSEq2 * self.SEq2 - dSEq3 * self.SEq3 - self.az
+
+        # Functions from b-field
+        f4 = dbx * (0.5 - sSEq3 - self.SEq4 * self.SEq4) + dbz * (SEq2SEq4 - SEq1SEq3) - self.mx
+        f5 = dbx * (self.SEq2 * self.SEq3 - self.SEq1 * self.SEq4) + dbz * (self.SEq1 * self.SEq2 + self.SEq3 * self.SEq4) - self.my
+        f6 = dbx * (SEq1SEq3 + SEq2SEq4) + dbz * (0.5 - self.SEq2 * self.SEq2 - sSEq3) - self.mz
+
+        # Jacobian entries
+        J1124 = dSEq3 # Becomes negative
+        J1223 = dSEq4
+        J1322 = dSEq1 # Becomes negative
+        J1421 = dSEq2
+        J32 = 2 * J1421 # Becomes negative
+        J33 = 2 * J1124 # Becomes negative
+        J41 = dbzSEq3 # Becomes negative
+        J42 = dbzSEq4
+        J43 = 2 * dbxSEq3 + dbzSEq1 # Becomes negative
+        J44 = 2 * dbxSEq4 - dbzSEq2 # Becomes negative
+        J51 = dbxSEq4 - dbzSEq2 # Becomes negative
+        J52 = dbxSEq3 + dbzSEq1
+        J53 = dbxSEq2 + dbzSEq4
+        J54 = dbxSEq1 - dbzSEq3 # Becomes negative
+        J61 = dbxSEq3
+        J62 = dbxSEq4 - 2 * dbzSEq2
+        J63 = dbxSEq1 - 2 * dbzSEq3
+        J64 = dbxSEq2
+
+        # Gradient Descent Optimization
+        # Gradients
+        SEqhatdot1 = -J1124 * f1 + J1421 * f2 - J41 * f4 - J51 * f5 + J61 * f6
+        SEqhatdot2 = J1223 * f1 - J1322 * f2 - J32 * f3 + J42 * f4 + J52 * f5 + J62 * f6
+        SEqhatdot3 = -J1322 * f1 + J1223 * f2 - J33 * f3 - J43 * f4 + J53 * f5 + J63 * f6
+        SEqhatdot4 = J1421 * f1 - J1124 * f2 - J44 * f4 - J54 * f5 + J64 * f6
+
+        # Normalizing Gradients
+        tempNorm = sqrt(SEqhatdot1 * SEqhatdot1 + SEqhatdot2 * SEqhatdot2 + SEqhatdot3 * SEqhatdot3 + SEqhatdot4 * SEqhatdot4)
+        SEqhatdot1 /= tempNorm
+        SEqhatdot2 /= tempNorm
+        SEqhatdot3 /= tempNorm
+        SEqhatdot4 /= tempNorm
+
+        # Angular estimated direction of gyro error
+        wex = dSEq1 * SEqhatdot2 - dSEq2 * SEqhatdot1 - dSEq3 * SEqhatdot4 + dSEq4 * SEqhatdot3
+        wey = dSEq1 * SEqhatdot3 + dSEq2 * SEqhatdot4 - dSEq3 * SEqhatdot1 - dSEq4 * SEqhatdot2
+        wez = dSEq1 * SEqhatdot4 - dSEq2 * SEqhatdot3 + dSEq3 * SEqhatdot2 - dSEq4 * SEqhatdot1
+
+        # Remove gyro bias
+        wbx += wex * self.dt * self.zeta
+        wby += wey * self.dt * self.zeta
+        wbz += wez * self.dt * self.zeta
+        self.wx -= wbx
+        self.wy -= wby
+        self.wz -= wbz
+
+        # Quaternion rate of change (gyro)
+        SEqdot1 = -hSEq2 * self.wx - hSEq3 * self.wy - hseq4 * self.wz
+        SEqdot2 = hSEq1 * self.wx + hseq3 * self.wz - hseq4 * self.wy
+        SEqdot3 = hSEq1 * self.wy - hseq2 * self.wz + hseq4 * self.wz
+        SEqdot4 = hSEq1 * self.wz + hseq2 * self.wy - hseq3 * self.wx
+
+        # Update orientation quaternion
+        self.SEq1 += (SEqdot1 - (beta * SEqhatdot1)) * self.dt
+        self.SEq2 += (SEqdot2 - (beta * SEqhatdot2)) * self.dt
+        self.SEq3 += (SEqdot3 - (beta * SEqhatdot3)) * self.dt
+        self.SEq4 += (SEqdot4 - (beta * SEqhatdot4)) * self.dt
+
+        # Normalize it
+        tempNorm = sqrt(self.SEq1 * self.SEq1 + self.SEq2 * self.SEq2 + self.SEq3 * self.SEq3 + self.SEq4 * self.SEq4)
+        self.SEq1 /= tempNorm
+        self.SEq2 /= tempNorm
+        self.SEq3 /= tempNorm
+        self.SEq4 /= tempNorm
+
+        # b-field in earth frame
+        SEq1SEq2 = self.SEq1 * self.SEq2
+        SEq1SEq3 = self.SEq1 * self.SEq3
+        SEq1SEq4 = self.SEq1 * self.SEq4
+        SEq3SEq4 = self.SEq3 * self.SEq4
+        SEq2SEq3 = self.SEq2 * self.SEq3
+        SEq2SEq4 = self.SEq2 * self.SEq4
+
+        hx = dmx * (0.5 - self.SEq3 * self.SEq3 - self.SEq4 * self.SEq4) + dmy * (SEq2SEq3 - SEq1SEq4) + dmz * (SEq2SEq4 + SEq1SEq3)
+        hy = dmx * (SEq2SEq3 + SEq1SEq4) + dmy * (0.5 - self.SEq2 * self.SEq2 - self.SEq4 * self.SEq4) + dmz * (SEq3SEq4 - SEq1SEq2)
+        hz = dmx * (SEq2SEq4 - SEq1SEq3) + dmy * (SEq3SEq4 + SEq1SEq2) + dmz * (0.5 - self.SEq2 * self.SEq2 - self.SEq3 * self.SEq3)
+
+        # Normalize flux vector to eliminate y component
+        self.bx = sqrt(hx * hx + hy * hy)
+        self.bz = hz
+
+    # Activating the sensor
+    def activateSensor(self):
+        self.prevTime = time.clock()
+
+        try:
+            while True:
+                madgwickFilterUpdate()
+
+                yaw = atan2(2 * (self.SEq2 * self.SEq3 - self.SEq1 * self.SEq4), 2 * (self.SEq1 * self.SEq1 + self.SEq2 * self.SEq2) - 1)
+                pitch = -asin(2 * (self.SEq2 * self.SEq4 + self.SEq1 * self.SEq3))
+                roll = atan2(2 * (self.SEq3 * self.SEq4 - self.SEq1 * self.SEq2), 2 * (self.SEq1 * self.SEq1 + self.SEq4 * self.SEq4) - 1)
+
+                print("dt: " + str(self.dt))
+                print("Yaw (No reference): " + str(yaw))
+                print("Pitch: " + str(pitch))
+                print("Roll: " + str(roll))
+
+        except KeyboardInterrupt:
+            print()
 
     # Printing method - will print all sensor values at once
     def printData(self):
@@ -492,7 +662,7 @@ class LSM9DS0_XM:
     	if xBitAccel > 32767:
     		xBitAccel -= 65536
 
-    	return xBitAccel * self.accelGain * GRAV_ACCEL - self.accelxoffset
+    	return xBitAccel * self.accelGain * GRAV_ACCEL
 
     # Returns y Acceleration (m*s^-2)
     def getyAccel(self):
@@ -504,7 +674,7 @@ class LSM9DS0_XM:
     	if yBitAccel > 32767:
     		yBitAccel -= 65536
 
-    	return yBitAccel * self.accelGain * GRAV_ACCEL - self.accelyoffset
+    	return yBitAccel * self.accelGain * GRAV_ACCEL
 
     # Returns z Acceleration (m*s^-2)
     def getzAccel(self):
@@ -516,7 +686,7 @@ class LSM9DS0_XM:
     	if zBitAccel > 32767:
     		zBitAccel -= 65536
 
-    	return zBitAccel * self.accelGain * GRAV_ACCEL - self.accelzoffset
+    	return zBitAccel * self.accelGain * GRAV_ACCEL
 
     # Returns x Magnetometer Data (gauss)
     def getxMag(self):
@@ -528,7 +698,7 @@ class LSM9DS0_XM:
     	if xBitMag > 32767:
     		xBitMag -= 65536
 
-    	return xBitMag * self.magGain - self.magxoffset
+    	return xBitMag * self.magGain
 
     # Returns y Magnetometer Data (gauss)
     def getyMag(self):
@@ -540,7 +710,7 @@ class LSM9DS0_XM:
     	if yBitMag > 32767:
     		yBitMag -= 65536
 
-    	return yBitMag * self.magGain - self.magyoffset
+    	return yBitMag * self.magGain
 
     # Returns z Magnetometer Data (gauss)
     def getzMag(self):
@@ -552,7 +722,7 @@ class LSM9DS0_XM:
     	if zBitMag > 32767:
     		zBitMag -= 65536
 
-    	return zBitMag * self.magGain - self.magzoffset
+    	return zBitMag * self.magGain
 
 # Class Definition for the Gyro part of the LSM9DS0
 class LSM9DS0_G:
@@ -791,7 +961,7 @@ class LSM9DS0_G:
     	if xBitGyro > 32767:
     		xBitGyro -= 65536
 
-    	return xBitGyro * self.gyroGain - self.gyroxoffset
+    	return xBitGyro * self.gyroGain
 
     # Returns y Gyro Data
     def getyGyro(self):
@@ -802,7 +972,7 @@ class LSM9DS0_G:
     	if yBitGyro > 32767:
     		yBitGyro -= 65536
 
-    	return yBitGyro * self.gyroGain - self.gyroyoffset
+    	return yBitGyro * self.gyroGain
 
     # Returns z Gyro Data
     def getzGyro(self):
@@ -813,4 +983,4 @@ class LSM9DS0_G:
     	if zBitGyro > 32767:
     		zBitGyro -= 65536
 
-    	return zBitGyro * self.gyroGain - self.gyrozoffset
+    	return zBitGyro * self.gyroGain
