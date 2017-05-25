@@ -30,8 +30,8 @@ G_ADDRESS = 0x6B
 # Predefined Constants
 TEMP_INTERCEPT = 24.0 # Guess at the intercept for the temperature sensor
 DT_TARGET = 0.0105 # About 95Hz dt
-BETA_ADJ_VAL = 0.5 # Desired beta value in steady state for Madgwick's
-ZETA_ADJ_VAL = 0.015 # Desired zeta value in steady state for Madgwick's
+BETA = 3
+ZETA = 1
 
 # Physical Constants
 GRAV_ACCEL = 9.80665 # Value of acceleration due to gravity (m*s^-2)
@@ -66,13 +66,9 @@ class LSM9DS0:
         self.mSampled = False
         self.gSampled = False
 
-        # Gyro measurement error, about 3 DPS (in rad/s) | beta parameter
-        self.gEpsE = (PI / 180) * 270
-        self.beta = sqrt(3 / 4) * self.gEpsE
-
-        # Gyro measurement drift, guess about .2 DPSPS (in rad/s/s) | zeta parameter
-        self.gEpsD = (PI / 180) * 0
-        self.zeta = sqrt(3 / 4) * self.gEpsD
+        # Setting zeta and beta
+        self.beta = BETA
+        self.zeta = ZETA
 
         # Dummy values for sensor readings
         self.ax = 0
