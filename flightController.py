@@ -299,7 +299,7 @@ class LSM9DS0:
             self.firstTime = False
 
         if not self.adjusted:
-            if time.clock() - startTime > 5:
+            if time.clock() - self.startTime > 5:
                 self.beta = BETA_ADJ_VAL
                 self.zeta = ZETA_ADJ_VAL
 
