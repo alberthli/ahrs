@@ -30,7 +30,7 @@ G_ADDRESS = 0x6B
 # Predefined Constants
 TEMP_INTERCEPT = 24.0 # Guess at the intercept for the temperature sensor
 DT_TARGET = 0.0105 # About 95Hz dt
-BETA_ADJ_VAL = 0.5 # Desired beta value in steady state for Madgwick's
+BETA_ADJ_VAL = 0.05 # Desired beta value in steady state for Madgwick's
 ZETA_ADJ_VAL = 0.015 # Desired zeta value in steady state for Madgwick's
 
 # Physical Constants
@@ -232,9 +232,9 @@ class LSM9DS0:
         # Gradient Descent Optimization
         # Gradients
         SEqhatdot1 = -J1124 * f1 + J1421 * f2 - J41 * f4 - J51 * f5 + J61 * f6
-        SEqhatdot2 = J1223 * f1 - J1322 * f2 - J32 * f3 + J42 * f4 + J52 * f5 + J62 * f6
+        SEqhatdot2 = J1223 * f1 + J1322 * f2 - J32 * f3 + J42 * f4 + J52 * f5 + J62 * f6
         SEqhatdot3 = -J1322 * f1 + J1223 * f2 - J33 * f3 - J43 * f4 + J53 * f5 + J63 * f6
-        SEqhatdot4 = J1421 * f1 - J1124 * f2 - J44 * f4 - J54 * f5 + J64 * f6
+        SEqhatdot4 = J1421 * f1 + J1124 * f2 - J44 * f4 - J54 * f5 + J64 * f6
 
         # Normalizing Gradients
         tempNorm = sqrt(SEqhatdot1 * SEqhatdot1 + SEqhatdot2 * SEqhatdot2 + SEqhatdot3 * SEqhatdot3 + SEqhatdot4 * SEqhatdot4)
