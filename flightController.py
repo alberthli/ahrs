@@ -34,9 +34,6 @@ TEMP_INTERCEPT = 24.0
 GRAV_ACCEL = 9.80665 # Value of acceleration due to gravity (m*s^-2)
 PI = 3.14159265358979323846
 
-# Number of samples to take for calibration
-CALIB_SAMPLES = 10000
-
 # Combined sensor object
 class LSM9DS0:
 
@@ -60,6 +57,7 @@ class LSM9DS0:
 
         # Sampling Time - Will change with every loop
         self.dt = .01
+        self.firstTime = True
 
         # Gyro measurement error, about 3 DPS (in rad/s) | beta parameter
         self.gEpsE = (PI / 180) * 3
@@ -247,7 +245,9 @@ class LSM9DS0:
 
     # Activating the sensor
     def activateSensor(self):
-        self.prevTime = time.clock()
+        if self.firstTime:
+            self.prevTime = time.clock()
+            self.firstTime = False
 
         try:
             while True:
@@ -263,7 +263,7 @@ class LSM9DS0:
                 print("Roll: " + str(roll))
 
         except KeyboardInterrupt:
-            print()
+            print("Exited Test")
 
     # Printing method - will print all sensor values at once
     def printData(self):
