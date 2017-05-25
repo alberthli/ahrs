@@ -298,13 +298,14 @@ class LSM9DS0:
             self.startTime = self.prevTime
             self.firstTime = False
 
-        if not self.adjusted:
-            if time.clock() - self.startTime > 5:
-                self.beta = BETA_ADJ_VAL
-                self.zeta = ZETA_ADJ_VAL
-
         try:
             while True:
+
+                if not self.adjusted:
+                    if time.clock() - self.startTime > 5:
+                        self.beta = BETA_ADJ_VAL
+                        self.zeta = ZETA_ADJ_VAL
+
                 self.madgwickFilterUpdate()
 
                 yaw = atan2(2 * (self.SEq2 * self.SEq3 - self.SEq1 * self.SEq4), 2 * (self.SEq1 * self.SEq1 + self.SEq2 * self.SEq2) - 1)
