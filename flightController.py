@@ -65,7 +65,7 @@ class LSM9DS0:
         self.beta = sqrt(3 / 4) * self.gEpsE
 
         # Gyro measurement drift, guess about .2 DPSPS (in rad/s/s) | zeta parameter
-        self.gEpsD = (PI / 180) * .2
+        self.gEpsD = (PI / 180) * 1
         self.zeta = sqrt(3 / 4) * self.gEpsD
 
         # Dummy values for sensor readings
