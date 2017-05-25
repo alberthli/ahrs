@@ -90,6 +90,9 @@ class LSM9DS0:
         self.wby = 0
         self.wbz = 0
 
+        # DEBUG
+        self.testCounter = 0
+
     def update(self):
         currxAcc = self.xm.getxAccel()
         curryAcc = self.xm.getyAccel()
@@ -304,7 +307,7 @@ class LSM9DS0:
                 pitch *= 180 / PI
                 roll *= 180 / PI
 
-                print("dt: " + str(self.dt), end = "")
+                print("Sample Count: " + str(self.testCounter) + " | dt: " + str(self.dt), end = "")
                 print(" | Yaw (No reference): " + str(yaw), end = "")
                 print(" | Pitch: " + str(pitch), end = "")
                 print(" | Roll: " + str(roll))
