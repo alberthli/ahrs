@@ -60,6 +60,10 @@ class LSM9DS0:
         self.dt = .01
         self.firstTime = True
 
+        self.xSampled = False
+        self.mSampled = False
+        self.gSampled = False
+
         # Gyro measurement error, about 3 DPS (in rad/s) | beta parameter
         self.gEpsE = (PI / 180) * 100
         self.beta = sqrt(3 / 4) * self.gEpsE
@@ -88,30 +92,58 @@ class LSM9DS0:
         self.wby = 0
         self.wbz = 0
 
+    def update(self):
+        currxAcc = self.xm.getxAccel()
+        curryAcc = self.xm.getyAccel()
+        currzAcc = self.xm.getzAccel()
+        currxMag = self.xm.getxMag()
+        curryMag = self.xm.getyMag()
+        currzMag = self.xm.getzMag()
+        currxGyr = self.g.getxGyro()
+        curryGyr = self.g.getyGyro()
+        currzGyr = self.g.getzGyro()
+
+        if currxAcc != self.ax and curryAcc != self.ay and currzAcc != self.az:
+            self.xSampled = True
+        else:
+            return
+
+        if currxMag != self.mx and curryMag != self.my and currzMag != self.mz:
+            self.mSampled = True
+        else:
+            return
+
+        if currxGyr != self.wx and curryGyr != self.wy and currzGyr != self.wz:
+            self.gSampled = True
+        else:
+            return
+
+        if self.xSampled and self.mSampled and self.gSampled:
+            self.xSampled = False
+            self.mSampled = False
+            self.gSampled = False
+
+            self.ax = self.xm.getxAccel()
+            self.ay = self.xm.getyAccel()
+            self.az = self.xm.getzAccel()
+            self.mx = self.xm.getxMag()
+            self.my = self.xm.getyMag()
+            self.mz = self.xm.getzMag()
+            self.wx = self.g.getxGyro()
+            self.wy = self.g.getyGyro()
+            self.wz = self.g.getzGyro()
+
     ################################################################################################################
     # This algorithm adapted from Madgwick's provided code: http://x-io.co.uk/res/doc/madgwick_internal_report.pdf #
     ################################################################################################################
     def madgwickFilterUpdate(self):
 
-        # Update times
-        currTime = time.clock()
-        delay = currTime - self.prevTime
-        if delay < DT_TARGET:
-            time.sleep(DT_TARGET - delay)
+        self.update()
+
+        # Update time
         currTime = time.clock()
         self.dt = currTime - self.prevTime
         self.prevTime = currTime
-
-        # Update last sensor values
-        self.ax = self.xm.getxAccel()
-        self.ay = self.xm.getyAccel()
-        self.az = self.xm.getzAccel()
-        self.mx = self.xm.getxMag()
-        self.my = self.xm.getyMag()
-        self.mz = self.xm.getzMag()
-        self.wx = self.g.getxGyro()
-        self.wy = self.g.getyGyro()
-        self.wz = self.g.getzGyro()
 
         #################################
         # Useful Variable Manipulations #
