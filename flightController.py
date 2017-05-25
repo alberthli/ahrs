@@ -208,12 +208,12 @@ class LSM9DS0:
         wez = dSEq1 * SEqhatdot4 - dSEq2 * SEqhatdot3 + dSEq3 * SEqhatdot2 - dSEq4 * SEqhatdot1
 
         # Remove gyro bias
-        wbx += wex * self.dt * self.zeta
-        wby += wey * self.dt * self.zeta
-        wbz += wez * self.dt * self.zeta
-        self.wx -= wbx
-        self.wy -= wby
-        self.wz -= wbz
+        self.wbx += wex * self.dt * self.zeta
+        self.wby += wey * self.dt * self.zeta
+        self.wbz += wez * self.dt * self.zeta
+        self.wx -= self.wbx
+        self.wy -= self.wby
+        self.wz -= self.wbz
 
         # Quaternion rate of change (gyro)
         SEqdot1 = -hSEq2 * self.wx - hSEq3 * self.wy - hseq4 * self.wz
@@ -222,10 +222,10 @@ class LSM9DS0:
         SEqdot4 = hSEq1 * self.wz + hseq2 * self.wy - hseq3 * self.wx
 
         # Update orientation quaternion
-        self.SEq1 += (SEqdot1 - (beta * SEqhatdot1)) * self.dt
-        self.SEq2 += (SEqdot2 - (beta * SEqhatdot2)) * self.dt
-        self.SEq3 += (SEqdot3 - (beta * SEqhatdot3)) * self.dt
-        self.SEq4 += (SEqdot4 - (beta * SEqhatdot4)) * self.dt
+        self.SEq1 += (SEqdot1 - (self.beta * SEqhatdot1)) * self.dt
+        self.SEq2 += (SEqdot2 - (self.beta * SEqhatdot2)) * self.dt
+        self.SEq3 += (SEqdot3 - (self.beta * SEqhatdot3)) * self.dt
+        self.SEq4 += (SEqdot4 - (self.beta * SEqhatdot4)) * self.dt
 
         # Normalize it
         tempNorm = sqrt(self.SEq1 * self.SEq1 + self.SEq2 * self.SEq2 + self.SEq3 * self.SEq3 + self.SEq4 * self.SEq4)
