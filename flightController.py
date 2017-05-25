@@ -30,7 +30,7 @@ G_ADDRESS = 0x6B
 # Predefined Constants
 TEMP_INTERCEPT = 24.0 # Guess at the intercept for the temperature sensor
 DT_TARGET = 0.0105 # About 95Hz dt
-BETA_ADJ_VAL = 0.05 # Desired beta value in steady state for Madgwick's
+BETA_ADJ_VAL = 0.5 # Desired beta value in steady state for Madgwick's
 ZETA_ADJ_VAL = 0.015 # Desired zeta value in steady state for Madgwick's
 
 # Physical Constants
