@@ -368,7 +368,7 @@ class LSM9DS0:
                 sumxkyk += xk * yk
                 sumxkzk += xk * zk
                 sumykzk += yk * zk
-                sumksq += pksq
+                sumpksq += pksq
                 sumpksqxk += pksq * xk
                 sumpksqyk += pksq * yk
                 sumpksqzk += pksq * zk
