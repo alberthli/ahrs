@@ -91,30 +91,47 @@ class GPS:
                     lineData = line.split(",")
 
                     if lineData[0] == "$GPRMC":
+
                         # Parsing Latitude
                         latString = lineData[3]
-                        lat1 = float(latString[0:2])
-                        lat2 = float(latString[2:]) / 60
-                        self.lat = lat1 + lat2
 
-                        if lineData[4] == "S":
-                            self.lat *= -1
+                        if latString.len() > 0:
+                            lat1 = float(latString[0:2])
+                            lat2 = float(latString[2:]) / 60
+                            self.lat = lat1 + lat2
+
+                            if lineData[4] == "S":
+                                self.lat *= -1
+
+                        else:
+                            continue
 
                         # Parsing Longitude
                         longString = lineData[5]
-                        long1 = float(longString[0:3])
-                        long2 = float(longString[3:]) / 60
-                        self.long = long1 + long2
 
-                        if lineData[6] == "W":
-                            self.long *= -1
+                        if longString.len() > 0:
+                            long1 = float(longString[0:3])
+                            long2 = float(longString[3:]) / 60
+                            self.long = long1 + long2
+
+                            if lineData[6] == "W":
+                                self.long *= -1
+
+                        else:
+                            continue
 
                         # Parsing speed
-                        speedKnots = float(lineData[7])
-                        self.speed = speedKnots * .51444444
+                        if lineData[7] > 0:
+                            speedKnots = float(lineData[7])
+                            self.speed = speedKnots * .51444444
+                        else:
+                            continue
 
                         # Parsing course-made-good
-                        self.cmg = float(lineData[8])
+                        if lineData[8].len() > 0:
+                            self.cmg = float(lineData[8])
+                        else:
+                            continue
 
                         # Debug Print
                         print("Lat = " + str(self.lat) + " | Long = " + str(self.long) + " | Speed = " + str(self.speed) + " | CMG = " + str(self.cmg))
