@@ -91,7 +91,7 @@ class LSM9DS0:
         self.wbz = 0
 
         # DEBUG
-        self.lastPrintTime
+        self.lastPrintTime = 0
 
     ################################################################################################################
     # This algorithm adapted from Madgwick's provided code: http://x-io.co.uk/res/doc/madgwick_internal_report.pdf #
