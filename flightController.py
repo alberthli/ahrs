@@ -287,7 +287,9 @@ class LSM9DS0:
                 # Convert to degrees for readability
                 yaw *= 180 / PI
                 pitch *= 180 / PI
-                roll *= 180 / PI
+                roll = 180 - (roll * 180 / PI)
+                if roll > 180:
+                    roll -= 360
 
                 # Print every ~.25 seconds
                 now = time.clock()
