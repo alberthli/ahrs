@@ -73,11 +73,10 @@ class GPS:
                 # Flush twice to clear lines completely
                 self.gpsSer.flushInput()
                 self.gpsSer.flushInput()
-                
-                while self.gpsSer.inWaiting() == 0:
-                    pass
-                data = self.gpsSer.readline()
-                print(data)
+
+                while self.gpsSer.inWaiting() > 0:
+                    data = self.gpsSer.readline()
+                    print(data)
         except KeyboardInterrupt:
             print("\nStream Interrupted!")
 
