@@ -71,6 +71,8 @@ class GPS:
         self.long = 0.0 # (+) E, (-) W in degrees
         self.speed = 0.0 # NOT velocity. Measured in m/s
         self.cmg = 0.0 # Course made good, degrees from true north (basically direction for speed vector)
+        self.numSats = 0 # How many satellites we have fixes for (the more the better)
+        self.hdop = 0 # Horizontal dilution of precision (lower the better)
 
     def startPolling(self):
         # We receive 4 different sentence types that we can parse: 
@@ -97,7 +99,7 @@ class GPS:
 
                         if len(latString) > 0:
                             lat1 = float(latString[0:2])
-                            lat2 = float(latString[2:]) / 60
+                            lat2 = float(latString[2:]) / 60.0
                             self.lat = lat1 + lat2
 
                             if lineData[4] == "S":
@@ -111,7 +113,7 @@ class GPS:
 
                         if len(longString) > 0:
                             long1 = float(longString[0:3])
-                            long2 = float(longString[3:]) / 60
+                            long2 = float(longString[3:]) / 60.0
                             self.long = long1 + long2
 
                             if lineData[6] == "W":
@@ -133,8 +135,17 @@ class GPS:
                         else:
                             continue
 
-                        # Debug Print
-                        print("Lat = " + str(self.lat) + " | Long = " + str(self.long) + " | Speed = " + str(self.speed) + " | CMG = " + str(self.cmg))
+                    if lineData[0] == "$GPGGA":
+                        # Parsing the number of satellites
+                        if len(lineData[7]) > 0:
+                            self.numSats = int(lineData[7])
+
+                    if lineData[0] == "$GPGSA":
+
+                    # Debug Prints in Order: GPRMC, GPGGA
+                    print("Lat = " + str(self.lat) + " | Long = " + str(self.long) + " | Speed = " + str(self.speed) + " | CMG = " + str(self.cmg))
+                    print("Num Sats = " + str(self.numSats))
+                    print()
 
         except KeyboardInterrupt:
             pass
