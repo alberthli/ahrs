@@ -66,13 +66,18 @@ class GPS:
         self.gpsSer.write(UPDATE_10HZ_CODE.encode())
         time.sleep(1)
 
-    def parseData(self):
-        # We receive 4 different sentence types that we can parse
-        # GPGGA
-        # GPGSA
-        # GPRMC
-        # GPVTG
-        pass
+    def startPolling(self):
+        # We receive 4 different sentence types that we can parse: 
+        # GPGGA - Time of Fix, Lat, Long, Fix Qual, Sats Tracked, HDOP, Alt (m) Above Mean Sea Level, Height of Geoid, Time Since Updating
+        # GPGSA - A/M Fix Selection, 3D Fix, PRN of Fix Sats, PDOP, HDOP, VDOP
+        # GPRMC - Time of Fix, A/V Status, Lat, Long, Speed (Knots), Track Angle (Deg), Date, Mag Variation
+        # GPVTG - True Track Made Good, Magnetic Track Made Good, Speed (Knots), Speed (KM/H)
+        try:
+            while True:
+                self.gpsSer.flushInput()
+
+                while self.gpsSer.inWaiting() > 0:
+                    line = self.gpsSer.readline().decode() # String of decoded data
 
     # For debugging the GPS stream
     def printRawData(self):
@@ -85,7 +90,8 @@ class GPS:
 
                 while self.gpsSer.inWaiting() > 0:
                     data = self.gpsSer.readline()
-                    print(data.decode())
+                    print(data.decode().split(","))
+
         except KeyboardInterrupt:
             print("\nStream Interrupted!")
 
