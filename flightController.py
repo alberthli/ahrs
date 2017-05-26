@@ -97,7 +97,7 @@ class GPS:
                         lat2 = float(latString[2:]) / 60
                         self.lat = lat1 + lat2
 
-                        if lineData[4] == "S"
+                        if lineData[4] == str("S")
                             self.lat *= -1
 
                         # Parsing Longitude
@@ -106,7 +106,7 @@ class GPS:
                         long2 = float(longString[3:]) / 60
                         self.long = long1 + long2
 
-                        if lineData[6] == "W"
+                        if lineData[6] == str("W")
                             self.long *= -1
 
                         # Parsing speed
