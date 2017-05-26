@@ -30,8 +30,8 @@ G_ADDRESS = 0x6B
 # Predefined Constants
 TEMP_INTERCEPT = 24.0 # Guess at the intercept for the temperature sensor
 DT_TARGET = 0.0105 # About 95Hz dt
-BETA = 3
-ZETA = 0
+BETA = 0.04
+ZETA = 0.015
 
 # Physical Constants
 GRAV_ACCEL = 9.80665 # Value of acceleration due to gravity (m*s^-2)
