@@ -55,10 +55,10 @@ class GPS:
     def __init__(self):
         self.gpsSer = serial.Serial("/dev/ttyS0", 9600) # Setting up GPS serial with baud rate of 9600 bps
 
-        self.gpsSer.write(BAUDRATE_115200_CODE)
+        self.gpsSer.write(BAUDRATE_115200_CODE.encode())
         sleep(1)
         self.gpsSer.baudrate = 115200
-        self.gpsSer.write(UPDATE_10HZ_CODE)
+        self.gpsSer.write(UPDATE_10HZ_CODE.encode())
         sleep(1)
 
     def readRawData(self):
