@@ -21,7 +21,8 @@ Sensors:
 import Adafruit_Python_GPIO.Adafruit_GPIO.I2C as i2c
 import numpy as np
 import time
-from math import atan2, sin, cos, sqrt, asin
+from math import atan2, sqrt, asin
+import gps
 
 # Physical Constants
 GRAV_ACCEL = 9.80665 # Value of acceleration due to gravity (m*s^-2)
@@ -40,6 +41,35 @@ TEMP_INTERCEPT = 24.0 # Guess at the intercept for the temperature sensor
 MAG_CALIB_SAMPLES = 10000 # We want to use 10000 magnetometer samples to calibrate for the hard-iron effect
 BETA = 12.5 # Beta value for Madgwick filter
 ZETA = 0.01 # Zeta value for Madgwick filter
+
+# The GPS class
+class GPS:
+
+    def __init__(self):
+        pass
+
+    def printData(self):
+        # Listen on port 2947 (gpsd) of localhost
+        session = gps.gps("localhost", "2947")
+        session.stream(gps.WATCH_ENABLE | gps.WATCH_NEWSTYLE)
+         
+        while True:
+            try:
+                report = session.next()
+                # Wait for a 'TPV' report and display the current time
+                # To see all report data, uncomment the line below
+                print report
+                
+                if report['class'] == 'TPV':
+                    if hasattr(report, 'time'):
+                        print report.time
+            except KeyError:
+                pass
+            except KeyboardInterrupt:
+                quit()
+            except StopIteration:
+                session = None
+                print "GPSD has terminated"
 
 # Combined IMU class
 class LSM9DS0:
