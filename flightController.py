@@ -13,8 +13,7 @@ Sensors:
 	in the control bit registers. The accelerometer and magnetometer seem to be
 	on one shared board, while the gyro is on its own
 
-	DO NOT INITIALIZE THE GYRO WITHOUT INITIALIZING THE XM. The FIFO configuration
-	register for the entire board is only configured in the XM init function.
+	The LSM9DS0 class combines both of the separated sensor classes. 
 
 (2) Adafruit Ultimate GPS Breakout (MTK3339 Chipset)
 """
@@ -23,6 +22,14 @@ import Adafruit_Python_GPIO.Adafruit_GPIO.I2C as i2c
 import numpy as np
 import time
 from math import atan2, sin, cos, sqrt, asin
+
+# Physical Constants
+GRAV_ACCEL = 9.80665 # Value of acceleration due to gravity (m*s^-2)
+PI = 3.14159265358979323846
+
+#####################
+# LSM9DS0 CONSTANTS #
+#####################
 
 # Addresses for the XM and G when the SCL/SDA lines are pulled up (THEY SHOULD ALWAYS BE)
 XM_ADDRESS = 0x1D
@@ -34,16 +41,7 @@ MAG_CALIB_SAMPLES = 10000 # We want to use 10000 magnetometer samples to calibra
 BETA = 12.5 # Beta value for Madgwick filter
 ZETA = 0.01 # Zeta value for Madgwick filter
 
-# Calculated hard-iron offsets (CHANGE THIS AS ASSEMBLY CHANGES)
-X_HI_OFFSET = -0.05
-Y_HI_OFFSET = -0.045
-Z_HI_OFFSET = 0.2
-
-# Physical Constants
-GRAV_ACCEL = 9.80665 # Value of acceleration due to gravity (m*s^-2)
-PI = 3.14159265358979323846
-
-# Combined sensor object
+# Combined IMU class
 class LSM9DS0:
 
     def __init__(self):
@@ -53,6 +51,17 @@ class LSM9DS0:
 
         # Timing for sampling
         self.prevTime = 0
+
+        # Hard-Iron Offsets (Tune this with the calibrateHardIronEffect() method!)
+        # These are values that I tested myself, but you should calibrate right before flight.
+        X_HI_OFFSET = -0.05
+        Y_HI_OFFSET = -0.045
+        Z_HI_OFFSET = 0.2
+
+        # Euler angles
+        self.yaw = 0
+        self.roll = 0
+        self.pitch = 0
 
         ##############################
         # *** Madgwick Variables *** #
@@ -102,6 +111,8 @@ class LSM9DS0:
 
     ################################################################################################################
     # This algorithm adapted from Madgwick's provided code: http://x-io.co.uk/res/doc/madgwick_internal_report.pdf #
+    #                                                                                                              #
+    # An error was corrected: define dmx, dmy, and dmz AFTER normalizing the fields!                               #
     ################################################################################################################
     def madgwickFilterUpdate(self):
 
@@ -110,7 +121,7 @@ class LSM9DS0:
         self.dt = currTime - self.prevTime
         self.prevTime = currTime
 
-        # Update Values
+        # Update Values - fixed for NED frame and hard-iron effect
         self.ax = self.xm.getxAccel()
         self.ay = self.xm.getyAccel()
         self.az = -self.xm.getzAccel()
@@ -182,20 +193,20 @@ class LSM9DS0:
         f6 = dbx * (SEq1SEq3 + SEq2SEq4) + dbz * (0.5 - self.SEq2 * self.SEq2 - sSEq3) - self.mz
 
         # Jacobian entries
-        J1124 = dSEq3 # Becomes negative
+        J1124 = dSEq3
         J1223 = dSEq4
-        J1322 = dSEq1 # Becomes negative
+        J1322 = dSEq1
         J1421 = dSEq2
-        J32 = 2 * J1421 # Becomes negative
-        J33 = 2 * J1124 # Becomes negative
-        J41 = dbzSEq3 # Becomes negative
+        J32 = 2 * J1421
+        J33 = 2 * J1124
+        J41 = dbzSEq3
         J42 = dbzSEq4
-        J43 = 2 * dbxSEq3 + dbzSEq1 # Becomes negative
-        J44 = 2 * dbxSEq4 - dbzSEq2 # Becomes negative
-        J51 = dbxSEq4 - dbzSEq2 # Becomes negative
+        J43 = 2 * dbxSEq3 + dbzSEq1
+        J44 = 2 * dbxSEq4 - dbzSEq2
+        J51 = dbxSEq4 - dbzSEq2
         J52 = dbxSEq3 + dbzSEq1
         J53 = dbxSEq2 + dbzSEq4
-        J54 = dbxSEq1 - dbzSEq3 # Becomes negative
+        J54 = dbxSEq1 - dbzSEq3
         J61 = dbxSEq3
         J62 = dbxSEq4 - 2 * dbzSEq2
         J63 = dbxSEq1 - 2 * dbzSEq3
@@ -240,7 +251,7 @@ class LSM9DS0:
         self.SEq3 += (SEqdot3 - (self.beta * SEqhatdot3)) * self.dt
         self.SEq4 += (SEqdot4 - (self.beta * SEqhatdot4)) * self.dt
 
-        # Normalize it
+        # Normalize orientation quaternion
         tempNorm = sqrt(self.SEq1 * self.SEq1 + self.SEq2 * self.SEq2 + self.SEq3 * self.SEq3 + self.SEq4 * self.SEq4)
         self.SEq1 /= tempNorm
         self.SEq2 /= tempNorm
@@ -286,16 +297,16 @@ class LSM9DS0:
             while True:
                 self.madgwickFilterUpdate()
 
-                yaw = atan2(2 * (self.SEq2 * self.SEq3 - self.SEq1 * self.SEq4), 2 * (self.SEq1 * self.SEq1 + self.SEq2 * self.SEq2) - 1)
-                pitch = asin(2 * (self.SEq1 * self.SEq3 - self.SEq2 * self.SEq4))
-                roll = atan2(2 * (self.SEq1 * self.SEq2 + self.SEq3 * self.SEq4), 1 - 2 * (self.SEq2 * self.SEq2 + self.SEq3 * self.SEq3))
+                self.yaw = atan2(2 * (self.SEq2 * self.SEq3 - self.SEq1 * self.SEq4), 2 * (self.SEq1 * self.SEq1 + self.SEq2 * self.SEq2) - 1)
+                self.pitch = asin(2 * (self.SEq1 * self.SEq3 - self.SEq2 * self.SEq4))
+                self.roll = atan2(2 * (self.SEq1 * self.SEq2 + self.SEq3 * self.SEq4), 1 - 2 * (self.SEq2 * self.SEq2 + self.SEq3 * self.SEq3))
 
                 # Convert to degrees for readability
-                yaw *= 180 / PI
-                pitch *= 180 / PI
-                roll = 180 - (roll * 180 / PI)
-                if roll > 180:
-                    roll -= 360
+                self.yaw *= 180 / PI
+                self.pitch *= 180 / PI
+                self.roll = 180 - (roll * 180 / PI)
+                if self.roll > 180:
+                    self.roll -= 360
 
                 # Print every ~.25 seconds
                 now = time.clock()
@@ -311,32 +322,11 @@ class LSM9DS0:
         except KeyboardInterrupt:
             print("Exited Test")
 
-    # Printing method - will print all sensor values at once
-    def printData(self):
-        xacc = self.xm.getxAccel()
-        yacc = self.xm.getyAccel()
-        zacc = self.xm.getzAccel()
-        xmag = self.xm.getxMag()
-        ymag = self.xm.getyMag()
-        zmag = self.xm.getzMag()
-        xgyr = self.g.getxGyro()
-        ygyr = self.g.getyGyro()
-        zgyr = self.g.getzGyro()
-        t = self.xm.getTemp()
-
-        print("X Accel: " + str(xacc))
-        print("Y Accel: " + str(yacc))
-        print("Z Accel: " + str(zacc))
-        print("X Mag: " + str(xmag))
-        print("Y Mag: " + str(ymag))
-        print("Z Mag: " + str(zmag))
-        print("X Gyro: " + str(xgyr))
-        print("Y Gyro: " + str(ygyr))
-        print("Z Gyro: " + str(zgyr))
-        print("Temp: " + str(t))
-        print()
-
     def calibrateHardIronEffect(self):
+        # Here, I use an interesting and obscure regression method
+        # for solving for the equation of a sphere from a cloud
+        # of data points (pg 17-18): 
+        # https://www.scribd.com/document/14819165/Regressions-coniques-quadriques-circulaire-spherique
 
         # Least Squares Variables
         n = 0
@@ -389,22 +379,54 @@ class LSM9DS0:
         b = np.array([-sumpksq, -sumpksqxk, -sumpksqyk, -sumpksqzk])
         A0, A1, A2, A3 = np.linalg.solve(Amat, b)
 
+        x0 = -A1 / 2
+        y0 = -A2 / 2
+        z0 = -A3 / 2
+        R = sqrt(x0 * x0 + y0 * y0 + z0 * z0 - A0)
+
+        # Debug print statements
+        """
         print(Amat)
         print(A0)
         print(A1)
         print(A2)
         print(A3)
-
-        x0 = -A1 / 2
-        y0 = -A2 / 2
-        z0 = -A3 / 2
-
         print("x0 = " + str(x0))
         print("y0 = " + str(y0))
         print("z0 = " + str(z0))
-
-        R = sqrt(x0 * x0 + y0 * y0 + z0 * z0 - A0)
         print("R = " + str(R))
+        """
+
+    # Printing method - will print all sensor values at once
+    def printData(self):
+        xacc = self.xm.getxAccel()
+        yacc = self.xm.getyAccel()
+        zacc = self.xm.getzAccel()
+        xmag = self.xm.getxMag()
+        ymag = self.xm.getyMag()
+        zmag = self.xm.getzMag()
+        xgyr = self.g.getxGyro()
+        ygyr = self.g.getyGyro()
+        zgyr = self.g.getzGyro()
+        t = self.xm.getTemp()
+
+        print("X Accel: " + str(xacc))
+        print("Y Accel: " + str(yacc))
+        print("Z Accel: " + str(zacc))
+        print("X Mag: " + str(xmag))
+        print("Y Mag: " + str(ymag))
+        print("Z Mag: " + str(zmag))
+        print("X Gyro: " + str(xgyr))
+        print("Y Gyro: " + str(ygyr))
+        print("Z Gyro: " + str(zgyr))
+        print("Temp: " + str(t))
+        print()
+
+
+##############################
+# SENSOR CONFIGURATION BELOW #
+##############################
+
 
 # Class Definition for the Accelerometer/Magnetometer part of the LSM9DS0
 class LSM9DS0_XM:
