@@ -72,6 +72,7 @@ class GPS:
         # GPGSA
         # GPRMC
         # GPVTG
+        pass
 
     # For debugging the GPS stream
     def printRawData(self):
