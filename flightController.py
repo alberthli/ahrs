@@ -30,7 +30,7 @@ G_ADDRESS = 0x6B
 # Predefined Constants
 TEMP_INTERCEPT = 24.0 # Guess at the intercept for the temperature sensor
 DT_TARGET = 0.0105 # About 95Hz dt
-BETA = 1
+BETA = 10
 ZETA = 0
 
 # Physical Constants
