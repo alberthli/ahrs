@@ -20,6 +20,7 @@ Sensors:
 """
 
 import Adafruit_Python_GPIO.Adafruit_GPIO.I2C as i2c
+import numpy as np
 import time
 from math import atan2, sin, cos, sqrt, asin
 
@@ -329,6 +330,67 @@ class LSM9DS0:
         print("Z Gyro: " + str(zgyr))
         print("Temp: " + str(t))
         print()
+
+    def calibrateHardIronEffect(self):
+
+        # Least Squares Variables
+        n = 0
+        sumxk = 0
+        sumyk = 0
+        sumzk = 0
+        sumxksq = 0
+        sumyksq = 0
+        sumzksq = 0
+        sumxkyk = 0
+        sumxkzk = 0
+        sumykzk = 0
+        sumpksq = 0
+        sumpksqxk = 0
+        sumpksqyk = 0
+        sumpksqzk = 0
+
+        try:
+            while True:
+                xk = self.xm.getxMag()
+                yk = self.xm.getyMag()
+                zk = self.xm.getzMag()
+
+                # Auxillary variable
+                pksq = xk * xk + yk * yk + zk * zk
+
+                n += 1
+                sumxk += xk
+                sumyk += yk
+                sumzk += zk
+                sumxksq += xk * xk
+                sumyksq += yk * yk
+                sumzksq += zk * zk
+                sumxkyk += xk * yk
+                sumxkzk += xk * zk
+                sumykzk += yk * zk
+                sumksq += pksq
+                sumpksqxk += pksq * xk
+                sumpksqyk += pksq * yk
+                sumpksqzk += pksq * zk
+
+        except KeyboardInterrupt:
+            # Calculating the A values
+            Amat = np.array([[n, sumxk, sumyk, sumzk],
+                          [sumxk, sumxksq, sumxkyk, sumxkzk],
+                          [sumyk, sumxkyk, sumyksq, sumykzk],
+                          [sumyk, sumxkzk, sumykzk, sumzksq]])
+            b = np.array([sumpksq, sumpksqxk, sumpksqyk, sumpksqzk])
+            A0, A1, A2, A3 = np.linalg.solve(Amat, b)
+
+            x0 = A1 / 2
+            y0 = A2 / 2
+            z0 = A3 / 2
+            R = sqrt(x0 * x0 + y0 * y0 + z0 * z0 - A0)
+
+            print("x0 = " + str(x0))
+            print("y0 = " + str(y0))
+            print("z0 = " + str(z0))
+            print("R = " + str(R))
 
 # Class Definition for the Accelerometer/Magnetometer part of the LSM9DS0
 class LSM9DS0_XM:
