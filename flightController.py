@@ -91,55 +91,12 @@ class LSM9DS0:
         self.wbz = 0
 
         # DEBUG
-        self.testCounter = 0
-
-    def update(self):
-        currxAcc = self.xm.getxAccel()
-        curryAcc = self.xm.getyAccel()
-        currzAcc = self.xm.getzAccel()
-        currxMag = self.xm.getxMag()
-        curryMag = self.xm.getyMag()
-        currzMag = self.xm.getzMag()
-        currxGyr = self.g.getxGyro()
-        curryGyr = self.g.getyGyro()
-        currzGyr = self.g.getzGyro()
-
-        if currxAcc != self.ax and curryAcc != self.ay and currzAcc != self.az:
-            self.xSampled = True
-        else:
-            return
-
-        if currxMag != self.mx and curryMag != self.my and currzMag != self.mz:
-            self.mSampled = True
-        else:
-            return
-
-        if currxGyr != self.wx and curryGyr != self.wy and currzGyr != self.wz:
-            self.gSampled = True
-        else:
-            return
-
-        if self.xSampled and self.mSampled and self.gSampled:
-            self.xSampled = False
-            self.mSampled = False
-            self.gSampled = False
-
-            self.ax = self.xm.getxAccel()
-            self.ay = self.xm.getyAccel()
-            self.az = self.xm.getzAccel()
-            self.mx = self.xm.getxMag()
-            self.my = self.xm.getyMag()
-            self.mz = self.xm.getzMag()
-            self.wx = self.g.getxGyro()
-            self.wy = self.g.getyGyro()
-            self.wz = self.g.getzGyro()
+        self.lastPrintTime
 
     ################################################################################################################
     # This algorithm adapted from Madgwick's provided code: http://x-io.co.uk/res/doc/madgwick_internal_report.pdf #
     ################################################################################################################
     def madgwickFilterUpdate(self):
-
-        # self.update()
 
         # Update time
         currTime = time.clock()
@@ -301,8 +258,10 @@ class LSM9DS0:
             self.wx = self.g.getxGyro()
             self.wy = self.g.getyGyro()
             self.wz = self.g.getzGyro()
+
             self.firstTime = False
 
+            self.lastPrintTime = self.prevTime
 
         try:
             while True:
@@ -317,14 +276,15 @@ class LSM9DS0:
                 pitch *= 180 / PI
                 roll *= 180 / PI
 
-                self.testCounter += 1
-
-                # Only print every ~quarter second
-                if self.testCounter % 25 == 0:
+                # Print every ~.25 seconds
+                now = time.clock()
+                if now - self.lastPrintTime >= 0.25:
                     print("Sample Count: " + str(self.testCounter) + " | dt: " + str(self.dt), end = "")
                     print(" | Yaw (No reference): " + str(yaw), end = "")
                     print(" | Pitch: " + str(pitch), end = "")
                     print(" | Roll: " + str(roll))
+
+                    self.lastPrintTime = now
 
         except KeyboardInterrupt:
             print("Exited Test")
