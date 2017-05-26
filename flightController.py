@@ -350,7 +350,7 @@ class LSM9DS0:
         sumpksqzk = 0
 
         try:
-            while True:
+            while n < 10000:
                 xk = self.xm.getxMag()
                 yk = self.xm.getyMag()
                 zk = self.xm.getzMag()
@@ -374,23 +374,25 @@ class LSM9DS0:
                 sumpksqzk += pksq * zk
 
         except KeyboardInterrupt:
-            # Calculating the A values
-            Amat = np.array([[n, sumxk, sumyk, sumzk],
-                          [sumxk, sumxksq, sumxkyk, sumxkzk],
-                          [sumyk, sumxkyk, sumyksq, sumykzk],
-                          [sumyk, sumxkzk, sumykzk, sumzksq]])
-            b = np.array([sumpksq, sumpksqxk, sumpksqyk, sumpksqzk])
-            A0, A1, A2, A3 = np.linalg.solve(Amat, b)
+            print("Calibration Interrupted!")
 
-            x0 = A1 / 2
-            y0 = A2 / 2
-            z0 = A3 / 2
-            R = sqrt(x0 * x0 + y0 * y0 + z0 * z0 - A0)
+        # Calculating the A values
+        Amat = np.array([[n, sumxk, sumyk, sumzk],
+                      [sumxk, sumxksq, sumxkyk, sumxkzk],
+                      [sumyk, sumxkyk, sumyksq, sumykzk],
+                      [sumyk, sumxkzk, sumykzk, sumzksq]])
+        b = np.array([sumpksq, sumpksqxk, sumpksqyk, sumpksqzk])
+        A0, A1, A2, A3 = np.linalg.solve(Amat, b)
 
-            print("x0 = " + str(x0))
-            print("y0 = " + str(y0))
-            print("z0 = " + str(z0))
-            print("R = " + str(R))
+        x0 = A1 / 2
+        y0 = A2 / 2
+        z0 = A3 / 2
+        R = sqrt(x0 * x0 + y0 * y0 + z0 * z0 - A0)
+
+        print("x0 = " + str(x0))
+        print("y0 = " + str(y0))
+        print("z0 = " + str(z0))
+        print("R = " + str(R))
 
 # Class Definition for the Accelerometer/Magnetometer part of the LSM9DS0
 class LSM9DS0_XM:
