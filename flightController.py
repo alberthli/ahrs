@@ -141,6 +141,7 @@ class GPS:
                             self.numSats = int(lineData[7])
 
                     if lineData[0] == "$GPGSA":
+                        pass
 
                     # Debug Prints in Order: GPRMC, GPGGA
                     print("Lat = " + str(self.lat) + " | Long = " + str(self.long) + " | Speed = " + str(self.speed) + " | CMG = " + str(self.cmg))
@@ -163,8 +164,8 @@ class GPS:
                     data = self.gpsSer.readline()
 
                     # Different print options
-                    print(data.decode())
-                    # print(data.decode().split(","))
+                    # print(data.decode())
+                    print(data.decode().split(","))
 
         except KeyboardInterrupt:
             print("\nStream Interrupted!")
