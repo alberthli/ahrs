@@ -309,10 +309,12 @@ class LSM9DS0:
 
                 self.testCounter += 1
 
-                print("Sample Count: " + str(self.testCounter) + " | dt: " + str(self.dt), end = "")
-                print(" | Yaw (No reference): " + str(yaw), end = "")
-                print(" | Pitch: " + str(pitch), end = "")
-                print(" | Roll: " + str(roll))
+                # Only print every ~half second
+                if self.testCounter % 50 == 0:
+                    print("Sample Count: " + str(self.testCounter) + " | dt: " + str(self.dt), end = "")
+                    print(" | Yaw (No reference): " + str(yaw), end = "")
+                    print(" | Pitch: " + str(pitch), end = "")
+                    print(" | Roll: " + str(roll))
 
         except KeyboardInterrupt:
             print("Exited Test")
