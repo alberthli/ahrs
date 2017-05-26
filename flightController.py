@@ -139,14 +139,20 @@ class GPS:
                         # Parsing the number of satellites
                         if len(lineData[7]) > 0:
                             self.numSats = int(lineData[7])
+                        else:
+                            continue
 
                     if lineData[0] == "$GPGSA":
-                        pass
+                        # Parsing the HDOP
+                        if len(lineData[16]) > 0:
+                            self.hdop = float(lineData[16])
+                        else:
+                            continue
 
                     # Debug Prints in Order: GPRMC, GPGGA
                     print("Lat = " + str(self.lat) + " | Long = " + str(self.long) + " | Speed = " + str(self.speed) + " | CMG = " + str(self.cmg))
                     print("Num Sats = " + str(self.numSats))
-                    print()
+                    print("HDOP = " + str(self.HDOP))
 
         except KeyboardInterrupt:
             pass
