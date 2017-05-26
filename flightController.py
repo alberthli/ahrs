@@ -22,7 +22,7 @@ import Adafruit_Python_GPIO.Adafruit_GPIO.I2C as i2c
 import numpy as np
 import time
 from math import atan2, sqrt, asin
-import gps
+import serial
 
 # Physical Constants
 GRAV_ACCEL = 9.80665 # Value of acceleration due to gravity (m*s^-2)
@@ -42,34 +42,34 @@ MAG_CALIB_SAMPLES = 10000 # We want to use 10000 magnetometer samples to calibra
 BETA = 12.5 # Beta value for Madgwick filter
 ZETA = 0.01 # Zeta value for Madgwick filter
 
+#################
+# GPS CONSTANTS #
+#################
+
+UPDATE_10HZ_CODE = "$PMTK220,100*2F\r\n" # PMTK code for 10Hz update rate
+BAUDRATE_115200_CODE = "$PMTK251,115200*1F\r\n"
+
 # The GPS class
 class GPS:
 
+    self.gpsSer = serial.Serial("/dev/ttySO", 9600) # Setting up GPS serial with baud rate of 9600 bps
+
     def __init__(self):
-        pass
+        self.gpsSer.write(BAUDRATE_115200_CODE)
+        sleep(1)
+        self.gpsSer.baudrate = 115200
+        self.gpsSer.write(UPDATE_10HZ_CODE)
+        sleep(1)
 
-    def printData(self):
-        # Listen on port 2947 (gpsd) of localhost
-        session = gps.gps("localhost", "2947")
-        session.stream(gps.WATCH_ENABLE | gps.WATCH_NEWSTYLE)
-         
-        while True:
-            try:
-                report = session.next()
-                # Wait for a 'TPV' report and display the current time
-                # To see all report data, uncomment the line below
-                print(report)
-
-                if report['class'] == 'TPV':
-                    if hasattr(report, 'time'):
-                        print(report.time)
-            except KeyError:
-                pass
-            except KeyboardInterrupt:
-                quit()
-            except StopIteration:
-                session = None
-                print("GPSD has terminated")
+    def readRawData(self):
+        try:
+            while True:
+                self.gpsSer.flushInput()
+                while gpsSer.inWaiting() == 0:
+                    pass
+                print(gpsSer.readLine())
+        except KeyboardInterrupt:
+            print("Stream Interrupted!")
 
 # Combined IMU class
 class LSM9DS0:
@@ -343,9 +343,9 @@ class LSM9DS0:
                 if now - self.lastPrintTime >= 0.25:
                     print("Time: " + str(now - self.startTime))
                     print(" | dt: " + str(self.dt), end = "")
-                    print(" | Yaw (No reference): " + str(yaw), end = "")
-                    print(" | Pitch: " + str(pitch), end = "")
-                    print(" | Roll: " + str(roll))
+                    print(" | Yaw (No reference): " + str(self.yaw), end = "")
+                    print(" | Pitch: " + str(self.pitch), end = "")
+                    print(" | Roll: " + str(self.roll))
 
                     self.lastPrintTime = now
 
