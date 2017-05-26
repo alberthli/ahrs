@@ -95,7 +95,7 @@ class GPS:
                         # Parsing Latitude
                         latString = lineData[3]
 
-                        if latString.len() > 0:
+                        if len(latString) > 0:
                             lat1 = float(latString[0:2])
                             lat2 = float(latString[2:]) / 60
                             self.lat = lat1 + lat2
@@ -109,7 +109,7 @@ class GPS:
                         # Parsing Longitude
                         longString = lineData[5]
 
-                        if longString.len() > 0:
+                        if len(longString) > 0:
                             long1 = float(longString[0:3])
                             long2 = float(longString[3:]) / 60
                             self.long = long1 + long2
@@ -121,14 +121,14 @@ class GPS:
                             continue
 
                         # Parsing speed
-                        if lineData[7] > 0:
+                        if len(lineData[7]) > 0:
                             speedKnots = float(lineData[7])
                             self.speed = speedKnots * .51444444
                         else:
                             continue
 
                         # Parsing course-made-good
-                        if lineData[8].len() > 0:
+                        if len(lineData[8]) > 0:
                             self.cmg = float(lineData[8])
                         else:
                             continue
