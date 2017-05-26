@@ -78,6 +78,8 @@ class GPS:
 
                 while self.gpsSer.inWaiting() > 0:
                     line = self.gpsSer.readline().decode() # String of decoded data
+        except KeyboardInterrupt:
+            pass
 
     # For debugging the GPS stream
     def printRawData(self):
