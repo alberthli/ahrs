@@ -107,13 +107,13 @@ class LSM9DS0:
         # Update Values
         self.ax = self.xm.getxAccel()
         self.ay = self.xm.getyAccel()
-        self.az = self.xm.getzAccel()
+        self.az = -self.xm.getzAccel()
         self.mx = self.xm.getxMag()
         self.my = self.xm.getyMag()
         self.mz = self.xm.getzMag()
         self.wx = self.g.getxGyro()
         self.wy = self.g.getyGyro()
-        self.wz = self.g.getzGyro()
+        self.wz = -self.g.getzGyro()
 
         #################################
         # Useful Variable Manipulations #
