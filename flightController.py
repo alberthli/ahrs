@@ -107,13 +107,13 @@ class LSM9DS0:
         # Update Values
         self.ax = self.xm.getxAccel()
         self.ay = self.xm.getyAccel()
-        self.az = -self.xm.getzAccel()
+        self.az = self.xm.getzAccel()
         self.mx = self.xm.getxMag()
-        self.my = self.xm.getyMag()
-        self.mz = self.xm.getzMag()
-        self.wx = self.g.getxGyro()
-        self.wy = self.g.getyGyro()
-        self.wz = self.g.getzGyro()
+        self.my = -self.xm.getyMag()
+        self.mz = -self.xm.getzMag()
+        self.wx = -self.g.getxGyro()
+        self.wy = -self.g.getyGyro()
+        self.wz = -self.g.getzGyro()
 
         #################################
         # Useful Variable Manipulations #
@@ -287,10 +287,12 @@ class LSM9DS0:
                 # Convert to degrees for readability
                 yaw *= 180 / PI
                 pitch *= 180 / PI
+                roll *= 180 / PI
+                """
                 roll = 180 - (roll * 180 / PI)
                 if roll > 180:
                     roll -= 360
-
+                """
                 # Print every ~.25 seconds
                 now = time.clock()
                 if now - self.lastPrintTime >= 0.25:
