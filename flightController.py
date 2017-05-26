@@ -434,7 +434,6 @@ class LSM9DS0_XM:
     ###################################################################
     # ACCELEROMETER/MAGNETOMETER BIT REGISTERS                        #
     # Reference: https://cdn-shop.adafruit.com/datasheets/LSM9DS0.pdf #
-	# 																  #
     # *** Register names: L Stands for LOW BYTE, H for HIGH ***       #
     ###################################################################
 
@@ -866,9 +865,8 @@ class LSM9DS0_XM:
 class LSM9DS0_G:
 
     ###################################################################
-    # GYRO BIT REGISTERS 											  #
+    # GYRO BIT REGISTERS 					      #
     # Reference: https://cdn-shop.adafruit.com/datasheets/LSM9DS0.pdf #
-	# 																  #
     # *** Register names: L Stands for LOW BYTE, H for HIGH ***       #
     ###################################################################
     
