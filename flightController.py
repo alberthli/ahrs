@@ -52,13 +52,13 @@ BAUDRATE_115200_CODE = "$PMTK251,115200*1F\r\n"
 # The GPS class
 class GPS:
 
-    self.gpsSer = serial.Serial("/dev/ttyS0", 9600) # Setting up GPS serial with baud rate of 9600 bps
+    gpsSer = serial.Serial("/dev/ttyS0", 9600) # Setting up GPS serial with baud rate of 9600 bps
 
     def __init__(self):
-        self.gpsSer.write(BAUDRATE_115200_CODE)
+        gpsSer.write(BAUDRATE_115200_CODE)
         sleep(1)
-        self.gpsSer.baudrate = 115200
-        self.gpsSer.write(UPDATE_10HZ_CODE)
+        gpsSer.baudrate = 115200
+        gpsSer.write(UPDATE_10HZ_CODE)
         sleep(1)
 
     def readRawData(self):
