@@ -67,7 +67,7 @@ class GPS:
                 self.gpsSer.flushInput()
                 while self.gpsSer.inWaiting() == 0:
                     pass
-                data = self.gpsSer.readLine()
+                data = self.gpsSer.readline()
                 print(data)
         except KeyboardInterrupt:
             print("Stream Interrupted!")
