@@ -138,7 +138,7 @@ class GPS:
                             continue
 
                     # Parsing GPGGA Sentences
-                    if lineData[0] == "$GPGGA":
+                    elif lineData[0] == "$GPGGA":
                         # Parsing the number of satellites
                         if len(lineData[7]) > 0:
                             self.numSats = int(lineData[7])
@@ -146,12 +146,17 @@ class GPS:
                             continue
 
                     # Parsing GPGSA Sentences
-                    if lineData[0] == "$GPGSA":
+                    elif lineData[0] == "$GPGSA":
                         # Parsing the HDOP
                         if len(lineData[16]) > 0:
                             self.hdop = float(lineData[16])
                         else:
                             continue
+
+                    # Probably garbage bytes. Flush the buffer and continue polling.
+                    else:
+                        self.gpsSer.flushInput()
+                        continue
 
                     # Debug Prints in Order: GPRMC, GPGGA
                     print("Lat = " + str(self.lat) + " | Long = " + str(self.long) + " | Speed = " + str(self.speed) + " | CMG = " + str(self.cmg))
@@ -163,9 +168,11 @@ class GPS:
             print("GPS Polling Stopped!")
             pass
 
+        # This happens when an incomplete transmission is made (it will eventually happen!)
         except Exception:
-            # If there's an error, continue trying to poll
-            startPolling()
+            # If there's an error, flush the buffer and continue trying to poll
+            self.gpsSer.flushInput()
+            startGPS()
 
     # For debugging the GPS stream
     def printRawData(self):
