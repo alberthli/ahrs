@@ -139,7 +139,7 @@ class LSM9DS0:
     ################################################################################################################
     def madgwickFilterUpdate(self):
 
-        self.update()
+        # self.update()
 
         # Update time
         currTime = time.clock()
@@ -309,8 +309,8 @@ class LSM9DS0:
 
                 self.testCounter += 1
 
-                # Only print every ~half second
-                if self.testCounter % 50 == 0:
+                # Only print every ~quarter second
+                if self.testCounter % 25 == 0:
                     print("Sample Count: " + str(self.testCounter) + " | dt: " + str(self.dt), end = "")
                     print(" | Yaw (No reference): " + str(yaw), end = "")
                     print(" | Pitch: " + str(pitch), end = "")
