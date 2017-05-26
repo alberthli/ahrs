@@ -381,7 +381,7 @@ class LSM9DS0:
                       [sumxk, sumxksq, sumxkyk, sumxkzk],
                       [sumyk, sumxkyk, sumyksq, sumykzk],
                       [sumyk, sumxkzk, sumykzk, sumzksq]])
-        b = np.array([sumpksq, sumpksqxk, sumpksqyk, sumpksqzk])
+        b = np.array([-sumpksq, -sumpksqxk, -sumpksqyk, -sumpksqzk])
         A0, A1, A2, A3 = np.linalg.solve(Amat, b)
 
         print(Amat)
@@ -390,9 +390,9 @@ class LSM9DS0:
         print(A2)
         print(A3)
 
-        x0 = A1 / 2
-        y0 = A2 / 2
-        z0 = A3 / 2
+        x0 = -A1 / 2
+        y0 = -A2 / 2
+        z0 = -A3 / 2
 
         print("x0 = " + str(x0))
         print("y0 = " + str(y0))
