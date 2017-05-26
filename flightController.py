@@ -66,17 +66,25 @@ class GPS:
         self.gpsSer.write(UPDATE_10HZ_CODE.encode())
         time.sleep(1)
 
+    def parseData(self):
+        # We receive 4 different sentence types that we can parse
+        # GPGGA
+        # GPGSA
+        # GPRMC
+        # GPVTG
+
     # For debugging the GPS stream
     def printRawData(self):
         try:
             while True:
-                # Flush twice to clear lines completely
+                # Flush thrice to clear lines as much as possible
+                self.gpsSer.flushInput()
                 self.gpsSer.flushInput()
                 self.gpsSer.flushInput()
 
                 while self.gpsSer.inWaiting() > 0:
                     data = self.gpsSer.readline()
-                    print(data)
+                    print(data.decode())
         except KeyboardInterrupt:
             print("\nStream Interrupted!")
 
