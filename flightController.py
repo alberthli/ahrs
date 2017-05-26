@@ -65,7 +65,7 @@ class GPS:
         try:
             while True:
                 self.gpsSer.flushInput()
-                while gpsSer.inWaiting() == 0:
+                while self.gpsSer.inWaiting() == 0:
                     pass
                 data = self.gpsSer.readLine()
                 print(data)
