@@ -292,7 +292,17 @@ class LSM9DS0:
     def activateSensor(self):
         if self.firstTime:
             self.prevTime = time.clock()
+            self.ax = self.xm.getxAccel()
+            self.ay = self.xm.getyAccel()
+            self.az = self.xm.getzAccel()
+            self.mx = self.xm.getxMag()
+            self.my = self.xm.getyMag()
+            self.mz = self.xm.getzMag()
+            self.wx = self.g.getxGyro()
+            self.wy = self.g.getyGyro()
+            self.wz = self.g.getzGyro()
             self.firstTime = False
+
 
         try:
             while True:
