@@ -30,9 +30,14 @@ G_ADDRESS = 0x6B
 
 # Predefined Constants
 TEMP_INTERCEPT = 24.0 # Guess at the intercept for the temperature sensor
-DT_TARGET = 0.0105 # About 95Hz dt
-BETA = 12.5
-ZETA = 0.01
+MAG_CALIB_SAMPLES = 10000 # We want to use 10000 magnetometer samples to calibrate for the hard-iron effect
+BETA = 12.5 # Beta value for Madgwick filter
+ZETA = 0.01 # Zeta value for Madgwick filter
+
+# Calculated hard-iron offsets (CHANGE THIS AS ASSEMBLY CHANGES)
+X_HI_OFFSET = -0.05
+Y_HI_OFFSET = -0.045
+Z_HI_OFFSET = 0.2
 
 # Physical Constants
 GRAV_ACCEL = 9.80665 # Value of acceleration due to gravity (m*s^-2)
@@ -109,9 +114,9 @@ class LSM9DS0:
         self.ax = self.xm.getxAccel()
         self.ay = self.xm.getyAccel()
         self.az = -self.xm.getzAccel()
-        self.mx = self.xm.getxMag()
-        self.my = self.xm.getyMag()
-        self.mz = self.xm.getzMag()
+        self.mx = self.xm.getxMag() - X_HI_OFFSET
+        self.my = self.xm.getyMag() - Y_HI_OFFSET
+        self.mz = self.xm.getzMag() - Z_HI_OFFSET
         self.wx = self.g.getxGyro()
         self.wy = self.g.getyGyro()
         self.wz = self.g.getzGyro()
@@ -350,7 +355,7 @@ class LSM9DS0:
         sumpksqzk = 0
 
         try:
-            while n < 10000:
+            while n < MAG_CALIB_SAMPLES:
                 xk = self.xm.getxMag()
                 yk = self.xm.getyMag()
                 zk = self.xm.getzMag()
