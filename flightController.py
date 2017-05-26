@@ -99,10 +99,21 @@ class LSM9DS0:
     ################################################################################################################
     def madgwickFilterUpdate(self):
 
-        # Update time
+        # Update Time
         currTime = time.clock()
         self.dt = currTime - self.prevTime
         self.prevTime = currTime
+
+        # Update Values
+        self.ax = self.xm.getxAccel()
+        self.ay = self.xm.getyAccel()
+        self.az = self.xm.getzAccel()
+        self.mx = self.xm.getxMag()
+        self.my = self.xm.getyMag()
+        self.mz = self.xm.getzMag()
+        self.wx = self.g.getxGyro()
+        self.wy = self.g.getyGyro()
+        self.wz = self.g.getzGyro()
 
         #################################
         # Useful Variable Manipulations #
