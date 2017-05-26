@@ -66,18 +66,59 @@ class GPS:
         self.gpsSer.write(UPDATE_10HZ_CODE.encode())
         time.sleep(1)
 
+        # GPS variables
+        self.lat = 0.0 # (+) N, (-) S in degrees
+        self.long = 0.0 # (+) E, (-) W in degrees
+        self.speed = 0.0 # NOT velocity. Measured in m/s
+        self.cmg = 0.0 # Course made good, degrees from true north (basically direction for speed vector)
+
     def startPolling(self):
         # We receive 4 different sentence types that we can parse: 
+
         # GPGGA - Time of Fix, Lat, Long, Fix Qual, Sats Tracked, HDOP, Alt (m) Above Mean Sea Level, Height of Geoid, Time Since Updating
         # GPGSA - A/M Fix Selection, 3D Fix, PRN of Fix Sats, PDOP, HDOP, VDOP
         # GPRMC - Time of Fix, A/V Status, Lat, Long, Speed (Knots), Track Angle (Deg), Date, Mag Variation
         # GPVTG - True Track Made Good, Magnetic Track Made Good, Speed (Knots), Speed (KM/H)
+
+        # We basically can survive off of just GPRMC sentences
+
         try:
             while True:
                 self.gpsSer.flushInput()
 
                 while self.gpsSer.inWaiting() > 0:
                     line = self.gpsSer.readline().decode() # String of decoded data
+                    lineData = line.split(",")
+
+                    if lineData[0] == "$GPRMC":
+                        # Parsing Latitude
+                        latString = lineData[3]
+                        lat1 = float(latString[0:2])
+                        lat2 = float(latString[2:]) / 60
+                        self.lat = lat1 + lat2
+
+                        if lineData[4] == "S"
+                            self.lat *= -1
+
+                        # Parsing Longitude
+                        longString = lineData[5]
+                        long1 = float(longString[0:3])
+                        long2 = float(longString[3:]) / 60
+                        self.long = long1 + long2
+
+                        if lineData[6] == "W"
+                            self.long *= -1
+
+                        # Parsing speed
+                        speedKnots = float(lineData[7])
+                        self.speed = speedKnots * .51444444
+
+                        # Parsing course-made-good
+                        self.cmg = float(lineData[8])
+
+                        # Debug Print
+                        print("Lat = " + str(self.lat) + " | Long = " + str(self.long) + " | Speed = " + str(self.speed) + " | CMG = " + str(self.cmg))
+
         except KeyboardInterrupt:
             pass
 
@@ -92,7 +133,10 @@ class GPS:
 
                 while self.gpsSer.inWaiting() > 0:
                     data = self.gpsSer.readline()
-                    print(data.decode().split(","))
+
+                    # Different print options
+                    print(data.decode())
+                    # print(data.decode().split(","))
 
         except KeyboardInterrupt:
             print("\nStream Interrupted!")
@@ -110,9 +154,10 @@ class LSM9DS0:
 
         # Hard-Iron Offsets (Tune this with the calibrateHardIronEffect() method!)
         # These are values that I tested myself, but you should calibrate right before flight.
-        X_HI_OFFSET = -0.05
-        Y_HI_OFFSET = -0.045
-        Z_HI_OFFSET = 0.2
+        # If you do a manual calibration test, please UPDATE THESE VALUES!
+        self.X_HI_OFFSET = -0.05
+        self.Y_HI_OFFSET = -0.045
+        self.Z_HI_OFFSET = 0.2
 
         # Euler angles
         self.yaw = 0
@@ -181,9 +226,9 @@ class LSM9DS0:
         self.ax = self.xm.getxAccel()
         self.ay = self.xm.getyAccel()
         self.az = -self.xm.getzAccel()
-        self.mx = self.xm.getxMag() - X_HI_OFFSET
-        self.my = self.xm.getyMag() - Y_HI_OFFSET
-        self.mz = self.xm.getzMag() - Z_HI_OFFSET
+        self.mx = self.xm.getxMag() - self.X_HI_OFFSET
+        self.my = self.xm.getyMag() - self.Y_HI_OFFSET
+        self.mz = self.xm.getzMag() - self.Z_HI_OFFSET
         self.wx = self.g.getxGyro()
         self.wy = self.g.getyGyro()
         self.wz = self.g.getzGyro()
@@ -401,6 +446,9 @@ class LSM9DS0:
         sumpksqzk = 0
 
         try:
+            print("*** MAGNETOMETER CALIBRATION PROTOCOL STARTED ***")
+            print("Please turn the device through the air in a figure 8 fashion until calibration finishes.")
+
             while n < MAG_CALIB_SAMPLES:
                 xk = self.xm.getxMag()
                 yk = self.xm.getyMag()
@@ -439,6 +487,17 @@ class LSM9DS0:
         y0 = -A2 / 2
         z0 = -A3 / 2
         R = sqrt(x0 * x0 + y0 * y0 + z0 * z0 - A0)
+
+        self.X_HI_OFFSET = x0
+        self.Y_HI_OFFSET = y0
+        self.Z_HI_OFFSET = z0
+
+        print("Calibration complete!")
+        print("We've already set these values for you in the system, but the offsets are printed for your convenience.\n")
+
+        print("X Offset: " + str(x0))
+        print("Y Offset: " + str(y0))
+        print("Z Offset: " + str(z0))
 
         # Debug print statements
         """
