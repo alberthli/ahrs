@@ -152,7 +152,7 @@ class GPS:
                     # Debug Prints in Order: GPRMC, GPGGA
                     print("Lat = " + str(self.lat) + " | Long = " + str(self.long) + " | Speed = " + str(self.speed) + " | CMG = " + str(self.cmg))
                     print("Num Sats = " + str(self.numSats))
-                    print("HDOP = " + str(self.HDOP))
+                    print("HDOP = " + str(self.hdop))
 
         except KeyboardInterrupt:
             pass
