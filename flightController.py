@@ -70,7 +70,10 @@ class GPS:
     def printRawData(self):
         try:
             while True:
+                # Flush twice to clear lines completely
                 self.gpsSer.flushInput()
+                self.gpsSer.flushInput()
+                
                 while self.gpsSer.inWaiting() == 0:
                     pass
                 data = self.gpsSer.readline()
