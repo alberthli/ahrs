@@ -92,6 +92,7 @@ class LSM9DS0:
 
         # DEBUG
         self.lastPrintTime = 0
+        self.startTime = 0
 
     ################################################################################################################
     # This algorithm adapted from Madgwick's provided code: http://x-io.co.uk/res/doc/madgwick_internal_report.pdf #
@@ -261,6 +262,7 @@ class LSM9DS0:
 
             self.firstTime = False
 
+            self.startTime = self.prevTime
             self.lastPrintTime = self.prevTime
 
         try:
@@ -279,7 +281,8 @@ class LSM9DS0:
                 # Print every ~.25 seconds
                 now = time.clock()
                 if now - self.lastPrintTime >= 0.25:
-                    print("Sample Count: " + str(self.testCounter) + " | dt: " + str(self.dt), end = "")
+                    print("Time: " + str(now - self.startTime))
+                    print(" | dt: " + str(self.dt), end = "")
                     print(" | Yaw (No reference): " + str(yaw), end = "")
                     print(" | Pitch: " + str(pitch), end = "")
                     print(" | Roll: " + str(roll))
