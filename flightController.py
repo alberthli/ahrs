@@ -49,19 +49,25 @@ ZETA = 0.01 # Zeta value for Madgwick filter
 UPDATE_10HZ_CODE = "$PMTK220,100*2F\r\n" # PMTK code for 10Hz update rate
 BAUDRATE_115200_CODE = "$PMTK251,115200*1F\r\n"
 
+#################
+# CLASSES BELOW #
+#################
+
 # The GPS class
 class GPS:
 
     def __init__(self):
         self.gpsSer = serial.Serial("/dev/ttyS0", 9600) # Setting up GPS serial with baud rate of 9600 bps
 
+        # Initialize the GPS module to a baudrate of 115200 bps and 10Hz update rate
         self.gpsSer.write(BAUDRATE_115200_CODE.encode())
         time.sleep(1)
         self.gpsSer.baudrate = 115200
         self.gpsSer.write(UPDATE_10HZ_CODE.encode())
         time.sleep(1)
 
-    def readRawData(self):
+    # For debugging the GPS stream
+    def printRawData(self):
         try:
             while True:
                 self.gpsSer.flushInput()
@@ -70,7 +76,7 @@ class GPS:
                 data = self.gpsSer.readline()
                 print(data)
         except KeyboardInterrupt:
-            print("Stream Interrupted!")
+            print("\nStream Interrupted!")
 
 # Combined IMU class
 class LSM9DS0:
