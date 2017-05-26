@@ -32,7 +32,7 @@ PI = 3.14159265358979323846
 # LSM9DS0 CONSTANTS #
 #####################
 
-# Addresses for the XM and G when the SCL/SDA lines are pulled up (THEY SHOULD ALWAYS BE)
+# I2C Addresses for the XM and G
 XM_ADDRESS = 0x1D
 G_ADDRESS = 0x6B
 
@@ -47,7 +47,7 @@ ZETA = 0.01 # Zeta value for Madgwick filter
 #################
 
 UPDATE_10HZ_CODE = "$PMTK220,100*2F\r\n" # PMTK code for 10Hz update rate
-BAUDRATE_115200_CODE = "$PMTK251,115200*1F\r\n"
+BAUDRATE_115200_CODE = "$PMTK251,115200*1F\r\n" # PMTK code for 115200 bps baudrate
 
 #################
 # CLASSES BELOW #
@@ -74,7 +74,8 @@ class GPS:
         self.numSats = 0 # How many satellites we have fixes for (the more the better)
         self.hdop = 0 # Horizontal dilution of precision (lower the better)
 
-    def startPolling(self):
+    # Starts the GPS polling process
+    def startGPS(self):
         # We receive 4 different sentence types that we can parse: 
 
         # GPGGA - Time of Fix, Lat, Long, Fix Qual, Sats Tracked, HDOP, Alt (m) Above Mean Sea Level, Height of Geoid, Time Since Updating
@@ -82,7 +83,7 @@ class GPS:
         # GPRMC - Time of Fix, A/V Status, Lat, Long, Speed (Knots), Track Angle (Deg), Date, Mag Variation
         # GPVTG - True Track Made Good, Magnetic Track Made Good, Speed (Knots), Speed (KM/H)
 
-        # We basically can survive off of just GPRMC sentences
+        # We basically can survive off of just GPRMC sentences, but it's useful to parse other sentences for potential weighting
 
         try:
             while True:
@@ -92,6 +93,7 @@ class GPS:
                     line = self.gpsSer.readline().decode() # String of decoded data
                     lineData = line.split(",")
 
+                    # Parsing GPRMC Sentences
                     if lineData[0] == "$GPRMC":
 
                         # Parsing Latitude
@@ -135,6 +137,7 @@ class GPS:
                         else:
                             continue
 
+                    # Parsing GPGGA Sentences
                     if lineData[0] == "$GPGGA":
                         # Parsing the number of satellites
                         if len(lineData[7]) > 0:
@@ -142,6 +145,7 @@ class GPS:
                         else:
                             continue
 
+                    # Parsing GPGSA Sentences
                     if lineData[0] == "$GPGSA":
                         # Parsing the HDOP
                         if len(lineData[16]) > 0:
@@ -156,7 +160,12 @@ class GPS:
                     print()
 
         except KeyboardInterrupt:
+            print("GPS Polling Stopped!")
             pass
+
+        except Exception:
+            # If there's an error, continue trying to poll
+            startPolling()
 
     # For debugging the GPS stream
     def printRawData(self):
@@ -245,6 +254,54 @@ class LSM9DS0:
         # DEBUG
         self.lastPrintTime = 0
         self.startTime = 0
+
+    # Activating the sensor
+    def startLSM(self):
+        if self.firstTime:
+            self.prevTime = time.clock()
+            self.ax = self.xm.getxAccel()
+            self.ay = self.xm.getyAccel()
+            self.az = self.xm.getzAccel()
+            self.mx = self.xm.getxMag()
+            self.my = self.xm.getyMag()
+            self.mz = self.xm.getzMag()
+            self.wx = self.g.getxGyro()
+            self.wy = self.g.getyGyro()
+            self.wz = self.g.getzGyro()
+
+            self.firstTime = False
+
+            self.startTime = self.prevTime
+            self.lastPrintTime = self.prevTime
+
+        try:
+            while True:
+                self.madgwickFilterUpdate()
+
+                self.yaw = atan2(2 * (self.SEq2 * self.SEq3 - self.SEq1 * self.SEq4), 2 * (self.SEq1 * self.SEq1 + self.SEq2 * self.SEq2) - 1)
+                self.pitch = asin(2 * (self.SEq1 * self.SEq3 - self.SEq2 * self.SEq4))
+                self.roll = atan2(2 * (self.SEq1 * self.SEq2 + self.SEq3 * self.SEq4), 1 - 2 * (self.SEq2 * self.SEq2 + self.SEq3 * self.SEq3))
+
+                # Convert to degrees for readability
+                self.yaw *= 180 / PI
+                self.pitch *= 180 / PI
+                self.roll = 180 - (roll * 180 / PI)
+                if self.roll > 180:
+                    self.roll -= 360
+
+                # Print every ~.25 seconds
+                now = time.clock()
+                if now - self.lastPrintTime >= 0.25:
+                    print("Time: " + str(now - self.startTime))
+                    print(" | dt: " + str(self.dt), end = "")
+                    print(" | Yaw (No reference): " + str(self.yaw), end = "")
+                    print(" | Pitch: " + str(self.pitch), end = "")
+                    print(" | Roll: " + str(self.roll))
+
+                    self.lastPrintTime = now
+
+        except KeyboardInterrupt:
+            print("Exited Test")
 
     ################################################################################################################
     # This algorithm adapted from Madgwick's provided code: http://x-io.co.uk/res/doc/madgwick_internal_report.pdf #
@@ -411,54 +468,6 @@ class LSM9DS0:
         self.bx = sqrt(hx * hx + hy * hy)
         self.bz = hz
 
-    # Activating the sensor
-    def activateSensor(self):
-        if self.firstTime:
-            self.prevTime = time.clock()
-            self.ax = self.xm.getxAccel()
-            self.ay = self.xm.getyAccel()
-            self.az = self.xm.getzAccel()
-            self.mx = self.xm.getxMag()
-            self.my = self.xm.getyMag()
-            self.mz = self.xm.getzMag()
-            self.wx = self.g.getxGyro()
-            self.wy = self.g.getyGyro()
-            self.wz = self.g.getzGyro()
-
-            self.firstTime = False
-
-            self.startTime = self.prevTime
-            self.lastPrintTime = self.prevTime
-
-        try:
-            while True:
-                self.madgwickFilterUpdate()
-
-                self.yaw = atan2(2 * (self.SEq2 * self.SEq3 - self.SEq1 * self.SEq4), 2 * (self.SEq1 * self.SEq1 + self.SEq2 * self.SEq2) - 1)
-                self.pitch = asin(2 * (self.SEq1 * self.SEq3 - self.SEq2 * self.SEq4))
-                self.roll = atan2(2 * (self.SEq1 * self.SEq2 + self.SEq3 * self.SEq4), 1 - 2 * (self.SEq2 * self.SEq2 + self.SEq3 * self.SEq3))
-
-                # Convert to degrees for readability
-                self.yaw *= 180 / PI
-                self.pitch *= 180 / PI
-                self.roll = 180 - (roll * 180 / PI)
-                if self.roll > 180:
-                    self.roll -= 360
-
-                # Print every ~.25 seconds
-                now = time.clock()
-                if now - self.lastPrintTime >= 0.25:
-                    print("Time: " + str(now - self.startTime))
-                    print(" | dt: " + str(self.dt), end = "")
-                    print(" | Yaw (No reference): " + str(self.yaw), end = "")
-                    print(" | Pitch: " + str(self.pitch), end = "")
-                    print(" | Roll: " + str(self.roll))
-
-                    self.lastPrintTime = now
-
-        except KeyboardInterrupt:
-            print("Exited Test")
-
     def calibrateHardIronEffect(self):
         # Here, I use an interesting and obscure regression method
         # for solving for the equation of a sphere from a cloud
@@ -548,8 +557,8 @@ class LSM9DS0:
         print("R = " + str(R))
         """
 
-    # Printing method - will print all sensor values at once
-    def printData(self):
+    # Printing method - will print all raw sensor values at once
+    def printRawData(self):
         xacc = self.xm.getxAccel()
         yacc = self.xm.getyAccel()
         zacc = self.xm.getzAccel()
