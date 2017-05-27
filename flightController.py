@@ -65,12 +65,12 @@ BAUDRATE_115200_CODE = "$PMTK251,115200*1F\r\n" # PMTK code for 115200 bps baudr
 # CLASSES BELOW #
 #################
 
-# The complete Controller class
-class Controller:
+# The complete Attitude Heading and Reference System class
+class AHRS:
 
     def __init__(self):
 
-        # The sensors that make up our Controller
+        # The sensors that make up our AHRS
         self.lsm = LSM9DS0()
         self.gps = GPS()
 
@@ -102,7 +102,7 @@ class Controller:
         if self.roll > 180:
             self.roll -= 360
 
-    def startController(self):
+    def startAHRS(self):
         # Threads for sensor polling
         lsmThread = threading.Thread(target = self.lsm.startLSM)
         gpsThread = threading.Thread(target = self.gps.startGPS)
@@ -119,7 +119,7 @@ class Controller:
                 print("Yaw: " + self.yaw)
 
         except KeyboardInterrupt:
-            print("Controller Deactivated.")
+            print("AHRS Deactivated.")
 
 # The GPS class
 class GPS:
@@ -376,7 +376,7 @@ class LSM9DS0:
                 self.madgwickFilterUpdate()
 
                 # Local Euler angle calculations for sensor debugging. Uncomment entire block to use.
-                
+                """
                 # Calculating Euler angles locally
                 self.yaw = atan2(2 * (self.SEq2 * self.SEq3 - self.SEq1 * self.SEq4), 2 * (self.SEq1 * self.SEq1 + self.SEq2 * self.SEq2) - 1)
                 self.pitch = asin(2 * (self.SEq1 * self.SEq3 - self.SEq2 * self.SEq4))
@@ -400,7 +400,7 @@ class LSM9DS0:
                     print(" | Roll: " + str(self.roll))
 
                     self.lastPrintTime = now
-                
+                """
 
         except KeyboardInterrupt:
             print("Exited Test")
@@ -798,7 +798,7 @@ class LSM9DS0:
         self.Y_HI_OFFSET = yavg
         self.Z_HI_OFFSET = zavg
 
-        allavg = (xmax - xmin + ymax - ymin + zmax - zmin) / 3
+        allavg = (xmax - xmin + xmax - xmin + xmax - xmin) / 3
 
         self.X_SI_SCALE = abs(allavg / (xmax - xmin))
         self.Y_SI_SCALE = abs(allavg / (ymax - ymin))
@@ -1062,7 +1062,7 @@ class LSM9DS0_XM:
     	self.accelGain = 0.000122
 
     	"""
-    	CTRL_REG3_XM/CTRL_REG4_XM Configuration:
+    	CTRL_REG3_XM Configuration:
 
     	Boot on INT1_XM Pin Enable (Bit 1):
     	0 | Disable
@@ -1095,10 +1095,44 @@ class LSM9DS0_XM:
 		FIFO Empty Indication on INT1_XM (Bit 8):
 		0 | Disable
 		1 | Enable
-
-		*** CTRL_REG4_XM IS IDENTICAL EXCEPT ON PIN INT2_XM ***
     	"""
     	self.device.write8(self.CTRL_REG3_XM, 0x00) # All disable, defaults
+
+        """
+        CTRL_REG4_XM Configuration:
+
+        Tap Generator Interrupt on INT2_XM Pin Enable (Bit 1):
+        0 | Disable
+        1 | Enable
+
+        Inertial Interrupt Generator 1 on INT2_XM (Bit 2):
+        0 | Disable
+        1 | Enable
+
+        Inertial Interrupt Generator 2 on INT2_XM (Bit 3):
+        0 | Disable
+        1 | Enable
+
+        Magnetic Interrupt Generator on INT2_XM (Bit 4):
+        0 | Disable
+        1 | Enable
+
+        Accelerometer Data-Ready Signal on INT2_XM (Bit 5):
+        0 | Disable
+        1 | Enable
+
+        Magnetometer Data-Ready Signal on INT2_XM (Bit 6):
+        0 | Disable
+        1 | Enable
+
+        FIFO Overrun Interrupt on INT2_XM (Bit 7):
+        0 | Disable
+        1 | Enable
+
+        FIFO Watermark Interrupt on INT2_XM (Bit 8):
+        0 | Disable
+        1 | Enable
+        """
     	self.device.write8(self.CTRL_REG4_XM, 0x00) # All disable, defaults
 
     	"""
