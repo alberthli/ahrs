@@ -261,6 +261,10 @@ class LSM9DS0:
         self.Y_HI_OFFSET = -0.09
         self.Z_HI_OFFSET = 0.175
 
+        self.X_SI_SCALE = 1
+        self.Y_SI_SCALE = 1
+        self.Z_SI_SCALE = 1
+
         # Gyro bias offsets (Tune this with the calibrateGyroOffsets() method!)
         # These are values that I tested myself, but you should calibrate right before flight.
         # If you do a manual calibration test, please UPDATE THESE VALUES!
@@ -334,9 +338,9 @@ class LSM9DS0:
             self.ax = self.xm.getxAccel() - self.X_AB_OFFSET
             self.ay = self.xm.getyAccel() - self.Y_AB_OFFSET
             self.az = -(self.xm.getzAccel() - self.Z_AB_OFFSET)
-            self.mx = (self.xm.getxMag() - self.X_HI_OFFSET)
-            self.my = (self.xm.getyMag() - self.Y_HI_OFFSET)
-            self.mz = (self.xm.getzMag() - self.Z_HI_OFFSET)
+            self.mx = (self.xm.getxMag() - self.X_HI_OFFSET) * self.X_SI_SCALE
+            self.my = (self.xm.getyMag() - self.Y_HI_OFFSET) * self.Y_SI_SCALE
+            self.mz = (self.xm.getzMag() - self.Z_HI_OFFSET) * self.Z_SI_SCALE
             self.wx = self.g.getxGyro() - self.X_GB_OFFSET
             self.wy = self.g.getyGyro() - self.Y_GB_OFFSET
             self.wz = self.g.getzGyro() - self.Z_GB_OFFSET
@@ -397,9 +401,9 @@ class LSM9DS0:
         self.ax = self.xm.getxAccel() - self.X_AB_OFFSET
         self.ay = self.xm.getyAccel() - self.Y_AB_OFFSET
         self.az = -(self.xm.getzAccel() - self.Z_AB_OFFSET)
-        self.mx = (self.xm.getxMag() - self.X_HI_OFFSET)
-        self.my = (self.xm.getyMag() - self.Y_HI_OFFSET)
-        self.mz = (self.xm.getzMag() - self.Z_HI_OFFSET)
+        self.mx = (self.xm.getxMag() - self.X_HI_OFFSET) * self.X_SI_SCALE
+        self.my = (self.xm.getyMag() - self.Y_HI_OFFSET) * self.Y_SI_SCALE
+        self.mz = (self.xm.getzMag() - self.Z_HI_OFFSET) * self.Z_SI_SCALE
         self.wx = self.g.getxGyro() - self.X_GB_OFFSET
         self.wy = self.g.getyGyro() - self.Y_GB_OFFSET
         self.wz = self.g.getzGyro() - self.Z_GB_OFFSET
@@ -732,6 +736,50 @@ class LSM9DS0:
 
     # For calibration of hard-iron and soft-iron effects (magnetometer bias). Should probably run at startup every time.
     def calibrateHardIronEffect(self):
+        xmax = 0
+        xmin = 0
+        ymax = 0
+        ymin = 0
+        zmax = 0
+        zmin = 0
+        n = 0
+
+        while n < MAG_CALIB_SAMPLES:
+            n += 1
+            x = self.xm.getxMag()
+            y = self.xm.getyMag()
+            z = self.xm.getzMag()
+
+            if x > xmax:
+                xmax = x
+            elif: x < xmin:
+                xmin = x
+
+            if y > ymax:
+                ymax = y
+            elif: y < ymin:
+                ymin = y
+
+            if z > zmax:
+                zmax = z
+            elif: z < zmin:
+                zmin = z
+
+        xavg = (xmax + xmin) / 2
+        yavg = (ymax + ymin) / 2
+        zavg = (zmax + zmin) / 2
+
+        self.X_HI_OFFSET = xavg
+        self.Y_HI_OFFSET = yavg
+        self.Z_HI_OFFSET = zavg
+
+        allavg = (xavg + yavg + zavg) / 3
+
+        self.X_SI_SCALE = allavg / xavg
+        self.Y_SI_SCALE = allavg / yavg
+        self.Z_SI_SCALE = allavg / zavg
+
+        """
         # Here, I use an interesting and obscure regression method
         # for solving for the equation of a sphere from a cloud
         # of data points (pg 17-18): 
@@ -809,7 +857,7 @@ class LSM9DS0:
         print("X Hard-Iron Offset: " + str(x0))
         print("Y Hard-Iron Offset: " + str(y0))
         print("Z Hard-Iron Offset: " + str(z0) + "\n")
-
+        """
         # Debug print statements
         """
         print(Amat)
