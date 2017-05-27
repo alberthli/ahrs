@@ -5,6 +5,11 @@ Albert Li | 2017
 
 Description: Flight Controller for a Raspberry Pi-controlled quadcopter
 
+The constants that users should tune to change controller performance are at the
+top of this file. In particular, the declination angle is time AND location
+dependent, so if you are using this code in the future, change that parameter.
+Use this webapp: https://www.ngdc.noaa.gov/geomag-web/
+
 Sensors:
 (1) LSM9DS0 9 DOF Accel/Gyro/Mag Board | Using I2C for communication/configuration
 
@@ -13,7 +18,8 @@ Sensors:
 	in the control bit registers. The accelerometer and magnetometer seem to be
 	on one shared board, while the gyro is on its own
 
-	The LSM9DS0 class combines both of the separated sensor classes. 
+	The LSM9DS0 class combines both of the separated sensor classes. All the sensor
+    calibration methods are in this class.
 
 (2) Adafruit Ultimate GPS Breakout (MTK3339 Chipset)
 """
@@ -27,6 +33,7 @@ import serial
 # Physical Constants
 GRAV_ACCEL = 9.80665 # Value of acceleration due to gravity (m*s^-2)
 PI = 3.14159265358979323846
+DECLINATION_ANGLE = 13.55 # [USER-DEFINED] Declination angle (deg) for Berkeley, CA | Summer of 2017
 
 #####################
 # LSM9DS0 CONSTANTS #
@@ -36,11 +43,13 @@ PI = 3.14159265358979323846
 XM_ADDRESS = 0x1D
 G_ADDRESS = 0x6B
 
-# Predefined Constants
-TEMP_INTERCEPT = 24.0 # Guess at the intercept for the temperature sensor
+# [USER-DEFINED CONSTANTS HERE]
+TEMP_INTERCEPT = 24.0 # Guess at the intercept for the temperature sensor. Probably shouldn't change.
+
 MAG_CALIB_SAMPLES = 10000 # Use 10000 magnetometer samples to calibrate for the hard-iron effect
 GYRO_CALIB_SAMPLES = 5000 # Use 5000 gyro samples to calculate its offset
 ACCEL_CALIB_SAMPLES = 1000 # Use 1000 samples per position to calibrate for 0g offset
+
 BETA = 12.5 # Beta value for Madgwick filter
 ZETA = 0.01 # Zeta value for Madgwick filter
 
@@ -54,6 +63,44 @@ BAUDRATE_115200_CODE = "$PMTK251,115200*1F\r\n" # PMTK code for 115200 bps baudr
 #################
 # CLASSES BELOW #
 #################
+
+# The complete Attitude Heading and Reference System class
+class AHRS:
+
+    def __init__(self):
+
+        # The sensors that make up our AHRS
+        self.lsm = LSM9DS0()
+        self.gps = GPS()
+
+        # Euler angles
+        self.roll = 0
+        self.pitch = 0
+        self.yaw = 0
+
+    def updateEulerAngles(self):
+
+        # LSM9DS0 orientation quaternion values
+        q1 = self.lsm.SEq1
+        q2 = self.lsm.SEq2
+        q3 = self.lsm.SEq3
+        q4 = self.lsm.SEq4
+
+        self.yaw = atan2(2 * (q2 * q3 - q1 * q4), 2 * (q1 * q1 + q2 * q2) - 1)
+        self.pitch = asin(2 * (q1 * q3 - q2 * q4))
+        self.roll = atan2(2 * (q1 * q2 + q3 * q4), 1 - 2 * (q2 * q2 + q3 * q3))
+
+        # Convert to degrees for readability
+        # The roll here is a little weird - when I converted our coordinates to NED,
+        # the roll axis flipped upside-down (which isn't super surprising, maybe). 
+        # This is the best way to deal with it for now because we still get the right
+        # Euler angles.
+        self.yaw *= 180 / PI
+        self.yaw += DECLINATION_ANGLE # Correcting for declination.
+        self.pitch *= 180 / PI
+        self.roll = 180 - (self.roll * 180 / PI)
+        if self.roll > 180:
+            self.roll -= 360
 
 # The GPS class
 class GPS:
@@ -86,7 +133,6 @@ class GPS:
         # GPVTG - True Track Made Good, Magnetic Track Made Good, Speed (Knots), Speed (KM/H)
 
         # We basically can survive off of just GPRMC sentences, but it's useful to parse other sentences for potential weighting
-
         try:
             while True:
                 self.gpsSer.flushInput()
@@ -155,12 +201,16 @@ class GPS:
                         else:
                             continue
 
+                    # Parsing GPVTG Sentences
+                    elif lineData[0] == "$GPVTG":
+                        pass
+
                     # Probably garbage bytes. Flush the buffer and continue polling.
                     else:
                         self.gpsSer.flushInput()
                         continue
 
-                    # Debug Prints in Order: GPRMC, GPGGA
+                    # Debug Prints in Order: GPRMC, GPGGA, GPGSA
                     print("Lat = " + str(self.lat) + " | Long = " + str(self.long) + " | Speed = " + str(self.speed) + " | CMG = " + str(self.cmg))
                     print("Num Sats = " + str(self.numSats))
                     print("HDOP = " + str(self.hdop))
@@ -180,9 +230,7 @@ class GPS:
     def printRawData(self):
         try:
             while True:
-                # Flush thrice to clear lines as much as possible
-                self.gpsSer.flushInput()
-                self.gpsSer.flushInput()
+                # Flush to clear garbage bytes
                 self.gpsSer.flushInput()
 
                 while self.gpsSer.inWaiting() > 0:
@@ -228,7 +276,7 @@ class LSM9DS0:
         self.Y_AB_OFFSET = -0.016
         self.Z_AB_OFFSET = -0.23
 
-        # Euler angles
+        # ONLY FOR DEBUGGING - Locally calculated Euler angles
         self.yaw = 0
         self.roll = 0
         self.pitch = 0
@@ -302,18 +350,23 @@ class LSM9DS0:
             while True:
                 self.madgwickFilterUpdate()
 
+                # Local Euler angle calculations for sensor debugging
+
+                """
+                # Calculating Euler angles locally
                 self.yaw = atan2(2 * (self.SEq2 * self.SEq3 - self.SEq1 * self.SEq4), 2 * (self.SEq1 * self.SEq1 + self.SEq2 * self.SEq2) - 1)
                 self.pitch = asin(2 * (self.SEq1 * self.SEq3 - self.SEq2 * self.SEq4))
                 self.roll = atan2(2 * (self.SEq1 * self.SEq2 + self.SEq3 * self.SEq4), 1 - 2 * (self.SEq2 * self.SEq2 + self.SEq3 * self.SEq3))
 
                 # Convert to degrees for readability
+                # THE YAW HAS NO REFERENCE RIGHT NOW (declination angle NOT taken into account)
                 self.yaw *= 180 / PI
                 self.pitch *= 180 / PI
                 self.roll = 180 - (self.roll * 180 / PI)
                 if self.roll > 180:
                     self.roll -= 360
 
-                # Print every ~.25 seconds
+                # Debug print statements
                 now = time.clock()
                 if now - self.lastPrintTime >= 0.25:
                     print("Time: " + str(now - self.startTime))
@@ -323,6 +376,7 @@ class LSM9DS0:
                     print(" | Roll: " + str(self.roll))
 
                     self.lastPrintTime = now
+                """
 
         except KeyboardInterrupt:
             print("Exited Test")
@@ -676,6 +730,7 @@ class LSM9DS0:
         print("Y Offset: " + str(self.Y_GB_OFFSET))
         print("Z Offset: " + str(self.Z_GB_OFFSET))
 
+    # For calibration of hard-iron effects (magnetometer bias). Should probably run at startup every time.
     def calibrateHardIronEffect(self):
         # Here, I use an interesting and obscure regression method
         # for solving for the equation of a sphere from a cloud
