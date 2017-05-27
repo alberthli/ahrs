@@ -66,7 +66,7 @@ class GPS:
         self.gpsSer.write(UPDATE_10HZ_CODE.encode())
         time.sleep(1)
 
-        # GPS variables
+        # GPS variables. We can use numSats and hdop to perhaps dynamically weight our complementary speed filter.
         self.lat = 0.0 # (+) N, (-) S in degrees
         self.long = 0.0 # (+) E, (-) W in degrees
         self.speed = 0.0 # NOT velocity. Measured in m/s
@@ -187,8 +187,8 @@ class GPS:
                     data = self.gpsSer.readline()
 
                     # Different print options
-                    # print(data.decode())
-                    print(data.decode().split(","))
+                    print(data.decode())
+                    # print(data.decode().split(","))
 
         except KeyboardInterrupt:
             print("\nStream Interrupted!")
