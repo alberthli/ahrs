@@ -223,9 +223,9 @@ class LSM9DS0:
         # Accelerometer bias offsets (Tune this with the calibrateGyroOffsets() method!)
         # These are values that I tested myself, but you should calibrate right before flight.
         # If you do a manual calibration test, please UPDATE THESE VALUES!
-        self.X_AB_OFFSET = 0
-        self.Y_AB_OFFSET = 0
-        self.Z_AB_OFFSET = 0
+        self.X_AB_OFFSET = -0.4
+        self.Y_AB_OFFSET = -0.016
+        self.Z_AB_OFFSET = -0.23
 
         # Euler angles
         self.yaw = 0
@@ -282,15 +282,15 @@ class LSM9DS0:
     def startLSM(self):
         if self.firstTime:
             self.prevTime = time.clock()
-            self.ax = self.xm.getxAccel()
-            self.ay = self.xm.getyAccel()
-            self.az = self.xm.getzAccel()
-            self.mx = self.xm.getxMag()
-            self.my = self.xm.getyMag()
-            self.mz = self.xm.getzMag()
-            self.wx = self.g.getxGyro()
-            self.wy = self.g.getyGyro()
-            self.wz = self.g.getzGyro()
+            self.ax = self.xm.getxAccel() - self.X_AB_OFFSET
+            self.ay = self.xm.getyAccel() - self.Y_AB_OFFSET
+            self.az = -(self.xm.getzAccel() - self.Z_AB_OFFSET)
+            self.mx = self.xm.getxMag() - self.X_HI_OFFSET
+            self.my = self.xm.getyMag() - self.Y_HI_OFFSET
+            self.mz = self.xm.getzMag() - self.Z_HI_OFFSET
+            self.wx = self.g.getxGyro() - self.X_GB_OFFSET
+            self.wy = self.g.getyGyro() - self.Y_GB_OFFSET
+            self.wz = self.g.getzGyro() - self.Z_GB_OFFSET
 
             self.firstTime = False
 
@@ -339,9 +339,9 @@ class LSM9DS0:
         self.prevTime = currTime
 
         # Update Values - fixed for NED frame, hard-iron effect, and gyro bias
-        self.ax = self.xm.getxAccel()
-        self.ay = self.xm.getyAccel()
-        self.az = -self.xm.getzAccel()
+        self.ax = self.xm.getxAccel() - self.X_AB_OFFSET
+        self.ay = self.xm.getyAccel() - self.Y_AB_OFFSET
+        self.az = -(self.xm.getzAccel() - self.Z_AB_OFFSET)
         self.mx = self.xm.getxMag() - self.X_HI_OFFSET
         self.my = self.xm.getyMag() - self.Y_HI_OFFSET
         self.mz = self.xm.getzMag() - self.Z_HI_OFFSET
@@ -513,6 +513,7 @@ class LSM9DS0:
 
         print("*** ACCELEROMETER CALIBRATION PROTOCOL STARTED ***")
         print("There are going to be six positions to orient the sensor in. It must be still.")
+        print("It may help to have a corner or a wall so you are as close to perpendicular as possible.\n")
 
         # POSITION 1
         print("Position 1 is like such:")
@@ -523,6 +524,7 @@ class LSM9DS0:
         print("-------")
         print("Press ENTER when ready.")
         input()
+        print("Gathering data. Please wait...")
 
         while n < ACCEL_CALIB_SAMPLES:
             n += 1
@@ -541,6 +543,7 @@ class LSM9DS0:
         print("|----------|")
         print("Press ENTER when ready.")
         input()
+        print("Gathering data. Please wait...")
 
         while n < ACCEL_CALIB_SAMPLES:
             n += 1
@@ -560,6 +563,7 @@ class LSM9DS0:
         print("-------")
         print("Press ENTER when ready.")
         input()
+        print("Gathering data. Please wait...")
 
         while n < ACCEL_CALIB_SAMPLES:
             n += 1
@@ -578,6 +582,7 @@ class LSM9DS0:
         print("|----------|")
         print("Press ENTER when ready.")
         input()
+        print("Gathering data. Please wait...")
 
         while n < ACCEL_CALIB_SAMPLES:
             n += 1
@@ -597,6 +602,7 @@ class LSM9DS0:
         print("   BOTTOM  ")
         print("Press ENTER when ready.")
         input()
+        print("Gathering data. Please wait...")
 
         while n < ACCEL_CALIB_SAMPLES:
             n += 1
@@ -616,6 +622,7 @@ class LSM9DS0:
         print("   BOTTOM  ")
         print("Press ENTER when ready.")
         input()
+        print("Gathering data. Please wait...")
 
         while n < ACCEL_CALIB_SAMPLES:
             n += 1
@@ -663,7 +670,7 @@ class LSM9DS0:
 
         print("Calibration complete!")
         print("We've already set these values for you in the system, but the offsets are printed for your convenience.\n")
-        
+
         print("X Offset: " + str(self.X_GB_OFFSET))
         print("Y Offset: " + str(self.Y_GB_OFFSET))
         print("Z Offset: " + str(self.Z_GB_OFFSET))
