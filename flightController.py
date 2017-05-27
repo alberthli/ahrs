@@ -40,7 +40,7 @@ G_ADDRESS = 0x6B
 TEMP_INTERCEPT = 24.0 # Guess at the intercept for the temperature sensor
 MAG_CALIB_SAMPLES = 10000 # Use 10000 magnetometer samples to calibrate for the hard-iron effect
 GYRO_CALIB_SAMPLES = 5000 # Use 5000 gyro samples to calculate its offset
-ACCEL_CALIB_SAMPLES = 250 # Use 250 samples per position to calibrate for 0g offset
+ACCEL_CALIB_SAMPLES = 1000 # Use 1000 samples per position to calibrate for 0g offset
 BETA = 12.5 # Beta value for Madgwick filter
 ZETA = 0.01 # Zeta value for Madgwick filter
 
@@ -223,6 +223,7 @@ class LSM9DS0:
         # Accelerometer bias offsets (Tune this with the calibrateGyroOffsets() method!)
         # These are values that I tested myself, but you should calibrate right before flight.
         # If you do a manual calibration test, please UPDATE THESE VALUES!
+        # [NOTE] These values seem to vary a lot more between tests
         self.X_AB_OFFSET = -0.4
         self.Y_AB_OFFSET = -0.016
         self.Z_AB_OFFSET = -0.23
@@ -524,7 +525,7 @@ class LSM9DS0:
         print("-------")
         print("Press ENTER when ready.")
         input()
-        print("Gathering data. Please wait...")
+        print("Gathering data. Please wait...\n")
 
         while n < ACCEL_CALIB_SAMPLES:
             n += 1
@@ -543,7 +544,7 @@ class LSM9DS0:
         print("|----------|")
         print("Press ENTER when ready.")
         input()
-        print("Gathering data. Please wait...")
+        print("Gathering data. Please wait...\n")
 
         while n < ACCEL_CALIB_SAMPLES:
             n += 1
@@ -563,7 +564,7 @@ class LSM9DS0:
         print("-------")
         print("Press ENTER when ready.")
         input()
-        print("Gathering data. Please wait...")
+        print("Gathering data. Please wait...\n")
 
         while n < ACCEL_CALIB_SAMPLES:
             n += 1
@@ -582,7 +583,7 @@ class LSM9DS0:
         print("|----------|")
         print("Press ENTER when ready.")
         input()
-        print("Gathering data. Please wait...")
+        print("Gathering data. Please wait...\n")
 
         while n < ACCEL_CALIB_SAMPLES:
             n += 1
@@ -602,7 +603,7 @@ class LSM9DS0:
         print("   BOTTOM  ")
         print("Press ENTER when ready.")
         input()
-        print("Gathering data. Please wait...")
+        print("Gathering data. Please wait...\n")
 
         while n < ACCEL_CALIB_SAMPLES:
             n += 1
@@ -622,7 +623,7 @@ class LSM9DS0:
         print("   BOTTOM  ")
         print("Press ENTER when ready.")
         input()
-        print("Gathering data. Please wait...")
+        print("Gathering data. Please wait...\n")
 
         while n < ACCEL_CALIB_SAMPLES:
             n += 1
