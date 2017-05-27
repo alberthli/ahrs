@@ -254,7 +254,7 @@ class LSM9DS0:
         # Timing for sampling
         self.prevTime = 0
 
-        # Hard-Iron Offsets (Tune this with the calibrateHardIronEffect() method!)
+        # Hard-Iron Offsets (Tune this with the calibrateHardSoftIronEffect() method!)
         # These are values that I tested myself, but you should calibrate right before flight.
         # If you do a manual calibration test, please UPDATE THESE VALUES!
         self.X_HI_OFFSET = -0.06
@@ -735,7 +735,7 @@ class LSM9DS0:
         print("Z Offset: " + str(self.Z_GB_OFFSET))
 
     # For calibration of hard-iron and soft-iron effects (magnetometer bias). Should probably run at startup every time.
-    def calibrateHardIronEffect(self):
+    def calibrateHardSoftIronEffect(self):
         xmax = 0
         xmin = 0
         ymax = 0
@@ -743,6 +743,11 @@ class LSM9DS0:
         zmax = 0
         zmin = 0
         n = 0
+
+        print("*** MAGNETOMETER CALIBRATION PROTOCOL STARTED ***")
+        print("Please turn the device through the air in a figure 8 fashion until calibration finishes. Press ENTER when ready.")
+        input()
+        print("Calibrating. Continue turning...")
 
         while n < MAG_CALIB_SAMPLES:
             n += 1
@@ -773,110 +778,22 @@ class LSM9DS0:
         self.Y_HI_OFFSET = yavg
         self.Z_HI_OFFSET = zavg
 
-        allavg = (xmax - xmin + xmax - xmin + xmax - xmin) / 6
+        allavg = (xmax - xmin + xmax - xmin + xmax - xmin) / 3
 
         self.X_SI_SCALE = abs(allavg / (xmax - xmin))
         self.Y_SI_SCALE = abs(allavg / (ymax - ymin))
         self.Z_SI_SCALE = abs(allavg / (zmax - zmin))
 
-        print("X Hard-Iron Offset: " + str(self.X_HI_OFFSET))
-        print("Y Hard-Iron Offset: " + str(self.Y_HI_OFFSET))
-        print("Z Hard-Iron Offset: " + str(self.Z_HI_OFFSET) + "\n")
-        print("X Soft-Iron Scale: " + str(self.X_SI_SCALE))
-        print("Y Soft-Iron Scale: " + str(self.Y_SI_SCALE))
-        print("Z Soft-Iron Scale: " + str(self.Z_SI_SCALE) + "\n")
-
-        """
-        # Here, I use an interesting and obscure regression method
-        # for solving for the equation of a sphere from a cloud
-        # of data points (pg 17-18): 
-        # https://www.scribd.com/document/14819165/Regressions-coniques-quadriques-circulaire-spherique
-
-        # Least Squares Variables
-        n = 0
-        sumxk = 0
-        sumyk = 0
-        sumzk = 0
-        sumxksq = 0
-        sumyksq = 0
-        sumzksq = 0
-        sumxkyk = 0
-        sumxkzk = 0
-        sumykzk = 0
-        sumpksq = 0
-        sumpksqxk = 0
-        sumpksqyk = 0
-        sumpksqzk = 0
-
-        try:
-            print("*** MAGNETOMETER CALIBRATION PROTOCOL STARTED ***")
-            print("Please turn the device through the air in a figure 8 fashion until calibration finishes. Press ENTER when ready.")
-            input()
-            print("Calibrating. Continue turning...")
-
-            while n < MAG_CALIB_SAMPLES:
-                xk = self.xm.getxMag()
-                yk = self.xm.getyMag()
-                zk = self.xm.getzMag()
-
-                # Auxillary variable
-                pksq = xk * xk + yk * yk + zk * zk
-
-                n += 1
-                sumxk += xk
-                sumyk += yk
-                sumzk += zk
-                sumxksq += xk * xk
-                sumyksq += yk * yk
-                sumzksq += zk * zk
-                sumxkyk += xk * yk
-                sumxkzk += xk * zk
-                sumykzk += yk * zk
-                sumpksq += pksq
-                sumpksqxk += pksq * xk
-                sumpksqyk += pksq * yk
-                sumpksqzk += pksq * zk
-
-        except KeyboardInterrupt:
-            print("Calibration Interrupted!")
-
-        # Calculating the A values
-        Amat = np.array([[n, sumxk, sumyk, sumzk],
-                      [sumxk, sumxksq, sumxkyk, sumxkzk],
-                      [sumyk, sumxkyk, sumyksq, sumykzk],
-                      [sumyk, sumxkzk, sumykzk, sumzksq]])
-        b = np.array([-sumpksq, -sumpksqxk, -sumpksqyk, -sumpksqzk])
-        A0, A1, A2, A3 = np.linalg.solve(Amat, b)
-
-        # Hard-iron axis shifting
-        x0 = -A1 / 2
-        y0 = -A2 / 2
-        z0 = -A3 / 2
-        R = sqrt(x0 * x0 + y0 * y0 + z0 * z0 - A0)
-
-        self.X_HI_OFFSET = x0
-        self.Y_HI_OFFSET = y0
-        self.Z_HI_OFFSET = z0
-
         print("Calibration complete!")
         print("We've already set these values for you in the system, but the offsets are printed for your convenience.\n")
 
-        print("X Hard-Iron Offset: " + str(x0))
-        print("Y Hard-Iron Offset: " + str(y0))
-        print("Z Hard-Iron Offset: " + str(z0) + "\n")
-        """
-        # Debug print statements
-        """
-        print(Amat)
-        print(A0)
-        print(A1)
-        print(A2)
-        print(A3)
-        print("x0 = " + str(x0))
-        print("y0 = " + str(y0))
-        print("z0 = " + str(z0))
-        print("R = " + str(R))
-        """
+        print("X Hard-Iron Offset: " + str(self.X_HI_OFFSET))
+        print("Y Hard-Iron Offset: " + str(self.Y_HI_OFFSET))
+        print("Z Hard-Iron Offset: " + str(self.Z_HI_OFFSET) + "\n")
+
+        print("X Soft-Iron Scale: " + str(self.X_SI_SCALE))
+        print("Y Soft-Iron Scale: " + str(self.Y_SI_SCALE))
+        print("Z Soft-Iron Scale: " + str(self.Z_SI_SCALE))
 
     # Printing method - will print all raw sensor values at once
     def printRawData(self):
