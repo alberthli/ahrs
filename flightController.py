@@ -798,7 +798,7 @@ class LSM9DS0:
         self.Y_HI_OFFSET = yavg
         self.Z_HI_OFFSET = zavg
 
-        allavg = (xmax - xmin + xmax - xmin + xmax - xmin) / 3
+        allavg = (xmax - xmin + ymax - ymin + zmax - zmin) / 3
 
         self.X_SI_SCALE = abs(allavg / (xmax - xmin))
         self.Y_SI_SCALE = abs(allavg / (ymax - ymin))
