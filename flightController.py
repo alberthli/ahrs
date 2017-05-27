@@ -514,7 +514,7 @@ class LSM9DS0:
 
         print("*** ACCELEROMETER CALIBRATION PROTOCOL STARTED ***")
         print("There are going to be six positions to orient the sensor in. It must be still.")
-        print("It may help to have a corner or a wall so you are as close to perpendicular as possible.\n")
+        print("It may help to have a corner so you are as close to perpendicular as possible.\n")
 
         # POSITION 1
         print("Position 1 is like such:")
@@ -616,11 +616,11 @@ class LSM9DS0:
 
         # POSITION 6
         print("Position 6 is like such:")
-        print("    TOP    ")
+        print("   BOTTOM  ")
         print("-----------")
         print("|         |")
         print("-.---------")
-        print("   BOTTOM  ")
+        print("    TOP    ")
         print("Press ENTER when ready.")
         input()
         print("Gathering data. Please wait...\n")
