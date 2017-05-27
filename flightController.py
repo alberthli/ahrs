@@ -812,9 +812,9 @@ class LSM9DS0:
         avgy = sumyk / MAG_CALIB_SAMPLES
         avgz = sumzk / MAG_CALIB_SAMPLES
 
-        self.X_SI_SCALE = R / avgx
-        self.Y_SI_SCALE = R / avgy
-        self.Z_SI_SCALE = R / avgz
+        self.X_SI_SCALE = abs(R / avgx)
+        self.Y_SI_SCALE = abs(R / avgy)
+        self.Z_SI_SCALE = abs(R / avgz)
 
         print("Calibration complete!")
         print("We've already set these values for you in the system, but the offsets are printed for your convenience.\n")
