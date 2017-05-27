@@ -65,12 +65,12 @@ BAUDRATE_115200_CODE = "$PMTK251,115200*1F\r\n" # PMTK code for 115200 bps baudr
 # CLASSES BELOW #
 #################
 
-# The complete Attitude Heading and Reference System class
-class AHRS:
+# The complete Controller class
+class Controller:
 
     def __init__(self):
 
-        # The sensors that make up our AHRS
+        # The sensors that make up our controller
         self.lsm = LSM9DS0()
         self.gps = GPS()
 
@@ -102,7 +102,7 @@ class AHRS:
         if self.roll > 180:
             self.roll -= 360
 
-    def startAHRS(self):
+    def startController(self):
         # Threads for sensor polling
         lsmThread = threading.Thread(target = self.lsm.startLSM)
         gpsThread = threading.Thread(target = self.gps.startGPS)
@@ -119,7 +119,7 @@ class AHRS:
                 print("Yaw: " + self.yaw)
 
         except KeyboardInterrupt:
-            print("AHRS Deactivated.")
+            print("Controller Deactivated.")
 
 # The GPS class
 class GPS:
