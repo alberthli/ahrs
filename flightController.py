@@ -254,16 +254,12 @@ class LSM9DS0:
         # Timing for sampling
         self.prevTime = 0
 
-        # Hard-Iron and Soft-Iron Offsets/Scales (Tune this with the calibrateHardSoftIronEffect() method!)
+        # Hard-Iron Offsets (Tune this with the calibrateHardIronEffect() method!)
         # These are values that I tested myself, but you should calibrate right before flight.
         # If you do a manual calibration test, please UPDATE THESE VALUES!
         self.X_HI_OFFSET = -0.06
         self.Y_HI_OFFSET = -0.09
         self.Z_HI_OFFSET = 0.175
-
-        self.X_SI_SCALE = 7.25
-        self.X_SI_SCALE = 4.5
-        self.X_SI_SCALE = 2.5
 
         # Gyro bias offsets (Tune this with the calibrateGyroOffsets() method!)
         # These are values that I tested myself, but you should calibrate right before flight.
@@ -735,7 +731,7 @@ class LSM9DS0:
         print("Z Offset: " + str(self.Z_GB_OFFSET))
 
     # For calibration of hard-iron and soft-iron effects (magnetometer bias). Should probably run at startup every time.
-    def calibrateHardSoftIronEffect(self):
+    def calibrateHardIronEffect(self):
         # Here, I use an interesting and obscure regression method
         # for solving for the equation of a sphere from a cloud
         # of data points (pg 17-18): 
@@ -807,21 +803,12 @@ class LSM9DS0:
         self.Y_HI_OFFSET = y0
         self.Z_HI_OFFSET = z0
 
-        # Soft-iron axis scaling
-        self.X_SI_SCALE = abs(R / x0)
-        self.Y_SI_SCALE = abs(R / y0)
-        self.Z_SI_SCALE = abs(R / z0)
-
         print("Calibration complete!")
         print("We've already set these values for you in the system, but the offsets are printed for your convenience.\n")
 
         print("X Hard-Iron Offset: " + str(x0))
         print("Y Hard-Iron Offset: " + str(y0))
         print("Z Hard-Iron Offset: " + str(z0) + "\n")
-
-        print("X Soft-Iron Axis Scale: " + str(self.X_SI_SCALE))
-        print("Y Soft-Iron Axis Scale: " + str(self.Y_SI_SCALE))
-        print("Z Soft-Iron Axis Scale: " + str(self.Z_SI_SCALE))
 
         # Debug print statements
         """
