@@ -352,15 +352,15 @@ class LSM9DS0:
 
                 # Local Euler angle calculations for sensor debugging
 
-                """
+                
                 # Calculating Euler angles locally
                 self.yaw = atan2(2 * (self.SEq2 * self.SEq3 - self.SEq1 * self.SEq4), 2 * (self.SEq1 * self.SEq1 + self.SEq2 * self.SEq2) - 1)
                 self.pitch = asin(2 * (self.SEq1 * self.SEq3 - self.SEq2 * self.SEq4))
                 self.roll = atan2(2 * (self.SEq1 * self.SEq2 + self.SEq3 * self.SEq4), 1 - 2 * (self.SEq2 * self.SEq2 + self.SEq3 * self.SEq3))
 
                 # Convert to degrees for readability
-                # THE YAW HAS NO REFERENCE RIGHT NOW (declination angle NOT taken into account)
                 self.yaw *= 180 / PI
+                self.yaw += DECLINATION_ANGLE
                 self.pitch *= 180 / PI
                 self.roll = 180 - (self.roll * 180 / PI)
                 if self.roll > 180:
@@ -376,7 +376,7 @@ class LSM9DS0:
                     print(" | Roll: " + str(self.roll))
 
                     self.lastPrintTime = now
-                """
+                
 
         except KeyboardInterrupt:
             print("Exited Test")
