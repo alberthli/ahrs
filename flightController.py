@@ -334,9 +334,9 @@ class LSM9DS0:
             self.ax = self.xm.getxAccel() - self.X_AB_OFFSET
             self.ay = self.xm.getyAccel() - self.Y_AB_OFFSET
             self.az = -(self.xm.getzAccel() - self.Z_AB_OFFSET)
-            self.mx = (self.xm.getxMag() - self.X_HI_OFFSET) * self.X_SI_SCALE
-            self.my = (self.xm.getyMag() - self.Y_HI_OFFSET) * self.Y_SI_SCALE
-            self.mz = (self.xm.getzMag() - self.Z_HI_OFFSET) * self.Z_SI_SCALE
+            self.mx = (self.xm.getxMag() - self.X_HI_OFFSET)
+            self.my = (self.xm.getyMag() - self.Y_HI_OFFSET)
+            self.mz = (self.xm.getzMag() - self.Z_HI_OFFSET)
             self.wx = self.g.getxGyro() - self.X_GB_OFFSET
             self.wy = self.g.getyGyro() - self.Y_GB_OFFSET
             self.wz = self.g.getzGyro() - self.Z_GB_OFFSET
@@ -397,9 +397,9 @@ class LSM9DS0:
         self.ax = self.xm.getxAccel() - self.X_AB_OFFSET
         self.ay = self.xm.getyAccel() - self.Y_AB_OFFSET
         self.az = -(self.xm.getzAccel() - self.Z_AB_OFFSET)
-        self.mx = (self.xm.getxMag() - self.X_HI_OFFSET) * self.X_SI_SCALE
-        self.my = (self.xm.getyMag() - self.Y_HI_OFFSET) * self.Y_SI_SCALE
-        self.mz = (self.xm.getzMag() - self.Z_HI_OFFSET) * self.Z_SI_SCALE
+        self.mx = (self.xm.getxMag() - self.X_HI_OFFSET)
+        self.my = (self.xm.getyMag() - self.Y_HI_OFFSET)
+        self.mz = (self.xm.getzMag() - self.Z_HI_OFFSET)
         self.wx = self.g.getxGyro() - self.X_GB_OFFSET
         self.wy = self.g.getyGyro() - self.Y_GB_OFFSET
         self.wz = self.g.getzGyro() - self.Z_GB_OFFSET
