@@ -254,12 +254,16 @@ class LSM9DS0:
         # Timing for sampling
         self.prevTime = 0
 
-        # Hard-Iron Offsets (Tune this with the calibrateHardIronEffect() method!)
+        # Hard-Iron and Soft-Iron Offsets/Scales (Tune this with the calibrateHardSoftIronEffect() method!)
         # These are values that I tested myself, but you should calibrate right before flight.
         # If you do a manual calibration test, please UPDATE THESE VALUES!
         self.X_HI_OFFSET = -0.05
         self.Y_HI_OFFSET = -0.045
         self.Z_HI_OFFSET = 0.2
+
+        self.X_SI_SCALE = 1
+        self.X_SI_SCALE = 1
+        self.X_SI_SCALE = 1
 
         # Gyro bias offsets (Tune this with the calibrateGyroOffsets() method!)
         # These are values that I tested myself, but you should calibrate right before flight.
@@ -334,9 +338,9 @@ class LSM9DS0:
             self.ax = self.xm.getxAccel() - self.X_AB_OFFSET
             self.ay = self.xm.getyAccel() - self.Y_AB_OFFSET
             self.az = -(self.xm.getzAccel() - self.Z_AB_OFFSET)
-            self.mx = self.xm.getxMag() - self.X_HI_OFFSET
-            self.my = self.xm.getyMag() - self.Y_HI_OFFSET
-            self.mz = self.xm.getzMag() - self.Z_HI_OFFSET
+            self.mx = (self.xm.getxMag() - self.X_HI_OFFSET) * self.X_SI_SCALE
+            self.my = (self.xm.getyMag() - self.Y_HI_OFFSET) * self.Y_SI_SCALE
+            self.mz = (self.xm.getzMag() - self.Z_HI_OFFSET) * self.Z_SI_SCALE
             self.wx = self.g.getxGyro() - self.X_GB_OFFSET
             self.wy = self.g.getyGyro() - self.Y_GB_OFFSET
             self.wz = self.g.getzGyro() - self.Z_GB_OFFSET
@@ -393,13 +397,13 @@ class LSM9DS0:
         self.dt = currTime - self.prevTime
         self.prevTime = currTime
 
-        # Update Values - fixed for NED frame, hard-iron effect, and gyro bias
+        # Update Values - fixed for NED frame, hard-iron/soft-iron effect, and gyro bias
         self.ax = self.xm.getxAccel() - self.X_AB_OFFSET
         self.ay = self.xm.getyAccel() - self.Y_AB_OFFSET
         self.az = -(self.xm.getzAccel() - self.Z_AB_OFFSET)
-        self.mx = self.xm.getxMag() - self.X_HI_OFFSET
-        self.my = self.xm.getyMag() - self.Y_HI_OFFSET
-        self.mz = self.xm.getzMag() - self.Z_HI_OFFSET
+        self.mx = (self.xm.getxMag() - self.X_HI_OFFSET) * self.X_SI_SCALE
+        self.my = (self.xm.getyMag() - self.Y_HI_OFFSET) * self.Y_SI_SCALE
+        self.mz = (self.xm.getzMag() - self.Z_HI_OFFSET) * self.Z_SI_SCALE
         self.wx = self.g.getxGyro() - self.X_GB_OFFSET
         self.wy = self.g.getyGyro() - self.Y_GB_OFFSET
         self.wz = self.g.getzGyro() - self.Z_GB_OFFSET
@@ -730,8 +734,8 @@ class LSM9DS0:
         print("Y Offset: " + str(self.Y_GB_OFFSET))
         print("Z Offset: " + str(self.Z_GB_OFFSET))
 
-    # For calibration of hard-iron effects (magnetometer bias). Should probably run at startup every time.
-    def calibrateHardIronEffect(self):
+    # For calibration of hard-iron and soft-iron effects (magnetometer bias). Should probably run at startup every time.
+    def calibrateHardSoftIronEffect(self):
         # Here, I use an interesting and obscure regression method
         # for solving for the equation of a sphere from a cloud
         # of data points (pg 17-18): 
@@ -793,6 +797,7 @@ class LSM9DS0:
         b = np.array([-sumpksq, -sumpksqxk, -sumpksqyk, -sumpksqzk])
         A0, A1, A2, A3 = np.linalg.solve(Amat, b)
 
+        # Hard-iron axis shifting
         x0 = -A1 / 2
         y0 = -A2 / 2
         z0 = -A3 / 2
@@ -802,12 +807,25 @@ class LSM9DS0:
         self.Y_HI_OFFSET = y0
         self.Z_HI_OFFSET = z0
 
+        # Soft-iron axis scaling
+        avgx = sumxk / MAG_CALIB_SAMPLES
+        avgy = sumyk / MAG_CALIB_SAMPLES
+        avgz = sumzk / MAG_CALIB_SAMPLES
+
+        self.X_SI_SCALE = R / avgx
+        self.Y_SI_SCALE = R / avgy
+        self.Z_SI_SCALE = R / avgz
+
         print("Calibration complete!")
         print("We've already set these values for you in the system, but the offsets are printed for your convenience.\n")
 
-        print("X Offset: " + str(x0))
-        print("Y Offset: " + str(y0))
-        print("Z Offset: " + str(z0))
+        print("X Hard-Iron Offset: " + str(x0))
+        print("Y Hard-Iron Offset: " + str(y0))
+        print("Z Hard-Iron Offset: " + str(z0) + "\n")
+
+        print("X Soft-Iron Axis Scale: " + str(self.X_SI_SCALE))
+        print("Y Soft-Iron Axis Scale: " + str(self.Y_SI_SCALE))
+        print("Z Soft-Iron Axis Scale: " + str(self.Z_SI_SCALE))
 
         # Debug print statements
         """
