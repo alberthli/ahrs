@@ -220,6 +220,13 @@ class LSM9DS0:
         self.Y_GB_OFFSET = -0.3
         self.Z_GB_OFFSET = -4.5
 
+        # Accelerometer bias offsets (Tune this with the calibrateGyroOffsets() method!)
+        # These are values that I tested myself, but you should calibrate right before flight.
+        # If you do a manual calibration test, please UPDATE THESE VALUES!
+        self.X_AB_OFFSET = 0
+        self.Y_AB_OFFSET = 0
+        self.Z_AB_OFFSET = 0
+
         # Euler angles
         self.yaw = 0
         self.roll = 0
@@ -505,15 +512,15 @@ class LSM9DS0:
         az4 = 0
 
         print("*** ACCELEROMETER CALIBRATION PROTOCOL STARTED ***")
-        print("There are going to be six positions to orient the sensor in.")
+        print("There are going to be six positions to orient the sensor in. It must be still.")
 
-        # Collecting data from POSITION 1
+        # POSITION 1
         print("Position 1 is like such:")
-        print("------")
+        print("-------")
         print("|.    |")
         print("|     |")
         print("|     |")
-        print("------")
+        print("-------")
         print("Press ENTER when ready.")
         input()
 
@@ -525,6 +532,111 @@ class LSM9DS0:
         n = 0
         ax1 /= ACCEL_CALIB_SAMPLES
         az1 /= ACCEL_CALIB_SAMPLES
+
+        # POSITION 2
+        print("Position 2 is like such:")
+        print("|----------|")
+        print("|          |")
+        print("|.         |")
+        print("|----------|")
+        print("Press ENTER when ready.")
+        input()
+
+        while n < ACCEL_CALIB_SAMPLES:
+            n += 1
+            ay2 += self.xm.getyAccel()
+            az2 += self.xm.getzAccel()
+
+        n = 0
+        ay2 /= ACCEL_CALIB_SAMPLES
+        az2 /= ACCEL_CALIB_SAMPLES
+
+        # POSITION 3
+        print("Position 3 is like such:")
+        print("-------")
+        print("|     |")
+        print("|     |")
+        print("|    .|")
+        print("-------")
+        print("Press ENTER when ready.")
+        input()
+
+        while n < ACCEL_CALIB_SAMPLES:
+            n += 1
+            ax3 += self.xm.getxAccel()
+            az3 += self.xm.getzAccel()
+
+        n = 0
+        ax3 /= ACCEL_CALIB_SAMPLES
+        az3 /= ACCEL_CALIB_SAMPLES
+
+        # POSITION 4
+        print("Position 4 is like such:")
+        print("|----------|")
+        print("|         .|")
+        print("|          |")
+        print("|----------|")
+        print("Press ENTER when ready.")
+        input()
+
+        while n < ACCEL_CALIB_SAMPLES:
+            n += 1
+            ay4 += self.xm.getyAccel()
+            az4 += self.xm.getzAccel()
+
+        n = 0
+        ay4 /= ACCEL_CALIB_SAMPLES
+        az4 /= ACCEL_CALIB_SAMPLES
+
+        # POSITION 5
+        print("Position 5 is like such:")
+        print("    TOP    ")
+        print("-.---------")
+        print("|         |")
+        print("-----------")
+        print("   BOTTOM  ")
+        print("Press ENTER when ready.")
+        input()
+
+        while n < ACCEL_CALIB_SAMPLES:
+            n += 1
+            ax5 += self.xm.getxAccel()
+            ay5 += self.xm.getyAccel()
+
+        n = 0
+        ax5 /= ACCEL_CALIB_SAMPLES
+        ay5 /= ACCEL_CALIB_SAMPLES
+
+        # POSITION 6
+        print("Position 6 is like such:")
+        print("    TOP    ")
+        print("-----------")
+        print("|         |")
+        print("-.---------")
+        print("   BOTTOM  ")
+        print("Press ENTER when ready.")
+        input()
+
+        while n < ACCEL_CALIB_SAMPLES:
+            n += 1
+            ax6 += self.xm.getxAccel()
+            ay6 += self.xm.getyAccel()
+
+        n = 0
+        ax6 /= ACCEL_CALIB_SAMPLES
+        ay6 /= ACCEL_CALIB_SAMPLES
+
+        # Calculating 0g biases
+        self.X_AB_OFFSET = (ax1 + ax3 + ax5 + ax6) / 4
+        self.Y_AB_OFFSET = (ay2 + ay4 + ay5 + ay6) / 4
+        self.Z_AB_OFFSET = (az1 + az2 + az3 + az4) / 4
+
+        print("Calibration complete!")
+        print("We've already set these values for you in the system, but the offsets are printed for your convenience.\n")
+
+        print("X Offset: " + str(self.X_AB_OFFSET))
+        print("Y Offset: " + str(self.Y_AB_OFFSET))
+        print("Z Offset: " + str(self.Z_AB_OFFSET))
 
     # For calibration of gyro bias. Probably doesn't need to be run on startup, but is useful for the developer.
     def calibrateGyroOffsets(self):
@@ -549,7 +661,9 @@ class LSM9DS0:
         self.Y_GB_OFFSET = sumy / GYRO_CALIB_SAMPLES
         self.Z_GB_OFFSET = sumz / GYRO_CALIB_SAMPLES
 
-        # Debug prints
+        print("Calibration complete!")
+        print("We've already set these values for you in the system, but the offsets are printed for your convenience.\n")
+        
         print("X Offset: " + str(self.X_GB_OFFSET))
         print("Y Offset: " + str(self.Y_GB_OFFSET))
         print("Z Offset: " + str(self.Z_GB_OFFSET))
