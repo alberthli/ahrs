@@ -773,11 +773,18 @@ class LSM9DS0:
         self.Y_HI_OFFSET = yavg
         self.Z_HI_OFFSET = zavg
 
-        allavg = (xavg + yavg + zavg) / 3
+        allavg = (xmax - xmin + xmax - xmin + xmax - xmin) / 6
 
-        self.X_SI_SCALE = allavg / xavg
-        self.Y_SI_SCALE = allavg / yavg
-        self.Z_SI_SCALE = allavg / zavg
+        self.X_SI_SCALE = abs(allavg / (xmax - xmin))
+        self.Y_SI_SCALE = abs(allavg / (ymax - ymin))
+        self.Z_SI_SCALE = abs(allavg / (zmax - zmin))
+
+        print("X Hard-Iron Offset: " + str(self.X_HI_OFFSET))
+        print("Y Hard-Iron Offset: " + str(self.Y_HI_OFFSET))
+        print("Z Hard-Iron Offset: " + str(self.Z_HI_OFFSET) + "\n")
+        print("X Soft-Iron Scale: " + str(self.X_SI_SCALE))
+        print("Y Soft-Iron Scale: " + str(self.Y_SI_SCALE))
+        print("Z Soft-Iron Scale: " + str(self.Z_SI_SCALE) + "\n")
 
         """
         # Here, I use an interesting and obscure regression method
