@@ -39,6 +39,7 @@ G_ADDRESS = 0x6B
 # Predefined Constants
 TEMP_INTERCEPT = 24.0 # Guess at the intercept for the temperature sensor
 MAG_CALIB_SAMPLES = 10000 # We want to use 10000 magnetometer samples to calibrate for the hard-iron effect
+GYRO_CALIB_SAMPLES = 5000 # We want to use 5000 gyro samples to calculate its offset
 BETA = 12.5 # Beta value for Madgwick filter
 ZETA = 0.01 # Zeta value for Madgwick filter
 
@@ -211,6 +212,11 @@ class LSM9DS0:
         self.Y_HI_OFFSET = -0.045
         self.Z_HI_OFFSET = 0.2
 
+        # Gyro bias offsets
+        self.X_GB_OFFSET = 0
+        self.Y_GB_OFFSET = 0
+        self.Z_GB_OFFSET = 0
+
         # Euler angles
         self.yaw = 0
         self.roll = 0
@@ -322,16 +328,16 @@ class LSM9DS0:
         self.dt = currTime - self.prevTime
         self.prevTime = currTime
 
-        # Update Values - fixed for NED frame and hard-iron effect
+        # Update Values - fixed for NED frame, hard-iron effect, and gyro bias
         self.ax = self.xm.getxAccel()
         self.ay = self.xm.getyAccel()
         self.az = -self.xm.getzAccel()
         self.mx = self.xm.getxMag() - self.X_HI_OFFSET
         self.my = self.xm.getyMag() - self.Y_HI_OFFSET
         self.mz = self.xm.getzMag() - self.Z_HI_OFFSET
-        self.wx = self.g.getxGyro()
-        self.wy = self.g.getyGyro()
-        self.wz = self.g.getzGyro()
+        self.wx = self.g.getxGyro() - self.X_GB_OFFSET
+        self.wy = self.g.getyGyro() - self.Y_GB_OFFSET
+        self.wz = self.g.getzGyro() - self.Z_GB_OFFSET
 
         #################################
         # Useful Variable Manipulations #
@@ -475,6 +481,30 @@ class LSM9DS0:
         self.bx = sqrt(hx * hx + hy * hy)
         self.bz = hz
 
+    def calibrateGyroOffsets(self):
+        n = 0
+        sumx = 0
+        sumy = 0
+        sumz = 0
+
+        print("Please keep the device still for calibration. Press ENTER when ready.")
+        input()
+
+        while n < GYRO_CALIB_SAMPLES:
+            n += 1
+            sumx += self.g.getxGyro()
+            sumy += self.g.getyGyro()
+            sumz += self.g.getzGyro()
+
+        self.X_GB_OFFSET = sumx / GYRO_CALIB_SAMPLES
+        self.Y_GB_OFFSET = sumy / GYRO_CALIB_SAMPLES
+        self.Z_GB_OFFSET = sumz / GYRO_CALIB_SAMPLES
+
+        # Debug prints
+        print("X Offset: " + str(self.X_GB_OFFSET))
+        print("Y Offset: " + str(self.Y_GB_OFFSET))
+        print("Z Offset: " + str(self.Z_GB_OFFSET))
+
     def calibrateHardIronEffect(self):
         # Here, I use an interesting and obscure regression method
         # for solving for the equation of a sphere from a cloud
@@ -499,7 +529,8 @@ class LSM9DS0:
 
         try:
             print("*** MAGNETOMETER CALIBRATION PROTOCOL STARTED ***")
-            print("Please turn the device through the air in a figure 8 fashion until calibration finishes.")
+            print("Please turn the device through the air in a figure 8 fashion until calibration finishes. Press ENTER when ready.")
+            input()
 
             while n < MAG_CALIB_SAMPLES:
                 xk = self.xm.getxMag()
