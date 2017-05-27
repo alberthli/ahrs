@@ -38,8 +38,9 @@ G_ADDRESS = 0x6B
 
 # Predefined Constants
 TEMP_INTERCEPT = 24.0 # Guess at the intercept for the temperature sensor
-MAG_CALIB_SAMPLES = 10000 # We want to use 10000 magnetometer samples to calibrate for the hard-iron effect
-GYRO_CALIB_SAMPLES = 5000 # We want to use 5000 gyro samples to calculate its offset
+MAG_CALIB_SAMPLES = 10000 # Use 10000 magnetometer samples to calibrate for the hard-iron effect
+GYRO_CALIB_SAMPLES = 5000 # Use 5000 gyro samples to calculate its offset
+ACCEL_CALIB_SAMPLES = 250 # Use 250 samples per position to calibrate for 0g offset
 BETA = 12.5 # Beta value for Madgwick filter
 ZETA = 0.01 # Zeta value for Madgwick filter
 
@@ -212,10 +213,12 @@ class LSM9DS0:
         self.Y_HI_OFFSET = -0.045
         self.Z_HI_OFFSET = 0.2
 
-        # Gyro bias offsets
-        self.X_GB_OFFSET = 0
-        self.Y_GB_OFFSET = 0
-        self.Z_GB_OFFSET = 0
+        # Gyro bias offsets (Tune this with the calibrateGyroOffsets() method!)
+        # These are values that I tested myself, but you should calibrate right before flight.
+        # If you do a manual calibration test, please UPDATE THESE VALUES!
+        self.X_GB_OFFSET = 0.5
+        self.Y_GB_OFFSET = -0.3
+        self.Z_GB_OFFSET = -4.5
 
         # Euler angles
         self.yaw = 0
@@ -481,14 +484,60 @@ class LSM9DS0:
         self.bx = sqrt(hx * hx + hy * hy)
         self.bz = hz
 
+    # For calibration of accelerometer bias. Probably doesn't need to be run on startup, but is useful for the developer.
+    def calibrateAccelOffsets(self):
+        # Use this calibration protocol (pg 3): http://kionixfs.kionix.com/en/document/AN012%20Accelerometer%20Errors.pdf
+        n = 0
+
+        ax1 = 0
+        ax3 = 0
+        ax5 = 0
+        ax6 = 0
+
+        ay2 = 0
+        ay4 = 0
+        ay5 = 0
+        ay6 = 0
+
+        az1 = 0
+        az2 = 0
+        az3 = 0
+        az4 = 0
+
+        print("*** ACCELEROMETER CALIBRATION PROTOCOL STARTED ***")
+        print("There are going to be six positions to orient the sensor in.")
+
+        # Collecting data from POSITION 1
+        print("Position 1 is like such:")
+        print("------")
+        print("|.    |")
+        print("|     |")
+        print("|     |")
+        print("------")
+        print("Press ENTER when ready.")
+        input()
+
+        while n < ACCEL_CALIB_SAMPLES:
+            n += 1
+            ax1 += self.xm.getxAccel()
+            az1 += self.xm.getzAccel()
+
+        n = 0
+        ax1 /= ACCEL_CALIB_SAMPLES
+        az1 /= ACCEL_CALIB_SAMPLES
+
+    # For calibration of gyro bias. Probably doesn't need to be run on startup, but is useful for the developer.
     def calibrateGyroOffsets(self):
         n = 0
+
         sumx = 0
         sumy = 0
         sumz = 0
 
+        print("*** GYROSCOPE CALIBRATION PROTOCOL STARTED ***")
         print("Please keep the device still for calibration. Press ENTER when ready.")
         input()
+        print("Calibrating. Please wait...")
 
         while n < GYRO_CALIB_SAMPLES:
             n += 1
@@ -531,6 +580,7 @@ class LSM9DS0:
             print("*** MAGNETOMETER CALIBRATION PROTOCOL STARTED ***")
             print("Please turn the device through the air in a figure 8 fashion until calibration finishes. Press ENTER when ready.")
             input()
+            print("Calibrating. Continue turning...")
 
             while n < MAG_CALIB_SAMPLES:
                 xk = self.xm.getxMag()
