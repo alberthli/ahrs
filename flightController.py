@@ -29,6 +29,7 @@ import numpy as np
 import time
 from math import atan2, sqrt, asin
 import serial
+import threading
 
 # Physical Constants
 GRAV_ACCEL = 9.80665 # Value of acceleration due to gravity (m*s^-2)
@@ -79,7 +80,6 @@ class AHRS:
         self.yaw = 0
 
     def updateEulerAngles(self):
-
         # LSM9DS0 orientation quaternion values
         q1 = self.lsm.SEq1
         q2 = self.lsm.SEq2
@@ -101,6 +101,25 @@ class AHRS:
         self.roll = 180 - (self.roll * 180 / PI)
         if self.roll > 180:
             self.roll -= 360
+
+    def startAHRS(self):
+        # Threads for sensor polling
+        lsmThread = threading.Thread(target = self.lsm.startLSM)
+        gpsThread = threading.Thread(target = self.gps.startGPS)
+
+        try:
+            lsmThread.start()
+            gpsThread.start()
+
+            while True:
+                updateEulerAngles()
+
+                print("Roll: " + self.roll)
+                print("Pitch: " + self.pitch)
+                print("Yaw: " + self.yaw)
+
+        except KeyboardInterrupt:
+            print("AHRS Deactivated.")
 
 # The GPS class
 class GPS:
