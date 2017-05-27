@@ -254,16 +254,16 @@ class LSM9DS0:
         # Timing for sampling
         self.prevTime = 0
 
-        # Hard-Iron Offsets (Tune this with the calibrateHardSoftIronEffect() method!)
+        # Hard-Iron/Soft-Iron Values (Tune this with the calibrateHardSoftIronEffect() method!)
         # These are values that I tested myself, but you should calibrate right before flight.
         # If you do a manual calibration test, please UPDATE THESE VALUES!
         self.X_HI_OFFSET = -0.06
-        self.Y_HI_OFFSET = -0.09
-        self.Z_HI_OFFSET = 0.175
+        self.Y_HI_OFFSET = -0.06
+        self.Z_HI_OFFSET = 0.08
 
         self.X_SI_SCALE = 1
-        self.Y_SI_SCALE = 1
-        self.Z_SI_SCALE = 1
+        self.Y_SI_SCALE = 0.95
+        self.Z_SI_SCALE = 1.1
 
         # Gyro bias offsets (Tune this with the calibrateGyroOffsets() method!)
         # These are values that I tested myself, but you should calibrate right before flight.
