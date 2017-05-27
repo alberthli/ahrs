@@ -257,13 +257,13 @@ class LSM9DS0:
         # Hard-Iron and Soft-Iron Offsets/Scales (Tune this with the calibrateHardSoftIronEffect() method!)
         # These are values that I tested myself, but you should calibrate right before flight.
         # If you do a manual calibration test, please UPDATE THESE VALUES!
-        self.X_HI_OFFSET = -0.05
-        self.Y_HI_OFFSET = -0.045
-        self.Z_HI_OFFSET = 0.2
+        self.X_HI_OFFSET = -0.06
+        self.Y_HI_OFFSET = -0.09
+        self.Z_HI_OFFSET = 0.175
 
-        self.X_SI_SCALE = 1
-        self.X_SI_SCALE = 1
-        self.X_SI_SCALE = 1
+        self.X_SI_SCALE = 7.25
+        self.X_SI_SCALE = 4.5
+        self.X_SI_SCALE = 2.5
 
         # Gyro bias offsets (Tune this with the calibrateGyroOffsets() method!)
         # These are values that I tested myself, but you should calibrate right before flight.
@@ -356,7 +356,7 @@ class LSM9DS0:
 
                 # Local Euler angle calculations for sensor debugging. Uncomment to use.
 
-                """
+                
                 # Calculating Euler angles locally
                 self.yaw = atan2(2 * (self.SEq2 * self.SEq3 - self.SEq1 * self.SEq4), 2 * (self.SEq1 * self.SEq1 + self.SEq2 * self.SEq2) - 1)
                 self.pitch = asin(2 * (self.SEq1 * self.SEq3 - self.SEq2 * self.SEq4))
@@ -380,7 +380,7 @@ class LSM9DS0:
                     print(" | Roll: " + str(self.roll))
 
                     self.lastPrintTime = now
-                """
+                
 
         except KeyboardInterrupt:
             print("Exited Test")
