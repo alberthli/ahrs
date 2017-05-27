@@ -292,7 +292,7 @@ class LSM9DS0:
                 # Convert to degrees for readability
                 self.yaw *= 180 / PI
                 self.pitch *= 180 / PI
-                self.roll = 180 - (roll * 180 / PI)
+                self.roll = 180 - (self.roll * 180 / PI)
                 if self.roll > 180:
                     self.roll -= 360
 
