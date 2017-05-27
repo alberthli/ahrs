@@ -752,17 +752,17 @@ class LSM9DS0:
 
             if x > xmax:
                 xmax = x
-            elif: x < xmin:
+            elif x < xmin:
                 xmin = x
 
             if y > ymax:
                 ymax = y
-            elif: y < ymin:
+            elif y < ymin:
                 ymin = y
 
             if z > zmax:
                 zmax = z
-            elif: z < zmin:
+            elif z < zmin:
                 zmin = z
 
         xavg = (xmax + xmin) / 2
