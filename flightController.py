@@ -808,13 +808,9 @@ class LSM9DS0:
         self.Z_HI_OFFSET = z0
 
         # Soft-iron axis scaling
-        avgx = sumxk / MAG_CALIB_SAMPLES
-        avgy = sumyk / MAG_CALIB_SAMPLES
-        avgz = sumzk / MAG_CALIB_SAMPLES
-
-        self.X_SI_SCALE = abs(R / avgx)
-        self.Y_SI_SCALE = abs(R / avgy)
-        self.Z_SI_SCALE = abs(R / avgz)
+        self.X_SI_SCALE = abs(R / x0)
+        self.Y_SI_SCALE = abs(R / y0)
+        self.Z_SI_SCALE = abs(R / z0)
 
         print("Calibration complete!")
         print("We've already set these values for you in the system, but the offsets are printed for your convenience.\n")
