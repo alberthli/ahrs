@@ -182,8 +182,18 @@ void LSM9DS0::calibrateGyroOffsets() {
 	double sumz = 0.0;
 
 	Serial.println("*** GYROSCOPE CALIBRATION PROTOCOL STARTED ***");
-	Serial.println("Please keep the device still for calibration. Press ENTER when ready.");
-	while(Serial.available() == 0) {}
+	Serial.println("Please keep the device still for calibration. When ready, send Y. To exit, send anything else.");
+	while(Serial.available() == 0) {
+		char read = Serial.read();
+
+		if(read == 'y' || read == 'Y') {
+			break;
+			
+		} else {
+			Serial.println("Calibration exited.");
+			return;
+		}
+	}
 	Serial.println("Calibrating. Please wait...");
 
 	while (n < GYRO_CALIB_SAMPLES) {
@@ -203,6 +213,7 @@ void LSM9DS0::calibrateGyroOffsets() {
 	Serial.print("X Offset: "); Serial.println(X_GB_OFFSET);
 	Serial.print("Y Offset: "); Serial.println(Y_GB_OFFSET);
 	Serial.print("Z Offset: "); Serial.println(Z_GB_OFFSET);
+	Serial.println("\n");
 }
 
 // Debugging method for raw sensor values
