@@ -376,7 +376,7 @@ class LSM9DS0:
 				self.madgwickFilterUpdate()
 
 				# Local Euler angle calculations for sensor debugging. Uncomment entire block to use.
-				"""
+				
 				# Calculating Euler angles locally
 				self.yaw = atan2(2 * (self.SEq2 * self.SEq3 - self.SEq1 * self.SEq4), 2 * (self.SEq1 * self.SEq1 + self.SEq2 * self.SEq2) - 1)
 				self.pitch = asin(2 * (self.SEq1 * self.SEq3 - self.SEq2 * self.SEq4))
@@ -400,7 +400,7 @@ class LSM9DS0:
 					print(" | Roll: " + str(self.roll))
 
 					self.lastPrintTime = now
-				"""
+				
 
 		except KeyboardInterrupt:
 			print("Exited Test")
