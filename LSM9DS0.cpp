@@ -197,8 +197,8 @@ void LSM9DS0::calibrateGyroOffsets() {
 	Y_GB_OFFSET = sumy / GYRO_CALIB_SAMPLES;
 	Z_GB_OFFSET = sumz / GYRO_CALIB_SAMPLES;
 
-	Serial.println("Calibration complete!")
-	Serial.println("We've already set these values for you in the system, but the offsets are printed for your convenience.\n")
+	Serial.println("Calibration complete!");
+	Serial.println("We've already set these values for you in the system, but the offsets are printed for your convenience.\n");
 
 	Serial.print("X Offset: "); Serial.println(X_GB_OFFSET);
 	Serial.print("Y Offset: "); Serial.println(Y_GB_OFFSET);
