@@ -173,6 +173,227 @@ float LSM9DS0::getzGyro() {
 	return zBitGyro * gyroGain;
 }
 
+// Calibration method for accelerometer bias
+// Use this calibration protocol (pg 3): http://kionixfs.kionix.com/en/document/AN012%20Accelerometer%20Errors.pdf
+void LSM9DS0::calibrateAccelOffsets() {
+	int n = 0;
+
+	float ax1 = 0.0f;
+	float ax3 = 0.0f;
+	float ax5 = 0.0f;
+	float ax6 = 0.0f;
+
+	float ay2 = 0.0f;
+	float ay4 = 0.0f;
+	float ay5 = 0.0f;
+	float ay6 = 0.0f;
+
+	float az1 = 0.0f;
+	float az2 = 0.0f;
+	float az3 = 0.0f;
+	float az4 = 0.0f;
+
+	Serial.println("*** ACCELEROMETER CALIBRATION PROTOCOL STARTED ***");
+	Serial.println("There are going to be six positions to orient the sensor in. It must be still while calibrating.");
+	Serial.println("It may help to have a corner so you are as close to perpendicular as possible.\n")
+
+	// POSITION 1 //
+	Serial.println("Position 1 is like such:");
+	Serial.println("-------");
+	Serial.println("|.    |");
+	Serial.println("|     |");
+	Serial.println("|     |");
+	Serial.println("-------");
+	Serial.println("Enter Y when ready. Enter anything else to exit calibration.");
+	
+	while(Serial.available() == 0) {}
+
+		char read = Serial.read();
+
+		if(read != 'y' && read != 'Y') {
+			Serial.println("Calibration exited.");
+			return;
+		}
+
+	print("Gathering data. Please wait...\n")
+
+	while(n < ACCEL_CALIB_SAMPLES) {
+		n += 1;
+		ax1 += getxAccel();
+		az1 += getzAccel();
+	}
+
+	n = 0;
+	ax1 /= ACCEL_CALIB_SAMPLES;
+	az1 /= ACCEL_CALIB_SAMPLES;
+
+
+	// POSITION 2 //
+	Serial.println("Position 2 is like such:");
+	Serial.println("|----------|");
+	Serial.println("|          |");
+	Serial.println("|.         |");
+	Serial.println("|----------|");
+	Serial.println("Enter Y when ready. Enter anything else to exit calibration.");
+	
+	while(Serial.available() == 0) {}
+
+		char read = Serial.read();
+
+		if(read != 'y' && read != 'Y') {
+			Serial.println("Calibration exited.");
+			return;
+		}
+
+	print("Gathering data. Please wait...\n")
+
+	while(n < ACCEL_CALIB_SAMPLES) {
+		n += 1;
+		ay2 += getyAccel();
+		az2 += getzAccel();
+	}
+
+	n = 0;
+	ay2 /= ACCEL_CALIB_SAMPLES;
+	az2 /= ACCEL_CALIB_SAMPLES;
+
+
+	// POSITION 3 //
+	Serial.println("Position 3 is like such:");
+	Serial.println("-------");
+	Serial.println("|     |");
+	Serial.println("|     |");
+	Serial.println("|    .|");
+	Serial.println("-------");
+	Serial.println("Enter Y when ready. Enter anything else to exit calibration.");
+	
+	while(Serial.available() == 0) {}
+
+		char read = Serial.read();
+
+		if(read != 'y' && read != 'Y') {
+			Serial.println("Calibration exited.");
+			return;
+		}
+
+	print("Gathering data. Please wait...\n")
+
+	while(n < ACCEL_CALIB_SAMPLES) {
+		n += 1;
+		ax3 += getxAccel();
+		az3 += getzAccel();
+	}
+
+	n = 0;
+	ax3 /= ACCEL_CALIB_SAMPLES;
+	az3 /= ACCEL_CALIB_SAMPLES;
+
+
+	// POSITION 4 //
+	Serial.println("Position 4 is like such:");
+	Serial.println("|----------|");
+	Serial.println("|         .|");
+	Serial.println("|          |");
+	Serial.println("|----------|");
+	Serial.println("Enter Y when ready. Enter anything else to exit calibration.");
+	
+	while(Serial.available() == 0) {}
+
+		char read = Serial.read();
+
+		if(read != 'y' && read != 'Y') {
+			Serial.println("Calibration exited.");
+			return;
+		}
+
+	print("Gathering data. Please wait...\n")
+
+	while(n < ACCEL_CALIB_SAMPLES) {
+		n += 1;
+		ay4 += getyAccel();
+		az4 += getzAccel();
+	}
+
+	n = 0;
+	ay4 /= ACCEL_CALIB_SAMPLES;
+	az4 /= ACCEL_CALIB_SAMPLES;
+
+	// POSITION 5 //
+	Serial.println("Position 5 is like such:");
+	Serial.println("    TOP    ");
+	Serial.println("-.---------");
+	Serial.println("|         |");
+	Serial.println("-----------");
+	Serial.println("   BOTTOM  ");
+	Serial.println("Enter Y when ready. Enter anything else to exit calibration.");
+	
+	while(Serial.available() == 0) {}
+
+		char read = Serial.read();
+
+		if(read != 'y' && read != 'Y') {
+			Serial.println("Calibration exited.");
+			return;
+		}
+
+	print("Gathering data. Please wait...\n")
+
+	while(n < ACCEL_CALIB_SAMPLES) {
+		n += 1;
+		ax5 += getxAccel();
+		ay5 += getyAccel();
+	}
+
+	n = 0;
+	ax5 /= ACCEL_CALIB_SAMPLES;
+	ay5 /= ACCEL_CALIB_SAMPLES;
+
+
+	// POSITION 6 //
+	Serial.println("Position 6 is like such:");
+	Serial.println("   BOTTOM  ");
+	Serial.println("-----------");
+	Serial.println("|         |");
+	Serial.println("-.---------");
+	Serial.println("    TOP    ");
+	Serial.println("Enter Y when ready. Enter anything else to exit calibration.");
+	
+	while(Serial.available() == 0) {}
+
+		char read = Serial.read();
+
+		if(read != 'y' && read != 'Y') {
+			Serial.println("Calibration exited.");
+			return;
+		}
+
+	print("Gathering data. Please wait...\n")
+
+	while(n < ACCEL_CALIB_SAMPLES) {
+		n += 1;
+		ax6 += getxAccel();
+		ay6 += getyAccel();
+	}
+
+	n = 0;
+	ax6 /= ACCEL_CALIB_SAMPLES;
+	ay6 /= ACCEL_CALIB_SAMPLES;
+
+
+	// Calculating 0g biases
+	X_AB_OFFSET = (ax1 + ax3 + ax5 + ax6) / 4.0f;
+	Y_AB_OFFSET = (ay2 + ay4 + ay5 + ay6) / 4.0f;
+	Z_AB_OFFSET = (az1 + az2 + az3 + az4) / 4.0f;
+
+	Serial.println("Calibration complete!");
+	Serial.println("We've already set these values for you in the system, but the offsets are printed for your convenience.\n");
+
+	Serial.print("X Offset: "); Serial.println(X_AB_OFFSET);
+	Serial.print("Y Offset: "); Serial.println(Y_AB_OFFSET);
+	Serial.print("Z Offset: "); Serial.println(Z_AB_OFFSET);
+	Serial.println();
+}
+
 // Calibration method for hard and soft iron effects
 void LSM9DS0::calibrateHardSoftIronEffect() {
 	float xmax = 0.0f;
@@ -239,7 +460,7 @@ void LSM9DS0::calibrateHardSoftIronEffect() {
 	Z_HI_OFFSET = zAvg;
 
 	// Soft Iron Scaling
-	float allAvg = (xmax - xmin + ymax - ymin + zmax - zmin) / 3;
+	float allAvg = (xmax - xmin + ymax - ymin + zmax - zmin) / 3.0f;
 
 	X_SI_SCALE = allAvg / (xmax - xmin);
 	Y_SI_SCALE = allAvg / (ymax - ymin);
