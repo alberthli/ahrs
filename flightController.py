@@ -1096,7 +1096,7 @@ class LSM9DS0_XM:
 		0 | Disable
 		1 | Enable
         """
-    	self.device.write8(self.CTRL_REG3_XM, 0x00) # All disable, defaults
+        self.device.write8(self.CTRL_REG3_XM, 0x00) # All disable, defaults
 
         """
         CTRL_REG4_XM Configuration:
