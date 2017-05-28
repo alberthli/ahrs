@@ -1095,7 +1095,7 @@ class LSM9DS0_XM:
 		FIFO Empty Indication on INT1_XM (Bit 8):
 		0 | Disable
 		1 | Enable
-    	"""
+        """
     	self.device.write8(self.CTRL_REG3_XM, 0x00) # All disable, defaults
 
         """
