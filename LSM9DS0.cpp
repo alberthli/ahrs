@@ -197,6 +197,8 @@ void LSM9DS0::calibrateAccelOffsets() {
 	float az3 = 0.0f;
 	float az4 = 0.0f;
 
+	char read;
+
 	Serial.println("*** ACCELEROMETER CALIBRATION PROTOCOL STARTED ***");
 	Serial.println("There are going to be six positions to orient the sensor in. It must be still while calibrating.");
 	Serial.println("It may help to have a corner so you are as close to perpendicular as possible.\n");
@@ -212,7 +214,7 @@ void LSM9DS0::calibrateAccelOffsets() {
 	
 	while(Serial.available() == 0) {}
 
-		char read = Serial.read();
+		read = Serial.read();
 
 		if(read != 'y' && read != 'Y') {
 			Serial.println("Calibration exited.");
@@ -242,7 +244,7 @@ void LSM9DS0::calibrateAccelOffsets() {
 	
 	while(Serial.available() == 0) {}
 
-		char read = Serial.read();
+		read = Serial.read();
 
 		if(read != 'y' && read != 'Y') {
 			Serial.println("Calibration exited.");
@@ -273,7 +275,7 @@ void LSM9DS0::calibrateAccelOffsets() {
 	
 	while(Serial.available() == 0) {}
 
-		char read = Serial.read();
+		read = Serial.read();
 
 		if(read != 'y' && read != 'Y') {
 			Serial.println("Calibration exited.");
@@ -303,7 +305,7 @@ void LSM9DS0::calibrateAccelOffsets() {
 	
 	while(Serial.available() == 0) {}
 
-		char read = Serial.read();
+		read = Serial.read();
 
 		if(read != 'y' && read != 'Y') {
 			Serial.println("Calibration exited.");
@@ -333,7 +335,7 @@ void LSM9DS0::calibrateAccelOffsets() {
 	
 	while(Serial.available() == 0) {}
 
-		char read = Serial.read();
+		read = Serial.read();
 
 		if(read != 'y' && read != 'Y') {
 			Serial.println("Calibration exited.");
@@ -364,7 +366,7 @@ void LSM9DS0::calibrateAccelOffsets() {
 	
 	while(Serial.available() == 0) {}
 
-		char read = Serial.read();
+		read = Serial.read();
 
 		if(read != 'y' && read != 'Y') {
 			Serial.println("Calibration exited.");
