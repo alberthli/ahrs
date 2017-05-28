@@ -532,11 +532,11 @@ const uint8_t INT1_DURATION_G = 0x38;
 // PHYSICAL CONSTANTS //
 ////////////////////////
 
-const double TEMP_INTERCEPT = 24.0;
-const double GRAV_ACCEL = 9.80665;
+const float TEMP_INTERCEPT = 24.0;
+const float GRAV_ACCEL = 9.80665;
 
 // Temperature gain is always .125 for this sensor
-const double TEMP_GAIN = .125;
+const float TEMP_GAIN = .125;
 
 // Calibration Constants
 const int MAG_CALIB_SAMPLES = 10000; // 10000 samples to calibrate hard/soft iron effect
@@ -552,19 +552,19 @@ public:
 	void initXM(uint8_t xmaddress);
 	void initG(uint8_t gaddress);
 
-	double getTemp();
+	float getTemp();
 
-	double getxAccel();
-	double getyAccel();
-	double getzAccel();
+	float getxAccel();
+	float getyAccel();
+	float getzAccel();
 
-	double getxMag();
-	double getyMag();
-	double getzMag();
+	float getxMag();
+	float getyMag();
+	float getzMag();
 
-	double getxGyro();
-	double getyGyro();
-	double getzGyro();
+	float getxGyro();
+	float getyGyro();
+	float getzGyro();
 
 	uint8_t readByte(uint8_t devAddress, uint8_t regAddress);
 	void writeByte(uint8_t devAddress, uint8_t regAddress, uint8_t byte);
@@ -580,35 +580,35 @@ public:
 
 private:
 	// Private XM Variables
-	double accelGain, magGain;
+	float accelGain, magGain;
 
 	// Private G Variables
-	double gyroGain;
+	float gyroGain;
 
 	// AHRS Variables & Calibrated Values
-	double X_HI_OFFSET, Y_HI_OFFSET, Z_HI_OFFSET; // Hard Iron Offsets
-	double X_SI_SCALE, Y_SI_SCALE, Z_SI_SCALE; // Soft Iron Scaling
-	double X_GB_OFFSET, Y_GB_OFFSET, Z_GB_OFFSET; // Gyro Bias Offsets
-	double X_AB_OFFSET, Y_AB_OFFSET, Z_AB_OFFSET; // Accelerometer Bias Offsets
-	double yaw, roll, pitch; // Euler Angles
+	float X_HI_OFFSET, Y_HI_OFFSET, Z_HI_OFFSET; // Hard Iron Offsets
+	float X_SI_SCALE, Y_SI_SCALE, Z_SI_SCALE; // Soft Iron Scaling
+	float X_GB_OFFSET, Y_GB_OFFSET, Z_GB_OFFSET; // Gyro Bias Offsets
+	float X_AB_OFFSET, Y_AB_OFFSET, Z_AB_OFFSET; // Accelerometer Bias Offsets
+	float yaw, roll, pitch; // Euler Angles
 
 	// Madgwick Variables
-	double prevTime; // Timing for Processing Loop
-	double dt; // Time difference between loops
+	float prevTime; // Timing for Processing Loop
+	float dt; // Time difference between loops
 
-	double BETA; // beta parameter
-	double ZETA; // zeta parameter
-	double SEq1, SEq2, SEq3, SEq4; // Orientation Quaternion Values
-	double ax, ay, az; // Accelerometer raw values
-	double mx, my, mz; // Magnetometer raw values
-	double wx, wy, wz; // Gyro raw values
+	float BETA; // beta parameter
+	float ZETA; // zeta parameter
+	float SEq1, SEq2, SEq3, SEq4; // Orientation Quaternion Values
+	float ax, ay, az; // Accelerometer raw values
+	float mx, my, mz; // Magnetometer raw values
+	float wx, wy, wz; // Gyro raw values
 
-	double bx, bz; // Earth magnetic field reference directions
-	double wbx, wby, wbz; // Dynamic gyro bias estimates
+	float bx, bz; // Earth magnetic field reference directions
+	float wbx, wby, wbz; // Dynamic gyro bias estimates
 
 	// Debug Variables
-	double lastPrintTime;
-	double startTime;
+	float lastPrintTime;
+	float startTime;
 
 };
 

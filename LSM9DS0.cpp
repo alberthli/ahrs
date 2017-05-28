@@ -70,7 +70,7 @@ void LSM9DS0::writeByte(uint8_t devAddress, uint8_t regAddress, uint8_t byte) {
 }
 
 // Retrieves the temperature (deg C)
-double LSM9DS0::getTemp() {
+float LSM9DS0::getTemp() {
 	uint8_t temp_MSBs = readByte(XM_ADDRESS, OUT_TEMP_H_XM);
 	uint8_t temp_LSBs = readByte(XM_ADDRESS, OUT_TEMP_L_XM);
 	// 12 bit resolution, right-justified
@@ -80,11 +80,11 @@ double LSM9DS0::getTemp() {
 		bitTemp -= 4096;
 	}
 
-	return TEMP_INTERCEPT + (double)bitTemp * TEMP_GAIN;
+	return TEMP_INTERCEPT + (float)bitTemp * TEMP_GAIN;
 }
 
 // Retrives the x acceleration (m*s^-2)
-double LSM9DS0::getxAccel() {
+float LSM9DS0::getxAccel() {
 	uint8_t xAccel_MSBs = readByte(XM_ADDRESS, OUT_X_H_A);
 	uint8_t xAccel_LSBs = readByte(XM_ADDRESS, OUT_X_L_A);
 	// 16 bit resolution, left-justified
@@ -94,7 +94,7 @@ double LSM9DS0::getxAccel() {
 }
 
 // Retrives the y acceleration (m*s^-2)
-double LSM9DS0::getyAccel() {
+float LSM9DS0::getyAccel() {
 	uint8_t yAccel_MSBs = readByte(XM_ADDRESS, OUT_Y_H_A);
 	uint8_t yAccel_LSBs = readByte(XM_ADDRESS, OUT_Y_L_A);
 	// 16 bit resolution, left-justified
@@ -104,7 +104,7 @@ double LSM9DS0::getyAccel() {
 }
 
 // Retrives the z acceleration (m*s^-2)
-double LSM9DS0::getzAccel() {
+float LSM9DS0::getzAccel() {
 	uint8_t zAccel_MSBs = readByte(XM_ADDRESS, OUT_Z_H_A);
 	uint8_t zAccel_LSBs = readByte(XM_ADDRESS, OUT_Z_L_A);
 	// 16 bit resolution, left-justified
@@ -114,7 +114,7 @@ double LSM9DS0::getzAccel() {
 }
 
 // Retrieves the x magnetic field value (gauss)
-double LSM9DS0::getxMag() {
+float LSM9DS0::getxMag() {
 	uint8_t xMag_MSBs = readByte(XM_ADDRESS, OUT_X_H_M);
 	uint8_t xMag_LSBs = readByte(XM_ADDRESS, OUT_X_L_M);
 	// 16 bit resolution, left-justified
@@ -124,7 +124,7 @@ double LSM9DS0::getxMag() {
 }
 
 // Retrieves the y magnetic field value (gauss)
-double LSM9DS0::getyMag() {
+float LSM9DS0::getyMag() {
 	uint8_t yMag_MSBs = readByte(XM_ADDRESS, OUT_Y_H_M);
 	uint8_t yMag_LSBs = readByte(XM_ADDRESS, OUT_Y_L_M);
 	// 16 bit resolution, left-justified
@@ -134,7 +134,7 @@ double LSM9DS0::getyMag() {
 }
 
 // Retrieves the z magnetic field value (gauss)
-double LSM9DS0::getzMag() {
+float LSM9DS0::getzMag() {
 	uint8_t zMag_MSBs = readByte(XM_ADDRESS, OUT_Z_H_M);
 	uint8_t zMag_LSBs = readByte(XM_ADDRESS, OUT_Z_L_M);
 	// 16 bit resolution, left-justified
@@ -144,7 +144,7 @@ double LSM9DS0::getzMag() {
 }
 
 // Retrieves the x gyro value (DPS)
-double LSM9DS0::getxGyro() {
+float LSM9DS0::getxGyro() {
 	uint8_t xGyro_MSBs = readByte(G_ADDRESS, OUT_X_H_G);
 	uint8_t xGyro_LSBs = readByte(G_ADDRESS, OUT_X_L_G);
 	// 16 bit resolution, left-justified
@@ -154,7 +154,7 @@ double LSM9DS0::getxGyro() {
 }
 
 // Retrieves the y gyro value (DPS)
-double LSM9DS0::getyGyro() {
+float LSM9DS0::getyGyro() {
 	uint8_t yGyro_MSBs = readByte(G_ADDRESS, OUT_Y_H_G);
 	uint8_t yGyro_LSBs = readByte(G_ADDRESS, OUT_Y_L_G);
 	// 16 bit resolution, left-justified
@@ -164,7 +164,7 @@ double LSM9DS0::getyGyro() {
 }
 
 // Retrieves the z gyro value (DPS)
-double LSM9DS0::getzGyro() {
+float LSM9DS0::getzGyro() {
 	uint8_t zGyro_MSBs = readByte(G_ADDRESS, OUT_Z_H_G);
 	uint8_t zGyro_LSBs = readByte(G_ADDRESS, OUT_Z_L_G);
 	// 16 bit resolution, left-justified
@@ -173,17 +173,103 @@ double LSM9DS0::getzGyro() {
 	return zBitGyro * gyroGain;
 }
 
+// Calibration method for hard and soft iron effects
+void LSM9DS0::calibrateHardSoftIronEffect() {
+	float xmax = 0.0f;
+	float xmin = 0.0f;
+	float ymax = 0.0f;
+	float ymin = 0.0f;
+	float zmax = 0.0f;
+	float zmin = 0.0f;
+
+	int n = 0;
+
+	Serial.println("*** MAGNETOMETER CALIBRATION PROTOCOL STARTED ***");
+	Serial.println("Please turn the device through the air in a figure 8 fashion until calibration finishes.\n");
+	Serial.println("When ready, send Y. To exit, send anything else.");
+
+	while(Serial.available() == 0) {}
+
+	char read = Serial.read();
+
+	if(read != 'y' && read != 'Y') {
+		Serial.println("Calibration exited.");
+		return;
+	}
+
+	Serial.println("Calibrating. Continue turning...");
+
+	float xtemp;
+	float ytemp;
+	float ztemp;
+
+	while (n < MAG_CALIB_SAMPLES) {
+		n += 1;
+
+		xtemp = getxMag();
+		ytemp = getyMag();
+		ztemp = getzMag();
+
+		if(xtemp > xmax) {
+			xmax = xtemp;
+		} else if(xtemp < xmin) {
+			xmin = xtemp;
+		}
+
+		if(ytemp > ymax) {
+			ymax = ytemp;
+		} else if(ytemp < ymin) {
+			ymin = ytemp;
+		}
+
+		if(ztemp > zmax) {
+			zmax = ztemp;
+		} else if(ztemp < zmin) {
+			zmin = ztemp;
+		}
+	}
+
+	// Hard Iron Offsets
+	float xAvg = (xmax + xmin) / 2.0f;
+	float yAvg = (xmax + xmin) / 2.0f;
+	float zAvg = (xmax + xmin) / 2.0f;
+
+	X_HI_OFFSET = xAvg;
+	Y_HI_OFFSET = yAvg;
+	Z_HI_OFFSET = zAvg;
+
+	// Soft Iron Scaling
+	float allAvg = (xmax - xmin + ymax - ymin + zmax - zmin) / 3;
+
+	X_SI_SCALE = allAvg / (xmax - xmin);
+	Y_SI_SCALE = allAvg / (ymax - ymin);
+	Z_SI_SCALE = allAvg / (zmax - zmin);
+
+	Serial.println("Calibration complete!");
+	Serial.println("We've already set these values for you in the system, but the offsets are printed for your convenience.\n");
+
+	Serial.print("X Hard-Iron Offset: "); Serial.println(X_HI_OFFSET);
+	Serial.print("Y Hard-Iron Offset: "); Serial.println(Y_HI_OFFSET);
+	Serial.print("Z Hard-Iron Offset: "); Serial.println(Z_HI_OFFSET);
+	Serial.println();
+
+	Serial.print("X Soft-Iron Scale: "); Serial.println(X_SI_SCALE);
+	Serial.print("Y Soft-Iron Scale: "); Serial.println(Y_SI_SCALE);
+	Serial.print("Z Soft-Iron Scale: "); Serial.println(Z_SI_SCALE);
+	Serial.println();
+}
+
 // Calibration method for gyro offsets
 void LSM9DS0::calibrateGyroOffsets() {
 	int n = 0;
 
-	double sumx = 0.0;
-	double sumy = 0.0;
-	double sumz = 0.0;
+	float sumx = 0.0f;
+	float sumy = 0.0f;
+	float sumz = 0.0f;
 
-	Serial.println("*** GYROSCOPE CALIBRATION PROTOCOL STARTED ***");
-	Serial.println("Please keep the device still for calibration. When ready, send Y. To exit, send anything else.");
 	Serial.flush();
+	Serial.println("\n*** GYROSCOPE CALIBRATION PROTOCOL STARTED ***");
+	Serial.println("Please keep the device still for calibration. When ready, send Y. To exit, send anything else.");
 
 	while(Serial.available() == 0) {}
 
@@ -218,16 +304,16 @@ void LSM9DS0::calibrateGyroOffsets() {
 
 // Debugging method for raw sensor values
 void LSM9DS0::printRawData() {
-	double xacc = getxAccel();
-	double yacc = getyAccel();
-	double zacc = getzAccel();
-	double xmag = getxMag();
-	double ymag = getyMag();
-	double zmag = getzMag();
-	double xgyr = getxGyro();
-	double ygyr = getyGyro();
-	double zgyr = getzGyro();
-	double temp = getTemp();
+	float xacc = getxAccel();
+	float yacc = getyAccel();
+	float zacc = getzAccel();
+	float xmag = getxMag();
+	float ymag = getyMag();
+	float zmag = getzMag();
+	float xgyr = getxGyro();
+	float ygyr = getyGyro();
+	float zgyr = getzGyro();
+	float temp = getTemp();
 
 	Serial.print("X Accel: "); Serial.println(xacc);
 	Serial.print("Y Accel: "); Serial.println(yacc);
