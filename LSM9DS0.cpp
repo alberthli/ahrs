@@ -195,4 +195,5 @@ void LSM9DS0::printRawData() {
 	Serial.print("Y Gyro: "); Serial.println(ygyr);
 	Serial.print("Z Gyro: "); Serial.println(zgyr);
 	Serial.print("Temp: "); Serial.println(temp);
+	Serial.println();
 }
