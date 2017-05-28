@@ -539,9 +539,9 @@ const double GRAV_ACCEL = 9.80665;
 const double TEMP_GAIN = .125;
 
 // Calibration Constants
-const int MAG_CALIB_SAMPLES = 10000 // 10000 samples to calibrate hard/soft iron effect
-const int GYRO_CALIB_SAMPLES = 5000 // 5000 samples to calibrate gyro bias
-const int ACCEL_CALIB_SAMPLES = 1000 // 1000 samples per sensor orientation for accelerometer bias
+const int MAG_CALIB_SAMPLES = 10000; // 10000 samples to calibrate hard/soft iron effect
+const int GYRO_CALIB_SAMPLES = 5000; // 5000 samples to calibrate gyro bias
+const int ACCEL_CALIB_SAMPLES = 1000; // 1000 samples per sensor orientation for accelerometer bias
 
 class LSM9DS0 {
 public:
