@@ -173,6 +173,39 @@ double LSM9DS0::getzGyro() {
 	return zBitGyro * gyroGain;
 }
 
+// Calibration method for gyro offsets
+void LSM9DS0::calibrateGyroOffsets() {
+	int n = 0;
+
+	double sumx = 0.0;
+	double sumy = 0.0;
+	double sumz = 0.0;
+
+	Serial.println("*** GYROSCOPE CALIBRATION PROTOCOL STARTED ***");
+	Serial.println("Please keep the device still for calibration. Press ENTER when ready.");
+	while(Serial.available() == 0) {}
+	Serial.println("Calibrating. Please wait...");
+
+	while (n < GYRO_CALIB_SAMPLES) {
+		n += 1;
+		sumx += getxGyro();
+		sumy += getxGyro();
+		sumz += getxGyro();
+	}
+
+	X_GB_OFFSET = sumx / GYRO_CALIB_SAMPLES;
+	Y_GB_OFFSET = sumy / GYRO_CALIB_SAMPLES;
+	Z_GB_OFFSET = sumz / GYRO_CALIB_SAMPLES;
+
+	Serial.println("Calibration complete!")
+	Serial.println("We've already set these values for you in the system, but the offsets are printed for your convenience.\n")
+
+	Serial.print("X Offset: "); Serial.println(X_GB_OFFSET);
+	Serial.print("Y Offset: "); Serial.println(Y_GB_OFFSET);
+	Serial.print("Z Offset: "); Serial.println(Z_GB_OFFSET);
+}
+
+// Debugging method for raw sensor values
 void LSM9DS0::printRawData() {
 	double xacc = getxAccel();
 	double yacc = getyAccel();
