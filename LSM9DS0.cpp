@@ -1,7 +1,7 @@
 #include "LSM9DS0.h"
 #include <Wire.h>
 #include <Arduino.h>
-#include <iostream>
+#include <Serial.h>
 
 LSM9DS0::LSM9DS0() {
 
@@ -186,6 +186,7 @@ void LSM9DS0::printRawData() {
 	uint8_t zgyr = getzGyro();
 	uint8_t temp = getTemp();
 
+	/*
 	cout << "X Accel: " << xacc << "\n";
 	cout << "Y Accel: " << yacc << "\n";
 	cout << "Z Accel: " << zacc << "\n";
@@ -196,4 +197,5 @@ void LSM9DS0::printRawData() {
 	cout << "Y Gyro: " << ygyr << "\n";
 	cout << "Z Gyro: " << zgyr << "\n";
 	cout << "Temp: " << temp << "\n";
+	*/
 }
