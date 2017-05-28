@@ -542,7 +542,7 @@ class LSM9DS0 {
 public:
 	LSM9DS0();
 	virtual ~LSM9DS0();
-  void start();
+  	void start();
 
 	void initXM(uint8_t xmaddress);
 	void initG(uint8_t gaddress);
@@ -564,15 +564,47 @@ public:
 	uint8_t readByte(uint8_t devAddress, uint8_t regAddress);
 	void writeByte(uint8_t devAddress, uint8_t regAddress, uint8_t byte);
 
+	void startLSM();
+	void madgwickFilterUpdate();
+
+	void calibrateAccelOffsets();
+	void calibrateGyroOffsets();
+	void calibrateHardSoftIronEffect();
+
+	void printRawData();
+
 private:
-	// Private XM variables
-	double accelxoffset, accelyoffset, accelzoffset;
-	double magxoffset, magyoffset, magzoffset;
+	// Private XM Variables
 	double accelGain, magGain;
 
-	// Private G variables
-	double gyroxoffset, gyroyoffset, gyrozoffset;
+	// Private G Variables
 	double gyroGain;
+
+	// AHRS Variables & Calibrated Values
+	double X_HI_OFFSET, Y_HI_OFFSET, Z_HI_OFFSET; // Hard Iron Offsets
+	double X_SI_SCALE, Y_SI_SCALE, Z_SI_SCALE; // Soft Iron Scaling
+	double X_GB_OFFSET, Y_GB_OFFSET, Z_GB_OFFSET; // Gyro Bias Offsets
+	double X_AB_OFFSET, Y_AB_OFFSET, Z_AB_OFFSET; // Accelerometer Bias Offsets
+	double yaw, roll, pitch; // Euler Angles
+
+	// Madgwick Variables
+	double prevTime; // Timing for Processing Loop
+	double dt; // Time difference between loops
+
+	double BETA; // beta parameter
+	double ZETA; // zeta parameter
+	double SEq1, SEq2, SEq3, SEq4; // Orientation Quaternion Values
+	double ax, ay, az; // Accelerometer raw values
+	double mx, my, mz; // Magnetometer raw values
+	double wx, wy, wz; // Gyro raw values
+
+	double bx, bz; // Earth magnetic field reference directions
+	double wbx, wby, wbz; // Dynamic gyro bias estimates
+
+	// Debug Variables
+	double lastPrintTime;
+	double startTime;
+
 };
 
 extern LSM9DS0 lsm9ds0;

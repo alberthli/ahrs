@@ -1,6 +1,7 @@
 #include "LSM9DS0.h"
 #include <Wire.h>
 #include <Arduino.h>
+#include <iostream>
 
 LSM9DS0::LSM9DS0() {
 
@@ -12,11 +13,11 @@ LSM9DS0::~LSM9DS0() {
 
 void LSM9DS0::start() {
   Wire.begin();
+
   initXM(XM_ADDRESS);
   initG(G_ADDRESS);
 }
 
-  
 // Initializing desired settings on the XM
 void LSM9DS0::initXM(uint8_t xmaddress) {
 	// Bit Register Configuration Info in Header File
@@ -171,4 +172,28 @@ double LSM9DS0::getzGyro() {
 	int16_t zBitGyro = (uint16_t) zGyro_MSBs << 8 | zGyro_LSBs;
 
 	return zBitGyro * gyroGain;
+}
+
+void LSM9DS0::printRawData() {
+	uint8_t xacc = getxAccel();
+	uint8_t yacc = getyAccel();
+	uint8_t zacc = getzAccel();
+	uint8_t xmag = getxMag();
+	uint8_t ymag = getyMag();
+	uint8_t zmag = getzMag();
+	uint8_t xgyr = getxGyro();
+	uint8_t ygyr = getyGyro();
+	uint8_t zgyr = getzGyro();
+	uint8_t temp = getTemp();
+
+	cout << "X Accel: " << xacc << "\n";
+	cout << "Y Accel: " << yacc << "\n";
+	cout << "Z Accel: " << zacc << "\n";
+	cout << "X Mag: " << xmag << "\n";
+	cout << "Y Mag: " << ymag << "\n";
+	cout << "Z Mag: " << zmag << "\n";
+	cout << "X Gyro: " << xgyr << "\n";
+	cout << "Y Gyro: " << ygyr << "\n";
+	cout << "Z Gyro: " << zgyr << "\n";
+	cout << "Temp: " << temp << "\n";
 }

@@ -320,10 +320,6 @@ class LSM9DS0:
 		self.dt = .01
 		self.firstTime = True
 
-		self.xSampled = False
-		self.mSampled = False
-		self.gSampled = False
-
 		# Setting zeta and beta
 		self.beta = BETA
 		self.zeta = ZETA
@@ -376,7 +372,7 @@ class LSM9DS0:
 				self.madgwickFilterUpdate()
 
 				# Local Euler angle calculations for sensor debugging. Uncomment entire block to use.
-				
+				"""
 				# Calculating Euler angles locally
 				self.yaw = atan2(2 * (self.SEq2 * self.SEq3 - self.SEq1 * self.SEq4), 2 * (self.SEq1 * self.SEq1 + self.SEq2 * self.SEq2) - 1)
 				self.pitch = asin(2 * (self.SEq1 * self.SEq3 - self.SEq2 * self.SEq4))
@@ -400,7 +396,7 @@ class LSM9DS0:
 					print(" | Roll: " + str(self.roll))
 
 					self.lastPrintTime = now
-				
+				"""
 
 		except KeyboardInterrupt:
 			print("Exited Test")
@@ -946,14 +942,6 @@ class LSM9DS0_XM:
 	def __init__(self, address = XM_ADDRESS):
 		self.device = i2c.get_i2c_device(address)
 
-		self.accelxoffset = 0.0
-		self.accelyoffset = 0.0
-		self.accelzoffset = 0.0
-
-		self.magxoffset = 0.0
-		self.magyoffset = 0.0
-		self.magzoffset = 0.0
-
 		#######################################
 		# CONTROL BIT REGISTER CONFIGURATIONS #
 		#######################################
@@ -1363,10 +1351,6 @@ class LSM9DS0_G:
 
 	def __init__(self, address = G_ADDRESS):
 		self.device = i2c.get_i2c_device(address)
-
-		self.gyroxoffset = 0.0
-		self.gyroyoffset = 0.0
-		self.gyrozoffset = 0.0
 
 		#######################################
 		# CONTROL BIT REGISTER CONFIGURATIONS #
