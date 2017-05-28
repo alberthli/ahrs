@@ -186,13 +186,10 @@ void LSM9DS0::calibrateGyroOffsets() {
 	Serial.flush();
 
 	while(Serial.available() == 0) {}
-		
+
 	char read = Serial.read();
 
-	if(read == 'y' || read == 'Y') {
-		break;
-
-	} else {
+	if(read != 'y' && read != 'Y') {
 		Serial.println("Calibration exited.");
 		return;
 	}
