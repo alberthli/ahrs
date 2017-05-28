@@ -173,7 +173,7 @@ float LSM9DS0::getzGyro() {
 	return zBitGyro * gyroGain;
 }
 
-void LSM9DS0::startlsm() {
+void LSM9DS0::startLSM() {
 
 }
 
