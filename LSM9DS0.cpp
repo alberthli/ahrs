@@ -219,7 +219,7 @@ void LSM9DS0::calibrateAccelOffsets() {
 			return;
 		}
 
-	print("Gathering data. Please wait...\n")
+	Serial.println("Gathering data. Please wait...\n");
 
 	while(n < ACCEL_CALIB_SAMPLES) {
 		n += 1;
@@ -249,7 +249,7 @@ void LSM9DS0::calibrateAccelOffsets() {
 			return;
 		}
 
-	print("Gathering data. Please wait...\n")
+	Serial.println("Gathering data. Please wait...\n");
 
 	while(n < ACCEL_CALIB_SAMPLES) {
 		n += 1;
@@ -280,7 +280,7 @@ void LSM9DS0::calibrateAccelOffsets() {
 			return;
 		}
 
-	print("Gathering data. Please wait...\n")
+	Serial.println("Gathering data. Please wait...\n");
 
 	while(n < ACCEL_CALIB_SAMPLES) {
 		n += 1;
@@ -310,7 +310,7 @@ void LSM9DS0::calibrateAccelOffsets() {
 			return;
 		}
 
-	print("Gathering data. Please wait...\n")
+	Serial.println("Gathering data. Please wait...\n");
 
 	while(n < ACCEL_CALIB_SAMPLES) {
 		n += 1;
@@ -340,7 +340,7 @@ void LSM9DS0::calibrateAccelOffsets() {
 			return;
 		}
 
-	print("Gathering data. Please wait...\n")
+	Serial.println("Gathering data. Please wait...\n");
 
 	while(n < ACCEL_CALIB_SAMPLES) {
 		n += 1;
@@ -371,7 +371,7 @@ void LSM9DS0::calibrateAccelOffsets() {
 			return;
 		}
 
-	print("Gathering data. Please wait...\n")
+	Serial.println("Gathering data. Please wait...\n");
 
 	while(n < ACCEL_CALIB_SAMPLES) {
 		n += 1;
