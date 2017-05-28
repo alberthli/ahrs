@@ -199,8 +199,8 @@ void LSM9DS0::calibrateGyroOffsets() {
 	while (n < GYRO_CALIB_SAMPLES) {
 		n += 1;
 		sumx += getxGyro();
-		sumy += getxGyro();
-		sumz += getxGyro();
+		sumy += getyGyro();
+		sumz += getzGyro();
 	}
 
 	X_GB_OFFSET = sumx / GYRO_CALIB_SAMPLES;
