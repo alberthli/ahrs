@@ -389,6 +389,8 @@ FIFO Watermark Level (Bits 4-8)
 
 */
 
+// [NOTE] Commenting out unused registers to free up dynamic memory on the MCU
+
 // Device addresses & their bit registers
 #define XM_ADDRESS 0x1D
 #define G_ADDRESS 0x6B
@@ -402,7 +404,7 @@ FIFO Watermark Level (Bits 4-8)
 #define OUT_TEMP_H_XM 0x06 // High - Last 4 bits are MSBs. First 4 are useless, need to be masked out
 
 // Magnetometer Status Info (OVERRUN AND AVAILABILITY)
-#define STATUS_REG_M 0x07
+// #define STATUS_REG_M 0x07
 
 // Magnetic Data Values. 16 bit, two's complement, left-justified
 #define OUT_X_L_M 0x08 // X
@@ -413,13 +415,15 @@ FIFO Watermark Level (Bits 4-8)
 #define OUT_Z_H_M 0x0D
 
 // Device Identification for Accel/Mag
-#define WHO_AM_I_XM 0x0F
+// #define WHO_AM_I_XM 0x0F
 
 // Interrupt Registers
+/*
 #define INT_CTRL_REG_M 0x12
 #define INT_SRC_REG_M 0x13
 #define INT_THS_L_M 0x14
 #define INT_THS_H_M 0x15
+*/
 
 // Magnetic Offset values, 16 bit, two's complement, left-justified
 #define OFFSET_X_L_M 0x16 // X
@@ -430,9 +434,11 @@ FIFO Watermark Level (Bits 4-8)
 #define OFFSET_Z_H_M 0x1B
 
 // Reference Values for high pass filters for X, Y, and Z accel data
+/*
 #define REFERENCE_X 0x1C
 #define REFERENCE_Y 0x1D
 #define REFERENCE_Z 0x1E
+*/
 
 // Control Registers
 #define CTRL_REG0_XM 0x1F
@@ -445,7 +451,7 @@ FIFO Watermark Level (Bits 4-8)
 #define CTRL_REG7_XM 0x26
 
 // Accelerometer Status Info (OVERRUN AND AVAILABILITY)
-#define STATUS_REG_A 0x27
+// #define STATUS_REG_A 0x27
 
 // Acceleration Data Values. 16 bit, two's complement, left-justified
 #define OUT_X_L_A 0x28
@@ -456,41 +462,53 @@ FIFO Watermark Level (Bits 4-8)
 #define OUT_Z_H_A 0x2D
 
 // FIFO Registers
+/*
 #define FIFO_CTRL_REG 0x2E
 #define FIFO_SRC_REG 0x2F
+*/
 
 // Inertial Interrupt Generator 1 Registers
+/*
 #define INT_GEN_1_REG 0x30
 #define INT_GEN_1_SRC 0x31
 #define INT_GEN_1_THS 0x32
 #define INT_GEN_1_DURATION 0x33
+*/
 
 // Inertial Interrupt Generator 2 Registers
+/*
 #define INT_GEN_2_REG 0x34
 #define INT_GEN_2_SRC 0x35
 #define INT_GEN_2_THS 0x36
 #define INT_GEN_2_DURATION 0x37
+*/
 
 // Interrupt Click Registers
+/*
 #define CLICK_CFG 0x38
 #define CLICK_SRC 0x39
 #define CLICK_THS 0x3A
+*/
 
 // Time Data Registers
+/*
 #define TIME_LIMIT 0x3B
 #define TIME_LATENCY 0x3C
 #define TIME_WINDOW 0x3D
+*/
 
 // Activation Registers
+/*
 #define ACT_THS 0x3E
 #define ACT_DUR 0x3F
+*/
 
 /////////////////
 // G REGISTERS //
 /////////////////
 
 // Device Identification for Gyro
-#define WHO_AM_I_G 0x0F
+// #define WHO_AM_I_G 0x0F
 
 // Control Registers
 #define CTRL_REG_1_G 0x20
@@ -500,10 +518,10 @@ FIFO Watermark Level (Bits 4-8)
 #define CTRL_REG_5_G 0x24
 
 // References for Interrupts
-#define DATACAPTURE_G 0x25
+// #define DATACAPTURE_G 0x25
 
 // Gyro Status Info (OVERRUN AND AVAILABILITY)
-#define STATUS_REG_G 0x27
+// #define STATUS_REG_G 0x27
 
 // Angular Rate Data
 #define OUT_X_L_G 0x28 // X
@@ -514,10 +532,13 @@ FIFO Watermark Level (Bits 4-8)
 #define OUT_Z_H_G 0x2D
 
 // FIFO Registers
+/*
 #define FIFO_CTRL_REG_G 0x2E
 #define FIFO_SRC_REG_G 0x2F
+*/
 
 // Interrupt Registers
+/*
 #define INT1_CFG_G 0x30
 #define INT1_SRC_G 0x31
 #define INT1_THS_XH_G 0x32
@@ -527,6 +548,7 @@ FIFO Watermark Level (Bits 4-8)
 #define INT1_THS_ZH_G 0x36
 #define INT1_THS_ZL_G 0x37
 #define INT1_DURATION_G 0x38
+*/
 
 ////////////////////////
 // PHYSICAL CONSTANTS //
