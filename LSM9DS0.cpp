@@ -174,16 +174,16 @@ double LSM9DS0::getzGyro() {
 }
 
 void LSM9DS0::printRawData() {
-	uint8_t xacc = getxAccel();
-	uint8_t yacc = getyAccel();
-	uint8_t zacc = getzAccel();
-	uint8_t xmag = getxMag();
-	uint8_t ymag = getyMag();
-	uint8_t zmag = getzMag();
-	uint8_t xgyr = getxGyro();
-	uint8_t ygyr = getyGyro();
-	uint8_t zgyr = getzGyro();
-	uint8_t temp = getTemp();
+	double xacc = getxAccel();
+	double yacc = getyAccel();
+	double zacc = getzAccel();
+	double xmag = getxMag();
+	double ymag = getyMag();
+	double zmag = getzMag();
+	double xgyr = getxGyro();
+	double ygyr = getyGyro();
+	double zgyr = getzGyro();
+	double temp = getTemp();
 
 	Serial.print("X Accel: "); Serial.println(xacc);
 	Serial.print("Y Accel: "); Serial.println(yacc);
@@ -195,17 +195,4 @@ void LSM9DS0::printRawData() {
 	Serial.print("Y Gyro: "); Serial.println(ygyr);
 	Serial.print("Z Gyro: "); Serial.println(zgyr);
 	Serial.print("Temp: "); Serial.println(temp);
-
-	/*
-	cout << "X Accel: " << xacc << "\n";
-	cout << "Y Accel: " << yacc << "\n";
-	cout << "Z Accel: " << zacc << "\n";
-	cout << "X Mag: " << xmag << "\n";
-	cout << "Y Mag: " << ymag << "\n";
-	cout << "Z Mag: " << zmag << "\n";
-	cout << "X Gyro: " << xgyr << "\n";
-	cout << "Y Gyro: " << ygyr << "\n";
-	cout << "Z Gyro: " << zgyr << "\n";
-	cout << "Temp: " << temp << "\n";
-	*/
 }
