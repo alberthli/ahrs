@@ -390,158 +390,158 @@ FIFO Watermark Level (Bits 4-8)
 */
 
 // Device addresses & their bit registers
-const uint8_t XM_ADDRESS = 0x1D;
-const uint8_t G_ADDRESS = 0x6B;
+#define XM_ADDRESS 0x1D;
+#define G_ADDRESS 0x6B;
 
 //////////////////
 // XM REGISTERS //
 //////////////////
 
 // Temperature Sensor Data. 12 bit, two's complement, right-justified
-const uint8_t OUT_TEMP_L_XM = 0x05; // Low - 8 bits are the 8 LSBs.
-const uint8_t OUT_TEMP_H_XM = 0x06; // High - Last 4 bits are MSBs. First 4 are useless, need to be masked out
+#define OUT_TEMP_L_XM 0x05; // Low - 8 bits are the 8 LSBs.
+#define OUT_TEMP_H_XM 0x06; // High - Last 4 bits are MSBs. First 4 are useless, need to be masked out
 
 // Magnetometer Status Info (OVERRUN AND AVAILABILITY)
-const uint8_t STATUS_REG_M = 0x07;
+#define STATUS_REG_M 0x07;
 
 // Magnetic Data Values. 16 bit, two's complement, left-justified
-const uint8_t OUT_X_L_M = 0x08; // X
-const uint8_t OUT_X_H_M = 0x09;
-const uint8_t OUT_Y_L_M = 0x0A; // Y
-const uint8_t OUT_Y_H_M = 0x0B;
-const uint8_t OUT_Z_L_M = 0x0C; // Z
-const uint8_t OUT_Z_H_M = 0x0D;
+#define OUT_X_L_M 0x08; // X
+#define OUT_X_H_M 0x09;
+#define OUT_Y_L_M 0x0A; // Y
+#define OUT_Y_H_M 0x0B;
+#define OUT_Z_L_M 0x0C; // Z
+#define OUT_Z_H_M 0x0D;
 
 // Device Identification for Accel/Mag
-const uint8_t WHO_AM_I_XM = 0x0F;
+#define WHO_AM_I_XM 0x0F;
 
 // Interrupt Registers
-const uint8_t INT_CTRL_REG_M = 0x12;
-const uint8_t INT_SRC_REG_M = 0x13;
-const uint8_t INT_THS_L_M= 0x14;
-const uint8_t INT_THS_H_M= 0x15;
+#define INT_CTRL_REG_M 0x12;
+#define INT_SRC_REG_M 0x13;
+#define INT_THS_L_M 0x14;
+#define INT_THS_H_M 0x15;
 
 // Magnetic Offset values, 16 bit, two's complement, left-justified
-const uint8_t OFFSET_X_L_M = 0x16; // X
-const uint8_t OFFSET_X_H_M = 0x17;
-const uint8_t OFFSET_Y_L_M = 0x18; // Y
-const uint8_t OFFSET_Y_H_M = 0x19;
-const uint8_t OFFSET_Z_L_M = 0x1A; // Z
-const uint8_t OFFSET_Z_H_M = 0x1B;
+#define OFFSET_X_L_M 0x16; // X
+#define OFFSET_X_H_M 0x17;
+#define OFFSET_Y_L_M 0x18; // Y
+#define OFFSET_Y_H_M 0x19;
+#define OFFSET_Z_L_M 0x1A; // Z
+#define OFFSET_Z_H_M 0x1B;
 
 // Reference Values for high pass filters for X, Y, and Z accel data
-const uint8_t REFERENCE_X = 0x1C;
-const uint8_t REFERENCE_Y = 0x1D;
-const uint8_t REFERENCE_Z = 0x1E;
+#define REFERENCE_X 0x1C;
+#define REFERENCE_Y 0x1D;
+#define REFERENCE_Z 0x1E;
 
 // Control Registers
-const uint8_t CTRL_REG0_XM = 0x1F;
-const uint8_t CTRL_REG1_XM = 0x20;
-const uint8_t CTRL_REG2_XM = 0x21;
-const uint8_t CTRL_REG3_XM = 0x22;
-const uint8_t CTRL_REG4_XM = 0x23;
-const uint8_t CTRL_REG5_XM = 0x24;
-const uint8_t CTRL_REG6_XM = 0x25;
-const uint8_t CTRL_REG7_XM = 0x26;
+#define CTRL_REG0_XM 0x1F;
+#define CTRL_REG1_XM 0x20;
+#define CTRL_REG2_XM 0x21;
+#define CTRL_REG3_XM 0x22;
+#define CTRL_REG4_XM 0x23;
+#define CTRL_REG5_XM 0x24;
+#define CTRL_REG6_XM 0x25;
+#define CTRL_REG7_XM 0x26;
 
 // Accelerometer Status Info (OVERRUN AND AVAILABILITY)
-const uint8_t STATUS_REG_A = 0x27;
+#define STATUS_REG_A 0x27;
 
 // Acceleration Data Values. 16 bit, two's complement, left-justified
-const uint8_t OUT_X_L_A = 0x28;
-const uint8_t OUT_X_H_A = 0x29;
-const uint8_t OUT_Y_L_A = 0x2A;
-const uint8_t OUT_Y_H_A = 0x2B;
-const uint8_t OUT_Z_L_A = 0x2C;
-const uint8_t OUT_Z_H_A = 0x2D;
+#define OUT_X_L_A 0x28;
+#define OUT_X_H_A 0x29;
+#define OUT_Y_L_A 0x2A;
+#define OUT_Y_H_A 0x2B;
+#define OUT_Z_L_A 0x2C;
+#define OUT_Z_H_A 0x2D;
 
 // FIFO Registers
-const uint8_t FIFO_CTRL_REG = 0x2E;
-const uint8_t FIFO_SRC_REG = 0x2F;
+#define FIFO_CTRL_REG 0x2E;
+#define FIFO_SRC_REG 0x2F;
 
 // Inertial Interrupt Generator 1 Registers
-const uint8_t INT_GEN_1_REG = 0x30;
-const uint8_t INT_GEN_1_SRC = 0x31;
-const uint8_t INT_GEN_1_THS = 0x32;
-const uint8_t INT_GEN_1_DURATION = 0x33;
+#define INT_GEN_1_REG 0x30;
+#define INT_GEN_1_SRC 0x31;
+#define INT_GEN_1_THS 0x32;
+#define INT_GEN_1_DURATION 0x33;
 
 // Inertial Interrupt Generator 2 Registers
-const uint8_t INT_GEN_2_REG = 0x34;
-const uint8_t INT_GEN_2_SRC = 0x35;
-const uint8_t INT_GEN_2_THS = 0x36;
-const uint8_t INT_GEN_2_DURATION = 0x37;
+#define INT_GEN_2_REG 0x34;
+#define INT_GEN_2_SRC 0x35;
+#define INT_GEN_2_THS 0x36;
+#define INT_GEN_2_DURATION 0x37;
 
 // Interrupt Click Registers
-const uint8_t CLICK_CFG = 0x38;
-const uint8_t CLICK_SRC = 0x39;
-const uint8_t CLICK_THS = 0x3A;
+#define CLICK_CFG 0x38;
+#define CLICK_SRC 0x39;
+#define CLICK_THS 0x3A;
 
 // Time Data Registers
-const uint8_t TIME_LIMIT = 0x3B;
-const uint8_t TIME_LATENCY = 0x3C;
-const uint8_t TIME_WINDOW = 0x3D;
+#define TIME_LIMIT 0x3B;
+#define TIME_LATENCY 0x3C;
+#define TIME_WINDOW 0x3D;
 
 // Activation Registers
-const uint8_t ACT_THS = 0x3E;
-const uint8_t ACT_DUR = 0x3F;
+#define ACT_THS 0x3E;
+#define ACT_DUR 0x3F;
 
 /////////////////
 // G REGISTERS //
 /////////////////
 
 // Device Identification for Gyro
-const uint8_t WHO_AM_I_G = 0x0F;
+#define WHO_AM_I_G 0x0F;
 
 // Control Registers
-const uint8_t CTRL_REG_1_G = 0x20;
-const uint8_t CTRL_REG_2_G = 0x21;
-const uint8_t CTRL_REG_3_G = 0x22;
-const uint8_t CTRL_REG_4_G = 0x23;
-const uint8_t CTRL_REG_5_G = 0x24;
+#define CTRL_REG_1_G 0x20;
+#define CTRL_REG_2_G 0x21;
+#define CTRL_REG_3_G 0x22;
+#define CTRL_REG_4_G 0x23;
+#define CTRL_REG_5_G 0x24;
 
 // References for Interrupts
-const uint8_t DATACAPTURE_G = 0x25;
+#define DATACAPTURE_G 0x25;
 
 // Gyro Status Info (OVERRUN AND AVAILABILITY)
-const uint8_t STATUS_REG_G = 0x27;
+#define STATUS_REG_G 0x27;
 
 // Angular Rate Data
-const uint8_t OUT_X_L_G = 0x28; // X
-const uint8_t OUT_X_H_G = 0x29;
-const uint8_t OUT_Y_L_G = 0x2A; // Y
-const uint8_t OUT_Y_H_G = 0x2B;
-const uint8_t OUT_Z_L_G = 0x2C; // Z
-const uint8_t OUT_Z_H_G = 0x2D;
+#define OUT_X_L_G 0x28; // X
+#define OUT_X_H_G 0x29;
+#define OUT_Y_L_G 0x2A; // Y
+#define OUT_Y_H_G 0x2B;
+#define OUT_Z_L_G 0x2C; // Z
+#define OUT_Z_H_G 0x2D;
 
 // FIFO Registers
-const uint8_t FIFO_CTRL_REG_G = 0x2E;
-const uint8_t FIFO_SRC_REG_G = 0x2F;
+#define FIFO_CTRL_REG_G 0x2E;
+#define FIFO_SRC_REG_G 0x2F;
 
 // Interrupt Registers
-const uint8_t INT1_CFG_G = 0x30;
-const uint8_t INT1_SRC_G = 0x31;
-const uint8_t INT1_THS_XH_G = 0x32;
-const uint8_t INT1_THS_XL_G = 0x33;
-const uint8_t INT1_THS_YH_G = 0x34;
-const uint8_t INT1_THS_YL_G = 0x35;
-const uint8_t INT1_THS_ZH_G = 0x36;
-const uint8_t INT1_THS_ZL_G = 0x37;
-const uint8_t INT1_DURATION_G = 0x38;
+#define INT1_CFG_G 0x30;
+#define INT1_SRC_G 0x31;
+#define INT1_THS_XH_G 0x32;
+#define INT1_THS_XL_G 0x33;
+#define INT1_THS_YH_G 0x34;
+#define INT1_THS_YL_G 0x35;
+#define INT1_THS_ZH_G 0x36;
+#define INT1_THS_ZL_G 0x37;
+#define INT1_DURATION_G 0x38;
 
 ////////////////////////
 // PHYSICAL CONSTANTS //
 ////////////////////////
 
-const float TEMP_INTERCEPT = 24.0;
-const float GRAV_ACCEL = 9.80665;
+#define TEMP_INTERCEPT 24.0f;
+#define GRAV_ACCEL 9.80665f;
 
 // Temperature gain is always .125 for this sensor
-const float TEMP_GAIN = .125;
+#define TEMP_GAIN 0.125f;
 
 // Calibration Constants
-const int MAG_CALIB_SAMPLES = 10000; // 10000 samples to calibrate hard/soft iron effect
-const int GYRO_CALIB_SAMPLES = 5000; // 5000 samples to calibrate gyro bias
-const int ACCEL_CALIB_SAMPLES = 1000; // 1000 samples per sensor orientation for accelerometer bias
+#define MAG_CALIB_SAMPLES 10000; // 10000 samples to calibrate hard/soft iron effect
+#define GYRO_CALIB_SAMPLES 5000; // 5000 samples to calibrate gyro bias
+#define ACCEL_CALIB_SAMPLES 1000; // 1000 samples per sensor orientation for accelerometer bias
 
 class LSM9DS0 {
 public:
