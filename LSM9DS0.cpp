@@ -183,17 +183,20 @@ void LSM9DS0::calibrateGyroOffsets() {
 
 	Serial.println("*** GYROSCOPE CALIBRATION PROTOCOL STARTED ***");
 	Serial.println("Please keep the device still for calibration. When ready, send Y. To exit, send anything else.");
-	while(Serial.available() == 0) {
-		char read = Serial.read();
+	Serial.flush();
 
-		if(read == 'y' || read == 'Y') {
-			break;
-			
-		} else {
-			Serial.println("Calibration exited.");
-			return;
-		}
+	while(Serial.available() == 0) {}
+		
+	char read = Serial.read();
+
+	if(read == 'y' || read == 'Y') {
+		break;
+
+	} else {
+		Serial.println("Calibration exited.");
+		return;
 	}
+	
 	Serial.println("Calibrating. Please wait...");
 
 	while (n < GYRO_CALIB_SAMPLES) {
