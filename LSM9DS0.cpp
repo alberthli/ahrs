@@ -173,6 +173,10 @@ float LSM9DS0::getzGyro() {
 	return zBitGyro * gyroGain;
 }
 
+void LSM9DS0::startlsm() {
+
+}
+
 // Calibration method for accelerometer bias
 // Use this calibration protocol (pg 3): http://kionixfs.kionix.com/en/document/AN012%20Accelerometer%20Errors.pdf
 void LSM9DS0::calibrateAccelOffsets() {
@@ -195,7 +199,7 @@ void LSM9DS0::calibrateAccelOffsets() {
 
 	Serial.println("*** ACCELEROMETER CALIBRATION PROTOCOL STARTED ***");
 	Serial.println("There are going to be six positions to orient the sensor in. It must be still while calibrating.");
-	Serial.println("It may help to have a corner so you are as close to perpendicular as possible.\n")
+	Serial.println("It may help to have a corner so you are as close to perpendicular as possible.\n");
 
 	// POSITION 1 //
 	Serial.println("Position 1 is like such:");
