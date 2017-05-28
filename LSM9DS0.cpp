@@ -3,16 +3,20 @@
 #include <Arduino.h>
 
 LSM9DS0::LSM9DS0() {
-	Wire.begin();
 
-	initXM(XM_ADDRESS);
-	initG(G_ADDRESS);
 }
 
 LSM9DS0::~LSM9DS0() {
 
 }
 
+void LSM9DS0::start() {
+  Wire.begin();
+  initXM(XM_ADDRESS);
+  initG(G_ADDRESS);
+}
+
+  
 // Initializing desired settings on the XM
 void LSM9DS0::initXM(uint8_t xmaddress) {
 	// Bit Register Configuration Info in Header File
@@ -70,13 +74,13 @@ double LSM9DS0::getTemp() {
 	uint8_t temp_MSBs = readByte(XM_ADDRESS, OUT_TEMP_H_XM);
 	uint8_t temp_LSBs = readByte(XM_ADDRESS, OUT_TEMP_L_XM);
 	// 12 bit resolution, right-justified
-	uint16_t bitTemp = ((uint16_t) temp_MSBs << 8 | temp_LSBs) & 0x0FFF;
+	int16_t bitTemp = ( ((uint16_t) temp_MSBs) << 8 | temp_LSBs) & 0x0FFF;
 
 	if(bitTemp > 2047) {
 		bitTemp -= 4096;
 	}
 
-	return TEMP_INTERCEPT + bitTemp * TEMP_GAIN;
+	return TEMP_INTERCEPT + (double)bitTemp * TEMP_GAIN;
 }
 
 // Retrives the x acceleration (m*s^-2)
@@ -84,11 +88,7 @@ double LSM9DS0::getxAccel() {
 	uint8_t xAccel_MSBs = readByte(XM_ADDRESS, OUT_X_H_A);
 	uint8_t xAccel_LSBs = readByte(XM_ADDRESS, OUT_X_L_A);
 	// 16 bit resolution, left-justified
-	uint16_t xBitAccel = (uint16_t) xAccel_MSBs << 8 | xAccel_LSBs;
-
-	if(xBitAccel > 32767) {
-		xBitAccel -= 65536;
-	}
+	int16_t xBitAccel = (uint16_t) xAccel_MSBs << 8 | xAccel_LSBs;
 
 	return xBitAccel * accelGain * GRAV_ACCEL;
 }
@@ -98,12 +98,8 @@ double LSM9DS0::getyAccel() {
 	uint8_t yAccel_MSBs = readByte(XM_ADDRESS, OUT_Y_H_A);
 	uint8_t yAccel_LSBs = readByte(XM_ADDRESS, OUT_Y_L_A);
 	// 16 bit resolution, left-justified
-	uint16_t yBitAccel = (uint16_t) yAccel_MSBs << 8 | yAccel_LSBs;
-
-	if(yBitAccel > 32767) {
-		yBitAccel -= 65536;
-	}
-
+	int16_t yBitAccel = (uint16_t) yAccel_MSBs << 8 | yAccel_LSBs;
+  
 	return yBitAccel * accelGain * GRAV_ACCEL;
 }
 
@@ -112,11 +108,7 @@ double LSM9DS0::getzAccel() {
 	uint8_t zAccel_MSBs = readByte(XM_ADDRESS, OUT_Z_H_A);
 	uint8_t zAccel_LSBs = readByte(XM_ADDRESS, OUT_Z_L_A);
 	// 16 bit resolution, left-justified
-	uint16_t zBitAccel = (uint16_t) zAccel_MSBs << 8 | zAccel_LSBs;
-
-	if(zBitAccel > 32767) {
-		zBitAccel -= 65536;
-	}
+	int16_t zBitAccel = (uint16_t) zAccel_MSBs << 8 | zAccel_LSBs;
 
 	return zBitAccel * accelGain * GRAV_ACCEL;
 }
@@ -126,11 +118,7 @@ double LSM9DS0::getxMag() {
 	uint8_t xMag_MSBs = readByte(XM_ADDRESS, OUT_X_H_M);
 	uint8_t xMag_LSBs = readByte(XM_ADDRESS, OUT_X_L_M);
 	// 16 bit resolution, left-justified
-	uint16_t xBitMag = (uint16_t) xMag_MSBs << 8 | xMag_LSBs;
-
-	if(xBitMag > 32767) {
-		xBitMag -= 65536;
-	}
+	int16_t xBitMag = (uint16_t) xMag_MSBs << 8 | xMag_LSBs;
 
 	return xBitMag * magGain;
 }
@@ -140,11 +128,7 @@ double LSM9DS0::getyMag() {
 	uint8_t yMag_MSBs = readByte(XM_ADDRESS, OUT_Y_H_M);
 	uint8_t yMag_LSBs = readByte(XM_ADDRESS, OUT_Y_L_M);
 	// 16 bit resolution, left-justified
-	uint16_t yBitMag = (uint16_t) yMag_MSBs << 8 | yMag_LSBs;
-
-	if(yBitMag > 32767) {
-		yBitMag -= 65536;
-	}
+	int16_t yBitMag = (uint16_t) yMag_MSBs << 8 | yMag_LSBs;
 
 	return yBitMag * magGain;
 }
@@ -154,11 +138,7 @@ double LSM9DS0::getzMag() {
 	uint8_t zMag_MSBs = readByte(XM_ADDRESS, OUT_Z_H_M);
 	uint8_t zMag_LSBs = readByte(XM_ADDRESS, OUT_Z_L_M);
 	// 16 bit resolution, left-justified
-	uint16_t zBitMag = (uint16_t) zMag_MSBs << 8 | zMag_LSBs;
-
-	if(zBitMag > 32767) {
-		zBitMag -= 65536;
-	}
+	int16_t zBitMag = (uint16_t) zMag_MSBs << 8 | zMag_LSBs;
 
 	return zBitMag * magGain;
 }
@@ -168,11 +148,7 @@ double LSM9DS0::getxGyro() {
 	uint8_t xGyro_MSBs = readByte(G_ADDRESS, OUT_X_H_G);
 	uint8_t xGyro_LSBs = readByte(G_ADDRESS, OUT_X_L_G);
 	// 16 bit resolution, left-justified
-	uint16_t xBitGyro = (uint16_t) xGyro_MSBs << 8 | xGyro_LSBs;
-
-	if(xBitGyro > 32767) {
-		xBitGyro -= 65536;
-	}
+	int16_t xBitGyro = (uint16_t) xGyro_MSBs << 8 | xGyro_LSBs;
 
 	return xBitGyro * gyroGain;
 }
@@ -182,11 +158,7 @@ double LSM9DS0::getyGyro() {
 	uint8_t yGyro_MSBs = readByte(G_ADDRESS, OUT_Y_H_G);
 	uint8_t yGyro_LSBs = readByte(G_ADDRESS, OUT_Y_L_G);
 	// 16 bit resolution, left-justified
-	uint16_t yBitGyro = (uint16_t) yGyro_MSBs << 8 | yGyro_LSBs;
-
-	if(yBitGyro > 32767) {
-		yBitGyro -= 65536;
-	}
+	int16_t yBitGyro = (uint16_t) yGyro_MSBs << 8 | yGyro_LSBs;
 
 	return yBitGyro * gyroGain;
 }
@@ -196,11 +168,7 @@ double LSM9DS0::getzGyro() {
 	uint8_t zGyro_MSBs = readByte(G_ADDRESS, OUT_Z_H_G);
 	uint8_t zGyro_LSBs = readByte(G_ADDRESS, OUT_Z_L_G);
 	// 16 bit resolution, left-justified
-	uint16_t zBitGyro = (uint16_t) zGyro_MSBs << 8 | zGyro_LSBs;
-
-	if(zBitGyro > 32767) {
-		zBitGyro -= 65536;
-	}
+	int16_t zBitGyro = (uint16_t) zGyro_MSBs << 8 | zGyro_LSBs;
 
 	return zBitGyro * gyroGain;
 }

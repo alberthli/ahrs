@@ -532,7 +532,7 @@ const uint8_t INT1_DURATION_G = 0x38;
 // PHYSICAL CONSTANTS //
 ////////////////////////
 
-const float TEMP_INTERCEPT = 24.0;
+const double TEMP_INTERCEPT = 24.0;
 const double GRAV_ACCEL = 9.80665;
 
 // Temperature gain is always .125 for this sensor
@@ -542,6 +542,7 @@ class LSM9DS0 {
 public:
 	LSM9DS0();
 	virtual ~LSM9DS0();
+  void start();
 
 	void initXM(uint8_t xmaddress);
 	void initG(uint8_t gaddress);
