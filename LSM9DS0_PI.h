@@ -581,6 +581,11 @@ public:
 
 	void printRawData();
 
+	// SHOULD BE PRIVATE. PUBLIC FOR DEBUGGING ONLY.
+	float ax, ay, az; // Accelerometer raw values
+	float mx, my, mz; // Magnetometer raw values
+	float wx, wy, wz; // Gyro raw values
+
 private:
 	// Private XM Variables
 	float accelGain, magGain;
@@ -602,9 +607,11 @@ private:
 	float BETA; // beta parameter
 	float ZETA; // zeta parameter
 	float SEq1, SEq2, SEq3, SEq4; // Orientation Quaternion Values
+	/* SHOULD BE PRIVATE. PUBLIC FOR DEBUGGING ONLY
 	float ax, ay, az; // Accelerometer raw values
 	float mx, my, mz; // Magnetometer raw values
 	float wx, wy, wz; // Gyro raw values
+	*/
 
 	float bx, bz; // Earth magnetic field reference directions
 	float wbx, wby, wbz; // Dynamic gyro bias estimates
