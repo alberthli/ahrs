@@ -673,8 +673,8 @@ void LSM9DS0::madgwickFilterUpdate() {
 		bx = sqrt(hx * hx + hy * hy);
 		bz = hz;
 
-		printf("cur: %lli\n", currTime);
-		printf("pre: %lli\n", prevTime);
+		printf("cur: %lli.8\n", currTime);
+		printf("pre: %lli.8\n", prevTime);
 		printf("dt: %f\n\n", dt);
 		/*
 		cout << "dt: " << dt << "\n";
