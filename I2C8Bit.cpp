@@ -55,7 +55,7 @@ I2C8Bit::~I2C8Bit(void){
  * ********************************************************************/
 
 int I2C8Bit::openI2C(){
-    this->i2cDescriptor = open(i2cFileName.c_str(), O_RDWR);
+    this->i2cDescriptor = open(string("/dev/i2c-1").c_str(), O_RDWR);
     if(this->i2cDescriptor < 0){
         perror("Could not open file (1)");
         exit(1);
