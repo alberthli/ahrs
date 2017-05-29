@@ -408,8 +408,8 @@ void LSM9DS0::calibrateHardSoftIronEffect() {
 
 	// Hard Iron Offsets
 	float xAvg = (xmax + xmin) / 2.0f;
-	float yAvg = (xmax + xmin) / 2.0f;
-	float zAvg = (xmax + xmin) / 2.0f;
+	float yAvg = (ymax + ymin) / 2.0f;
+	float zAvg = (zmax + zmin) / 2.0f;
 
 	X_HI_OFFSET = xAvg;
 	Y_HI_OFFSET = yAvg;
