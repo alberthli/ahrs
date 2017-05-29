@@ -1,5 +1,6 @@
 #include "LSM9DS0_PI.h"
 #include <iostream>
+#include <chrono>
 #include "I2C8Bit.h" // Someone's custom I2C Library
 using namespace std;
 
@@ -175,7 +176,23 @@ float LSM9DS0::getzGyro() {
 }
 
 void LSM9DS0::startLSM() {
+	prevTime = std::chrono::steady_clock::now();
+	ax = getxAccel() - X_AB_OFFSET;
+	ay = getyAccel() - Y_AB_OFFSET;
+	az = getzAccel() - Z_AB_OFFSET;
+	mx = (getxMag() - X_HI_OFFSET) * X_SI_SCALE;
+	mx = (getyMag() - Y_HI_OFFSET) * Y_SI_SCALE;
+	mx = (getzMag() - Z_HI_OFFSET) * Z_SI_SCALE;
+	wx = getxGyro() - X_GB_OFFSET;
+	wx = getyGyro() - Y_GB_OFFSET;
+	wx = getzGyro() - Z_GB_OFFSET;
 
+	startTime = prevTime;
+	lastPrintTime = prevTime;
+}
+
+void LSM9DS0::madgwickFilterUpdate() {
+	
 }
 
 // Calibration method for accelerometer bias

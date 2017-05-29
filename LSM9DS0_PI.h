@@ -1,6 +1,8 @@
 #ifndef LSM9DS0_H
 #define LSM9DS0_H
 
+#include <chrono>
+
 /* 
 /////////////////////////////////////////
 // CONTROL BIT REGISTER CONFIGURATIONS //
@@ -597,7 +599,7 @@ private:
 	float yaw, roll, pitch; // Euler Angles
 
 	// Madgwick Variables
-	float prevTime; // Timing for Processing Loop
+	std::chrono::steady_clock::time_point prevTime; // Timing for Processing Loop
 	float dt; // Time difference between loops
 
 	float BETA; // beta parameter
@@ -611,8 +613,8 @@ private:
 	float wbx, wby, wbz; // Dynamic gyro bias estimates
 
 	// Debug Variables
-	float lastPrintTime;
-	float startTime;
+	std::chrono::steady_clock::time_point lastPrintTime;
+	std::chrono::steady_clock::time_point startTime;
 
 };
 
