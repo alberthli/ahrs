@@ -117,8 +117,7 @@ float LSM9DS0::getyAccel() {
 	uint8_t yAccel_LSBs = readXM(OUT_Y_L_A);
 	// 16 bit resolution, left-justified
 	int16_t yBitAccel = (uint16_t) yAccel_MSBs << 8 | yAccel_LSBs;
-  	cout << yBitAccel << endl;
-	cout << accelGain << endl;
+
 	return yBitAccel * accelGain * GRAV_ACCEL;
 }
 
@@ -503,11 +502,11 @@ void LSM9DS0::startLSM() {
 	ay = getyAccel() - Y_AB_OFFSET;
 	az = -(getzAccel() - Z_AB_OFFSET);
 	mx = (getxMag() - X_HI_OFFSET) * X_SI_SCALE;
-	mx = (getyMag() - Y_HI_OFFSET) * Y_SI_SCALE;
-	mx = (getzMag() - Z_HI_OFFSET) * Z_SI_SCALE;
+	my = (getyMag() - Y_HI_OFFSET) * Y_SI_SCALE;
+	mz = (getzMag() - Z_HI_OFFSET) * Z_SI_SCALE;
 	wx = getxGyro() - X_GB_OFFSET;
-	wx = getyGyro() - Y_GB_OFFSET;
-	wx = getzGyro() - Z_GB_OFFSET;
+	wy = getyGyro() - Y_GB_OFFSET;
+	wz = getzGyro() - Z_GB_OFFSET;
 
 	startTime = prevTime;
 	lastPrintTime = prevTime;
@@ -525,11 +524,19 @@ int main() {
 	LSM9DS0 lsm = LSM9DS0();
 	lsm.initialize();
 
-	lsm.printRawData();
-
-	/*
 	lsm.calibrateGyroOffsets();
 	lsm.calibrateHardSoftIronEffect();
 	lsm.calibrateAccelOffsets();
-	*/
+	
+	lsm.startLSM();
+
+	cout << lsm.ax << "\n";
+	cout << lsm.ay << "\n";
+	cout << lsm.az << "\n";
+	cout << lsm.mx << "\n";
+	cout << lsm.my << "\n";
+	cout << lsm.mz << "\n";
+	cout << lsm.wx << "\n";
+	cout << lsm.wy << "\n";
+	cout << lsm.wz << "\n";
 }
