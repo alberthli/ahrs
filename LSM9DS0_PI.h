@@ -567,9 +567,9 @@ public:
 	float getyGyro();
 	float getzGyro();
 
-	uint8_t readXM(unsigned char reg_address);
+	uint8_t readXM(uint8_t reg_address);
 	void writeXM(unsigned char reg_address, unsigned char data);
-	uint8_t readG(unsigned char reg_address);
+	uint8_t readG(uint8_t reg_address);
 	void writeG(unsigned char reg_address, unsigned char data);
 
 	void startLSM();

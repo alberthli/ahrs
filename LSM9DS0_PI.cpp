@@ -64,13 +64,13 @@ uint8_t LSM9DS0::readG(uint8_t reg_address) {
 }
 
 // Writes data to the XM device
-void LSM9DS0::writeXM(unsigned char reg_address, unsigned char data) {
-	xm.writeReg(reg_address, data);
+void LSM9DS0::writeXM(uint8_t reg_address, uint8_t data) {
+	xm.writeReg((unsigned char)reg_address, (unsigned char)data);
 }
 
 // Writes data to the G device
-void LSM9DS0::writeG(unsigned char reg_address, unsigned char data) {
-	g.writeReg(reg_address, data);
+void LSM9DS0::writeG(uint8_t reg_address, uint8_t data) {
+	g.writeReg((unsigned char)reg_address, (unsigned char)data);
 }
 
 // Retrieves the temperature (deg C)
