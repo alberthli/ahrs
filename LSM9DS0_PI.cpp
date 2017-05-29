@@ -523,10 +523,12 @@ void LSM9DS0::startLSM() {
 
 void LSM9DS0::madgwickFilterUpdate() {
 	long count = 0;
+	double sum = 0;
 
 	while(true) {
 		uint64_t currTime = timestamp_us();
-		dt = (currTime - prevTime) / 1000;
+		dt = (currTime - prevTime);
+		sum += dt;
 		prevTime = currTime;
 
 		/*********************************/
@@ -676,7 +678,8 @@ void LSM9DS0::madgwickFilterUpdate() {
 
 		// DEBUG PRINTS
 		if(count%10000 == 0) {
-			printf("dt: %.8f\n", (float)dt);
+			printf("dt: %.8d\n", sum);
+			sum = 0;
 		}
 		count++;
 		/*
