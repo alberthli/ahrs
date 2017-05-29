@@ -1,9 +1,6 @@
 #ifndef LSM9DS0_H
 #define LSM9DS0_H
 
-// [MCU]
-// #include <Arduino.h>
-
 /* 
 /////////////////////////////////////////
 // CONTROL BIT REGISTER CONFIGURATIONS //
@@ -567,8 +564,10 @@ public:
 	float getyGyro();
 	float getzGyro();
 
-	uint8_t readByte(uint8_t devAddress, uint8_t regAddress);
-	void writeByte(uint8_t devAddress, uint8_t regAddress, uint8_t byte);
+	uint8_t readXM(unsigned char reg_address);
+	void writeXM(unsigned char reg_address, unsigned char data);
+	uint8_t readG(unsigned char reg_address);
+	void writeG(unsigned char reg_address, unsigned char data);
 
 	void startLSM();
 	void madgwickFilterUpdate();
@@ -580,6 +579,10 @@ public:
 	void printRawData();
 
 private:
+	// I2C Objects
+	I2C8Bit xm;
+	I2C8Bit g;
+
 	// Private XM Variables
 	float accelGain, magGain;
 
