@@ -614,7 +614,7 @@ private:
 
 	// Madgwick Variables
 	uint64_t prevTime; // Timing for Processing Loop
-	uint64_t dt;
+	float dt;
 
 	float BETA; // beta parameter
 	float ZETA; // zeta parameter
