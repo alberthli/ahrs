@@ -110,7 +110,7 @@ float LSM9DS0::getxAccel() {
 	// 16 bit resolution, left-justified
 	int16_t xBitAccel = (uint16_t) xAccel_MSBs << 8 | xAccel_LSBs;
 
-	return xBitAccel * accelGain * GRAV_ACCEL;
+	return (float)xBitAccel * accelGain * GRAV_ACCEL;
 }
 
 // Retrives the y acceleration (m*s^-2)
@@ -120,7 +120,7 @@ float LSM9DS0::getyAccel() {
 	// 16 bit resolution, left-justified
 	int16_t yBitAccel = (uint16_t) yAccel_MSBs << 8 | yAccel_LSBs;
   
-	return yBitAccel * accelGain * GRAV_ACCEL;
+	return (float)yBitAccel * accelGain * GRAV_ACCEL;
 }
 
 // Retrives the z acceleration (m*s^-2)
@@ -130,7 +130,7 @@ float LSM9DS0::getzAccel() {
 	// 16 bit resolution, left-justified
 	int16_t zBitAccel = (uint16_t) zAccel_MSBs << 8 | zAccel_LSBs;
 
-	return zBitAccel * accelGain * GRAV_ACCEL;
+	return (float)zBitAccel * accelGain * GRAV_ACCEL;
 }
 
 // Retrieves the x magnetic field value (gauss)
@@ -140,7 +140,7 @@ float LSM9DS0::getxMag() {
 	// 16 bit resolution, left-justified
 	int16_t xBitMag = (uint16_t) xMag_MSBs << 8 | xMag_LSBs;
 
-	return xBitMag * magGain;
+	return (float)xBitMag * magGain;
 }
 
 // Retrieves the y magnetic field value (gauss)
@@ -150,7 +150,7 @@ float LSM9DS0::getyMag() {
 	// 16 bit resolution, left-justified
 	int16_t yBitMag = (uint16_t) yMag_MSBs << 8 | yMag_LSBs;
 
-	return yBitMag * magGain;
+	return (float)yBitMag * magGain;
 }
 
 // Retrieves the z magnetic field value (gauss)
@@ -160,7 +160,7 @@ float LSM9DS0::getzMag() {
 	// 16 bit resolution, left-justified
 	int16_t zBitMag = (uint16_t) zMag_MSBs << 8 | zMag_LSBs;
 
-	return zBitMag * magGain;
+	return (float)zBitMag * magGain;
 }
 
 // Retrieves the x gyro value (DPS)
@@ -170,7 +170,7 @@ float LSM9DS0::getxGyro() {
 	// 16 bit resolution, left-justified
 	int16_t xBitGyro = (uint16_t) xGyro_MSBs << 8 | xGyro_LSBs;
 
-	return xBitGyro * gyroGain;
+	return (float)xBitGyro * gyroGain;
 }
 
 // Retrieves the y gyro value (DPS)
@@ -180,7 +180,7 @@ float LSM9DS0::getyGyro() {
 	// 16 bit resolution, left-justified
 	int16_t yBitGyro = (uint16_t) yGyro_MSBs << 8 | yGyro_LSBs;
 
-	return yBitGyro * gyroGain;
+	return (float)yBitGyro * gyroGain;
 }
 
 // Retrieves the z gyro value (DPS)
@@ -190,7 +190,7 @@ float LSM9DS0::getzGyro() {
 	// 16 bit resolution, left-justified
 	int16_t zBitGyro = (uint16_t) zGyro_MSBs << 8 | zGyro_LSBs;
 
-	return zBitGyro * gyroGain;
+	return (float)zBitGyro * gyroGain;
 }
 
 /////////////////////////
