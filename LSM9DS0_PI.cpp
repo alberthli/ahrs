@@ -524,7 +524,7 @@ void LSM9DS0::madgwickFilterUpdate() {
 
 	while(true) {
 		std::chrono::steady_clock::time_point currTime = std::chrono::steady_clock::now();
-		dt = std::chrono::duration_cast<std::chrono::microseconds>(currTime - prevTime).count() * 1000000;
+		dt = std::chrono::duration_cast<std::chrono::microseconds>(currTime - prevTime).count() / 1000000;
 		prevTime = currTime;
 
 		/*********************************/
@@ -676,7 +676,7 @@ void LSM9DS0::madgwickFilterUpdate() {
 		cout << "dt: " << dt << "\n";
 		cout << "Yaw: " << atan2(2.0f * (SEq[1] * SEq[2] - SEq[0] * SEq[3]), 2.0f * (SEq[0] * SEq[0] + SEq[1] * SEq[1]) - 1.0f) << "\n";
 		cout << "Pitch: " << asin(2.0f * (SEq[0] * SEq[2] - SEq[1] * SEq[3])) << "\n";
-		cout << "Roll: " << atan2(2.0f * (SEq[0] * SEq[1] + SEq[2] * SEq[3]), 1.0f - 2.0f * (SEq[1] * SEq[1] + SEq[2] * SEq[2])) << "\n";
+		cout << "Roll: " << atan2(2.0f * (SEq[0] * SEq[1] + SEq[2] * SEq[3]), 1.0f - 2.0f * (SEq[1] * SEq[1] + SEq[2] * SEq[2])) << "\n\n";
 	}
 }
 
