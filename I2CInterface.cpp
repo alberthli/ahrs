@@ -36,7 +36,7 @@ bool I2CInterfaceClass::writeRegister(unsigned char slaveAddress, unsigned char 
 {
     pthread_mutex_lock (&I2Cmutex_);
     setSlaveAddress_(slaveAddress);
-    b = i2c_smbus_write_i2c_block_data(file_, registerAddress, len, buf);
+    bool b = i2c_smbus_write_i2c_block_data(file_, registerAddress, len, buf);
     if (b < 0)
     {
         std::cout << "I2C write failed writing to " << std::hex << slaveAddress << std::endl;
@@ -49,7 +49,7 @@ bool I2CInterfaceClass::readRegister(unsigned char slaveAddress, unsigned char r
 {
     pthread_mutex_lock (&I2Cmutex_);
     setSlaveAddress_(slaveAddress);
-    b = i2c_smbus_read_i2c_block_data(file_, registerAddress, len, buf);
+    bool b = i2c_smbus_read_i2c_block_data(file_, registerAddress, len, buf);
     if (b != len)
     {
         std::cout << "Incorrect number of bytes read" << std::endl;
