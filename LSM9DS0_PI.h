@@ -583,8 +583,8 @@ public:
 
 private:
 	// I2C Objects
-	I2C8Bit xm;
-	I2C8Bit g;
+	I2C8Bit xm(XM_ADDRESS, string("/dev/i2c-1"));
+	I2C8Bit g(G_ADDRESS, string("/dev/i2c-1"));
 
 	// Private XM Variables
 	float accelGain, magGain;
