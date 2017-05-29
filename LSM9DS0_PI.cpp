@@ -493,3 +493,7 @@ void LSM9DS0::printRawData() {
 	cout << "Z Gyro: " << zgyr << "\n";
 	cout << "Temp: " << temp << "\n";
 }
+
+int main() {
+
+}
