@@ -674,7 +674,7 @@ void LSM9DS0::madgwickFilterUpdate() {
 		bz = hz;
 
 		// DEBUG PRINTS
-		printf("dt: %.8f\n", dt);
+		printf("dt: %.8f\n", (float)dt);
 		/*
 		cout << "dt: " << dt << "\n";
 		cout << "Yaw: " << atan2(2.0f * (SEq[1] * SEq[2] - SEq[0] * SEq[3]), 2.0f * (SEq[0] * SEq[0] + SEq[1] * SEq[1]) - 1.0f) << "\n";
