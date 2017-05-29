@@ -1,6 +1,6 @@
 #include "LSM9DS0_PI.h"
 #include <iostream>
-#include <I2C8Bit.h> // Someone's custom I2C Library
+#include "I2C8Bit.h" // Someone's custom I2C Library
 using namespace std;
 
 LSM9DS0::LSM9DS0() {
