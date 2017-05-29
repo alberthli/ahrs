@@ -18,6 +18,11 @@ LSM9DS0::~LSM9DS0() {
 // INITIALIZATION METHODS //
 ////////////////////////////
 
+void LSM9DS0::initialize() {
+	initXM();
+	initG();
+}
+
 // Initializing desired settings on the XM
 void LSM9DS0::initXM() {
 	// [TODO] REWRITE THIS TO HAVE CORRECT CALLS
@@ -518,8 +523,9 @@ void LSM9DS0::madgwickFilterUpdate() {
 
 int main() {
 	LSM9DS0 lsm = LSM9DS0();
+	lsm.initialize();
 
-	cout << lsm.getyAccel() << endl;
+	lsm.printRawData();
 
 	/*
 	lsm.calibrateGyroOffsets();
