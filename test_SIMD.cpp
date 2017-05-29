@@ -8,8 +8,8 @@ int main() {
 	
 	cout << "Test Code" << "\n";
 	cout << "Test Vector Storing and Retreaving" << "\n";
-	
-	float32x4_t se_Vector = ld1q_f32([10, 20, 30, 40]);
+	float testArray[4] = {10, 20, 30, 40};
+	float32x4_t se_Vector = ld1q_f32(testArray);
 	float retreaving[4];
 	vst1q_f32(retreaving, se_Vector);
 	cout << retreaving[0] << endl;
@@ -19,8 +19,9 @@ int main() {
 
 
 	cout << "Testing Divide" << endl;
-	float32x4_t se_Vector = ld1q_f32([0.1, 0.1, 0.1, 0.1]);
-	se_Vector = vmulq_f32(se_Vector, float32x4_t b);
+	float testDivider = {0.1, 0.1, 0.1, 0.1};
+	float32x4_t div = ld1q_f32(testDivider);
+	se_Vector = vmulq_f32(se_Vector, div);
 	vst1q_f32(retreaving, se_Vector);
 	cout << retreaving[0] << endl;
 	cout << retreaving[1] << endl;
