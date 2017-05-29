@@ -575,6 +575,8 @@ public:
 	void startLSM();
 	void madgwickFilterUpdate();
 
+	uint64_t timestamp_us();
+
 	void calibrateAccelOffsets();
 	void calibrateGyroOffsets();
 	void calibrateHardSoftIronEffect();
