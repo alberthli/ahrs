@@ -522,13 +522,10 @@ void LSM9DS0::startLSM() {
 }
 
 void LSM9DS0::madgwickFilterUpdate() {
-	long count = 0;
-	double sum = 0;
 
 	while(true) {
 		uint64_t currTime = timestamp_us();
-		dt = (currTime - prevTime);
-		sum += dt;
+		dt = (float)(currTime - prevTime) / 1000.0f;
 		prevTime = currTime;
 
 		/*********************************/
@@ -676,12 +673,7 @@ void LSM9DS0::madgwickFilterUpdate() {
 		bx = sqrt(hx * hx + hy * hy);
 		bz = hz;
 
-		// DEBUG PRINTS
-		if(count%10000 == 0) {
-			printf("dt: %.8g\n", sum);
-			sum = 0;
-		}
-		count++;
+		printf("%f\n", dt);
 		/*
 		cout << "dt: " << dt << "\n";
 		cout << "Yaw: " << atan2(2.0f * (SEq[1] * SEq[2] - SEq[0] * SEq[3]), 2.0f * (SEq[0] * SEq[0] + SEq[1] * SEq[1]) - 1.0f) << "\n";
