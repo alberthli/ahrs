@@ -568,9 +568,9 @@ public:
 	float getzGyro();
 
 	uint8_t readXM(uint8_t reg_address);
-	void writeXM(unsigned char reg_address, unsigned char data);
+	void writeXM(uint8_t reg_address, uint8_t data);
 	uint8_t readG(uint8_t reg_address);
-	void writeG(unsigned char reg_address, unsigned char data);
+	void writeG(uint8_t reg_address, uint8_t data);
 
 	void startLSM();
 	void madgwickFilterUpdate();
