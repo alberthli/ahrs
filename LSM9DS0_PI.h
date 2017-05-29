@@ -547,8 +547,8 @@ public:
 	virtual ~LSM9DS0();
   	void start();
 
-	void initXM(uint8_t xmaddress);
-	void initG(uint8_t gaddress);
+	void initXM();
+	void initG();
 
 	float getTemp();
 

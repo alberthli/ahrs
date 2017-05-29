@@ -17,7 +17,7 @@ void LSM9DS0::start() {
 }
 
 // Initializing desired settings on the XM
-void LSM9DS0::initXM(uint8_t xmaddress) {
+void LSM9DS0::initXM() {
 	// Bit Register Configuration Info in Header File
 	writeXM(CTRL_REG0_XM, 0x00); // All disabled, defaults
 	writeXM(CTRL_REG1_XM, 0x57); // 100 Hz Accel. Sampling Rate, Continuous Update, All Axes Enabled
@@ -34,7 +34,7 @@ void LSM9DS0::initXM(uint8_t xmaddress) {
 }
 
 // Initializing desired settings on the G
-void LSM9DS0::initG(uint8_t gaddress) {
+void LSM9DS0::initG() {
 	// Bit Register Configuration Info in Header File
 	writeG(CTRL_REG_1_G, 0x0F); // Default ODR and Bandwidth, Normal Mode, All Axes Enabled
 	writeG(CTRL_REG_2_G, 0x00); // Normal Mode, 7.2 Hz HPF Cutoff Frequency

@@ -3,8 +3,8 @@ All credits go to the author of this post:
 http://www.hertaville.com/interfacing-an-i2c-gpio-expander-mcp23017-to-the-raspberry-pi-using-c.html
 */
 
-#ifndef I2C8BIT_H
-#define I2C8BIT_H
+#ifndef I2C8Bit_H
+#define I2C8Bit_H
 
 #include <string>
 #include <stdio.h>
@@ -16,13 +16,13 @@ http://www.hertaville.com/interfacing-an-i2c-gpio-expander-mcp23017-to-the-raspb
 #include <sys/ioctl.h>
 #include <string.h>
 
-class i2c8Bit
+class I2C8Bit
 {
     public:
-        i2c8Bit(void); // default constructor
-        i2c8Bit(unsigned char dev_addr, std::string i2cfilename);
+        I2C8Bit(void); // default constructor
+        I2C8Bit(unsigned char dev_addr, std::string i2cfilename);
         //over loaded constructor
-        ~i2c8Bit(void); // destructor
+        ~I2C8Bit(void); // destructor
         int writeReg(unsigned char reg_addr, unsigned char data);
                 // function to write byte data into a register of an I2C device
         int readReg(unsigned char reg_addr, unsigned char &data);

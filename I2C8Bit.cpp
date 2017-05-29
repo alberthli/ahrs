@@ -12,7 +12,7 @@ using namespace std;
  * all private variables to default values and calls the openI2C()
  * function to open the default I2C device "/dev/i2c-0".
  *****************************************************************/
-i2c8Bit::i2c8Bit(void){
+I2C8Bit::I2C8Bit(void){
     this->i2cFileName = "/dev/i2c-0";
     this->deviceAddress= 0;
         this->i2cDescriptor = -1;
@@ -28,7 +28,7 @@ i2c8Bit::i2c8Bit(void){
  * function call.
  * *****************************************************************/
 
-i2c8Bit::i2c8Bit(unsigned char dev_addr, std::string i2c_file_name){
+I2C8Bit::I2C8Bit(unsigned char dev_addr, std::string i2c_file_name){
     this->i2cFileName = i2c_file_name;
     this->deviceAddress = dev_addr;
         this->i2cDescriptor = -1;
@@ -40,7 +40,7 @@ i2c8Bit::i2c8Bit(unsigned char dev_addr, std::string i2c_file_name){
  * by calling the closeI2C() which in turn calls the close() system call
  * *********************************************************************/
 
-i2c8Bit::~i2c8Bit(void){
+I2C8Bit::~I2C8Bit(void){
         cout << " Closing I2C Device" << endl;
     this->closeI2C();
 }
@@ -54,7 +54,7 @@ i2c8Bit::~i2c8Bit(void){
  * ioctl() & close() system calls.
  * ********************************************************************/
 
-int i2c8Bit::openI2C(){
+int I2C8Bit::openI2C(){
     this->i2cDescriptor = open(i2cFileName.c_str(), O_RDWR);
     if(this->i2cDescriptor < 0){
         perror("Could not open file (1)");
@@ -69,7 +69,7 @@ int i2c8Bit::openI2C(){
  * on the I2C device descriptor.
  * *******************************************************************/
 
-int i2c8Bit::closeI2C(){
+int I2C8Bit::closeI2C(){
                 int retVal = -1;
         retVal = close(this->i2cDescriptor);
     if(retVal < 0){
@@ -85,7 +85,7 @@ return retVal;
  *both bytes are written (no read/write switch), both pieces
  *of information can be sent in a single message (i2c_msg structure)
  ********************************************************************/
-int i2c8Bit::writeReg(unsigned char reg_addr, unsigned char data){
+int I2C8Bit::writeReg(unsigned char reg_addr, unsigned char data){
 
     unsigned char buff[2];
     int retVal = -1;
@@ -121,7 +121,7 @@ int i2c8Bit::writeReg(unsigned char reg_addr, unsigned char data){
  *variable "data".
  ********************************************************************/
 
-int i2c8Bit::readReg(unsigned char reg_addr, unsigned char &data){
+int I2C8Bit::readReg(unsigned char reg_addr, unsigned char &data){
 
     unsigned char *inbuff, outbuff;
     int retVal = -1;
