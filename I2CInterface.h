@@ -16,7 +16,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <linux/i2c-dev.h>
-#include <linux/i2c.h>
+//#include <linux/i2c.h>
 #include <unistd.h>
 #include <stdint.h>
 #include <stdio.h>
