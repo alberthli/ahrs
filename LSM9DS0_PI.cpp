@@ -19,7 +19,7 @@ LSM9DS0::~LSM9DS0() {
 ////////////////////////////
 
 void LSM9DS0::initialize() {
-	I2CInterface = I2CInterfaceClass();
+	// I2CInterface = I2CInterfaceClass();
 }
 
 // Initializing desired settings on the XM
