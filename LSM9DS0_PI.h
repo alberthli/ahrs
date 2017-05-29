@@ -540,8 +540,8 @@ FIFO Watermark Level (Bits 4-8)
 #define TEMP_GAIN 0.125f
 
 // Calibration Constants
-#define MAG_CALIB_SAMPLES 10000 // 10000 samples to calibrate hard/soft iron effect
-#define GYRO_CALIB_SAMPLES 5000 // 5000 samples to calibrate gyro bias
+#define MAG_CALIB_SAMPLES 25000 // 10000 samples to calibrate hard/soft iron effect
+#define GYRO_CALIB_SAMPLES 10000 // 5000 samples to calibrate gyro bias
 #define ACCEL_CALIB_SAMPLES 1000 // 1000 samples per sensor orientation for accelerometer bias
 
 class LSM9DS0 {
