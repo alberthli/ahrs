@@ -9,12 +9,10 @@ using namespace std;
 
 LSM9DS0::LSM9DS0() {
 	// Madgwick Variables Initialization
-	SEq = [1.0f, 0.0f, 0.0f, 0.0f];
 	BETA = 12.5;
 	ZETA = 0.01;
 	bx = 1.0f;
 	bz = 0.0f;
-	gyroBiases = [0, 0, 0];
 }
 
 LSM9DS0::~LSM9DS0() {
@@ -530,7 +528,7 @@ void LSM9DS0::madgwickFilterUpdate() {
 	/*********************************/
 	/* Useful Variable Manipulations */
 	/*********************************/
-	float32x4_t se_Vector = ld1q_f32(SEq);
+	// float32x4_t se_Vector = ld1q_f32(SEq);
 
 	float hSEq0 = 0.5 * SEq[0];
 	float hSEq1 = 0.5 * SEq[1];
@@ -629,9 +627,9 @@ void LSM9DS0::madgwickFilterUpdate() {
 	float wez = dSEq0 * SEqhatdot3 - dSEq1 * SEqhatdot2 + dSEq2 * SEqhatdot1 - dSEq3 * SEqhatdot0;
 
 	// Remove gyro bias
-	gyroBiases[0] += wex * dt * zeta;
-	gyroBiases[1] += wey * dt * zeta;
-	gyroBiases[2] += wez * dt * zeta;
+	gyroBiases[0] += wex * dt * ZETA;
+	gyroBiases[1] += wey * dt * ZETA;
+	gyroBiases[2] += wez * dt * ZETA;
 	wx -= gyroBiases[0];
 	wy -= gyroBiases[1];
 	wz -= gyroBiases[2];
@@ -643,29 +641,29 @@ void LSM9DS0::madgwickFilterUpdate() {
 	float SEqdot3 = hSEq0 * wz + hSEq1 * wy - hSEq2 * wx;
 
 	// Update orientation quaternion
-	SEq0 += (SEqdot0 - (beta * SEqhatdot0)) * dt;
-	SEq1 += (SEqdot1 - (beta * SEqhatdot1)) * dt;
-	SEq2 += (SEqdot2 - (beta * SEqhatdot2)) * dt;
-	SEq3 += (SEqdot3 - (beta * SEqhatdot3)) * dt;
+	SEq[0] += (SEqdot0 - (BETA * SEqhatdot0)) * dt;
+	SEq[1] += (SEqdot1 - (BETA * SEqhatdot1)) * dt;
+	SEq[2] += (SEqdot2 - (BETA * SEqhatdot2)) * dt;
+	SEq[3] += (SEqdot3 - (BETA * SEqhatdot3)) * dt;
 
 	// Normalize orientation quaternion
-	tempNorm = sqrt(SEq0 * SEq0 + SEq1 * SEq1 + SEq2 * SEq2 + SEq3 * SEq3);
-	SEq0 /= tempNorm;
-	SEq1 /= tempNorm;
-	SEq2 /= tempNorm;
-	SEq3 /= tempNorm;
+	tempNorm = sqrt(SEq[0] * SEq[0] + SEq[1] * SEq[1] + SEq[2] * SEq[2] + SEq[3] * SEq[3]);
+	SEq[0] /= tempNorm;
+	SEq[1] /= tempNorm;
+	SEq[2] /= tempNorm;
+	SEq[3] /= tempNorm;
 
 	// b-field in earth frame
-	float SEq0SEq1 = SEq0 * SEq1;
-	float SEq0SEq2 = SEq0 * SEq2;
-	float SEq0SEq3 = SEq0 * SEq3;
-	float SEq2SEq3 = SEq2 * SEq3;
-	float SEq1SEq2 = SEq1 * SEq2;
-	float SEq1SEq3 = SEq1 * SEq3;
+	float SEq0SEq1 = SEq[0] * SEq[1];
+	SEq0SEq2 = SEq[0] * SEq[2];
+	float SEq0SEq3 = SEq[0] * SEq[3];
+	float SEq2SEq3 = SEq[2] * SEq[3];
+	float SEq1SEq2 = SEq[1] * SEq[2];
+	SEq1SEq3 = SEq[1] * SEq[3];
 
-	float hx = dmx * (0.5 - SEq2 * SEq2 - SEq3 * SEq3) + dmy * (SEq1SEq2 - SEq0SEq3) + dmz * (SEq1SEq3 + SEq0SEq2);
-	float hy = dmx * (SEq1SEq2 + SEq0SEq3) + dmy * (0.5 - SEq1 * SEq1 - SEq3 * SEq3) + dmz * (SEq2SEq3 - SEq0SEq1);
-	float hz = dmx * (SEq1SEq3 - SEq0SEq2) + dmy * (SEq2SEq3 + SEq0SEq1) + dmz * (0.5 - SEq1 * SEq1 - SEq2 * SEq2);
+	float hx = dmx * (0.5 - SEq[2] * SEq[2] - SEq[3] * SEq[3]) + dmy * (SEq1SEq2 - SEq0SEq3) + dmz * (SEq1SEq3 + SEq0SEq2);
+	float hy = dmx * (SEq1SEq2 + SEq0SEq3) + dmy * (0.5 - SEq[1] * SEq[1] - SEq[3] * SEq[3]) + dmz * (SEq2SEq3 - SEq0SEq1);
+	float hz = dmx * (SEq1SEq3 - SEq0SEq2) + dmy * (SEq2SEq3 + SEq0SEq1) + dmz * (0.5 - SEq[1] * SEq[1] - SEq[2] * SEq[2]);
 
 	// Normalize flux vector to eliminate y component
 	bx = sqrt(hx * hx + hy * hy);
