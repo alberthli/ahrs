@@ -525,7 +525,7 @@ void LSM9DS0::madgwickFilterUpdate() {
 
 	while(true) {
 		uint64_t currTime = timestamp_us();
-		dt = (currTime - prevTime) / 1000.0f;
+		dt = (currTime - prevTime) / 1000;
 		prevTime = currTime;
 
 		/*********************************/
