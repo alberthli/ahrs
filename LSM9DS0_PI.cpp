@@ -57,7 +57,7 @@ uint8_t LSM9DS0::readXM(uint8_t reg_address) {
 // Reads data from the G device and returns it as an unsigned int
 uint8_t LSM9DS0::readG(uint8_t reg_address) {
 	unsigned char data = 0;
-	g.readReg(reg_address, &data);
+	g.readReg(reg_address, data);
 	return (uint8_t)data;
 }
 
