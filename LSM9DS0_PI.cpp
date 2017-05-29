@@ -673,9 +673,9 @@ void LSM9DS0::madgwickFilterUpdate() {
 		bx = sqrt(hx * hx + hy * hy);
 		bz = hz;
 
-		printf("%lli\n", currTime);
-		printf("%lli\n", prevTime);
-		printf("%f\n", dt);
+		printf("cur: %lli\n", currTime);
+		printf("pre: %lli\n", prevTime);
+		printf("dt: %f\n\n", dt);
 		/*
 		cout << "dt: " << dt << "\n";
 		cout << "Yaw: " << atan2(2.0f * (SEq[1] * SEq[2] - SEq[0] * SEq[3]), 2.0f * (SEq[0] * SEq[0] + SEq[1] * SEq[1]) - 1.0f) << "\n";
