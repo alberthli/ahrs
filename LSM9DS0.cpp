@@ -28,8 +28,7 @@ void LSM9DS0::initXM(uint8_t xmaddress) {
 	writeByte(xmaddress, CTRL_REG5_XM, 0xF4); // Temperature Enabled, High Mag Res, 100 Hz Sampling, No Latched Ints
 	writeByte(xmaddress, CTRL_REG6_XM, 0x00); // +/- 2 Gauss Scale
 	writeByte(xmaddress, CTRL_REG7_XM, 0x00); // Defaults
-
-	writeByte(xmaddress, FIFO_CTRL_REG, 0x00); // Defaults
+	
 	// These values need to be changed if you change the operating range of the sensors!
 	accelGain = 0.000122;
 	magGain = 0.00008;
