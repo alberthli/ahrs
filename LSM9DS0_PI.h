@@ -3,6 +3,8 @@
 
 #include "I2C8Bit.h"
 #include <chrono>
+#include <string>
+#include <string.h>
 
 /* 
 /////////////////////////////////////////
