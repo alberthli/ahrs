@@ -522,6 +522,7 @@ void LSM9DS0::startLSM() {
 }
 
 void LSM9DS0::madgwickFilterUpdate() {
+	long count = 0;
 
 	while(true) {
 		uint64_t currTime = timestamp_us();
@@ -674,7 +675,10 @@ void LSM9DS0::madgwickFilterUpdate() {
 		bz = hz;
 
 		// DEBUG PRINTS
-		printf("dt: %.8f\n", (float)dt);
+		if(count%10000 == 0) {
+			printf("dt: %.8f\n", (float)dt);
+		}
+		count++;
 		/*
 		cout << "dt: " << dt << "\n";
 		cout << "Yaw: " << atan2(2.0f * (SEq[1] * SEq[2] - SEq[0] * SEq[3]), 2.0f * (SEq[0] * SEq[0] + SEq[1] * SEq[1]) - 1.0f) << "\n";
