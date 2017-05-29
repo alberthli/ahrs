@@ -16,7 +16,7 @@ LSM9DS0::~LSM9DS0() {
 // INITIALIZATION METHODS //
 ////////////////////////////
 
-void LSM9DS0::start() {
+void LSM9DS0::initialize() {
 	xm = I2C8Bit(XM_ADDRESS, string("/dev/i2c-1"));
 	g = I2C8Bit(G_ADDRESS, string("/dev/i2c-1"));
 }
@@ -517,5 +517,12 @@ void LSM9DS0::madgwickFilterUpdate() {
 // -------------------- //
 
 int main() {
+	LSM9DS0 lsm = LSM9DS0();
+	lsm.initialize();
 
+	lsm.printRawData();
+
+	lsm.calibrateGyroOffsets();
+	lsm.calibrateHardSoftIronEffect();
+	lsm.calibrateAccelOffsets();
 }
