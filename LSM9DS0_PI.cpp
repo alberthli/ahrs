@@ -7,7 +7,13 @@
 using namespace std;
 
 LSM9DS0::LSM9DS0() {
-
+	// Madgwick Variables Initialization
+	SEq = [1.0f, 0.0f, 0.0f, 0.0f];
+	BETA = 12.5;
+	ZETA - 0.01;
+	bx = 1.0f;
+	bz = 0.0f;
+	gyroBiases = [0, 0, 0];
 }
 
 LSM9DS0::~LSM9DS0() {
@@ -523,34 +529,34 @@ void LSM9DS0::madgwickFilterUpdate() {
 	/*********************************/
 	/* Useful Variable Manipulations */
 	/*********************************/
-	float32x4_t se_Vector = ld1q_f32([hSEq1, hSEq2, hSEq3, hSEq4]);
+	float32x4_t se_Vector = ld1q_f32(SEq);
 
-	float hSEq1 = 0.5 * SEq1
-	float hSEq2 = 0.5 * SEq2
-	float hSEq3 = 0.5 * SEq3
-	float hSEq4 = 0.5 * SEq4
+	float hSEq0 = 0.5 * SEq[0]
+	float hSEq1 = 0.5 * SEq[1]
+	float hSEq2 = 0.5 * SEq[2]
+	float hSEq3 = 0.5 * SEq[3]
 
-	float dSEq1 = 2 * SEq1
-	float dSEq2 = 2 * SEq2
-	float dSEq3 = 2 * SEq3
-	float dSEq4 = 2 * SEq4
+	float dSEq0 = 2 * SEq[0]
+	float dSEq1 = 2 * SEq[1]
+	float dSEq2 = 2 * SEq[2]
+	float dSEq3 = 2 * SEq[3]
 
-	float sSEq3 = SEq3 * SEq3
+	float sSEq2 = SEq[2] * SEq[2]
 
 	float dbx = 2 * bx
 	float dbz = 2 * bz
 
-	float dbxSEq1 = dbx * SEq1
-	float dbxSEq2 = dbx * SEq2
-	float dbxSEq3 = dbx * SEq3
-	float dbxSEq4 = dbx * SEq4
-	float dbzSEq1 = dbz * SEq1
-	float dbzSEq2 = dbz * SEq2
-	float dbzSEq3 = dbz * SEq3
-	float dbzSEq4 = dbz * SEq4
+	float dbxSEq0 = dbx * SEq[0]
+	float dbxSEq1 = dbx * SEq[1]
+	float dbxSEq2 = dbx * SEq[2]
+	float dbxSEq3 = dbx * SEq[3]
+	float dbzSEq0 = dbz * SEq[0]
+	float dbzSEq1 = dbz * SEq[1]
+	float dbzSEq2 = dbz * SEq[2]
+	float dbzSEq3 = dbz * SEq[3]
 
-	float SEq1SEq3 = SEq1 * SEq3
-	float SEq2SEq4 = SEq2 * SEq4
+	float SEq0SEq2 = SEq[0] * SEq[2]
+	float SEq1SEq3 = SEq[1] * SEq[3]
 
 	/**************************/
 	/* Beginning of Algorithm */
@@ -573,93 +579,92 @@ void LSM9DS0::madgwickFilterUpdate() {
 
 	// Combined cost function + Jacobian
 	// Functions from g-field
-	float f1 = dSEq2 * SEq4 - dSEq1 * SEq3 - ax
-	float f2 = dSEq1 * SEq2 + dSEq3 * SEq4 - ay
-	float f3 = 1 - dSEq2 * SEq2 - dSEq3 * SEq3 - az
+	float f1 = dSEq1 * SEq[3] - dSEq0 * SEq[2] - ax
+	float f2 = dSEq0 * SEq[1] + dSEq2 * SEq[3] - ay
+	float f3 = 1 - dSEq1 * SEq[1] - dSEq2 * SEq[2] - az
 
 	// Functions from b-field
-	float f4 = dbx * (0.5 - sSEq3 - SEq4 * SEq4) + dbz * (SEq2SEq4 - SEq1SEq3) - mx
-	float f5 = dbx * (SEq2 * SEq3 - SEq1 * SEq4) + dbz * (SEq1 * SEq2 + SEq3 * SEq4) - my
-	float f6 = dbx * (SEq1SEq3 + SEq2SEq4) + dbz * (0.5 - SEq2 * SEq2 - sSEq3) - mz
+	float f4 = dbx * (0.5 - sSEq2 - SEq[3] * SEq[3]) + dbz * (SEq1SEq3 - SEq0SEq2) - mx
+	float f5 = dbx * (SEq[1] * SEq[2] - SEq[0] * SEq[3]) + dbz * (SEq[0] * SEq[1] + SEq[2] * SEq[3]) - my
+	float f6 = dbx * (SEq0SEq2 + SEq1SEq3) + dbz * (0.5 - SEq[1] * SEq[1] - sSEq2) - mz
 
 	// Jacobian entries
-	float J1124 = dSEq3
-	float J1223 = dSEq4
-	float J1322 = dSEq1
-	float J1421 = dSEq2
+	float J1124 = dSEq2
+	float J1223 = dSEq3
+	float J1322 = dSEq0
+	float J1421 = dSEq1
 	float J32 = 2 * J1421
 	float J33 = 2 * J1124
-	float J41 = dbzSEq3
-	float J42 = dbzSEq4
-	float J43 = 2 * dbxSEq3 + dbzSEq1
-	float J44 = 2 * dbxSEq4 - dbzSEq2
-	float J51 = dbxSEq4 - dbzSEq2
-	float J52 = dbxSEq3 + dbzSEq1
-	float J53 = dbxSEq2 + dbzSEq4
-	float J54 = dbxSEq1 - dbzSEq3
-	float J61 = dbxSEq3
-	float J62 = dbxSEq4 - 2 * dbzSEq2
-	float J63 = dbxSEq1 - 2 * dbzSEq3
-	float J64 = dbxSEq2
+	float J41 = dbzSEq2
+	float J42 = dbzSEq3
+	float J43 = 2 * dbxSEq2 + dbzSEq0
+	float J44 = 2 * dbxSEq3 - dbzSEq1
+	float J51 = dbxSEq3 - dbzSEq1
+	float J52 = dbxSEq2 + dbzSEq0
+	float J53 = dbxSEq1 + dbzSEq3
+	float J54 = dbxSEq0 - dbzSEq2
+	float J61 = dbxSEq2
+	float J62 = dbxSEq3 - 2 * dbzSEq1
+	float J63 = dbxSEq0 - 2 * dbzSEq2
+	float J64 = dbxSEq1
 
 	// Gradient Descent Optimization
 	// Gradients
-	float SEqhatdot1 = -J1124 * f1 + J1421 * f2 - J41 * f4 - J51 * f5 + J61 * f6
-	float SEqhatdot2 = J1223 * f1 + J1322 * f2 - J32 * f3 + J42 * f4 + J52 * f5 + J62 * f6
-	float SEqhatdot3 = -J1322 * f1 + J1223 * f2 - J33 * f3 - J43 * f4 + J53 * f5 + J63 * f6
-	float SEqhatdot4 = J1421 * f1 + J1124 * f2 - J44 * f4 - J54 * f5 + J64 * f6
+	float SEqhatdot0 = -J1124 * f1 + J1421 * f2 - J41 * f4 - J51 * f5 + J61 * f6
+	float SEqhatdot1 = J1223 * f1 + J1322 * f2 - J32 * f3 + J42 * f4 + J52 * f5 + J62 * f6
+	float SEqhatdot2 = -J1322 * f1 + J1223 * f2 - J33 * f3 - J43 * f4 + J53 * f5 + J63 * f6
+	float SEqhatdot3 = J1421 * f1 + J1124 * f2 - J44 * f4 - J54 * f5 + J64 * f6
 
 	// Normalizing Gradients
-	tempNorm = sqrt(SEqhatdot1 * SEqhatdot1 + SEqhatdot2 * SEqhatdot2 + SEqhatdot3 * SEqhatdot3 + SEqhatdot4 * SEqhatdot4)
+	tempNorm = sqrt(SEqhatdot0 * SEqhatdot0 + SEqhatdot1 * SEqhatdot1 + SEqhatdot2 * SEqhatdot2 + SEqhatdot3 * SEqhatdot3)
+	SEqhatdot0 /= tempNorm
 	SEqhatdot1 /= tempNorm
 	SEqhatdot2 /= tempNorm
 	SEqhatdot3 /= tempNorm
-	SEqhatdot4 /= tempNorm
 
 	// Angular estimated direction of gyro error
-	float wex = dSEq1 * SEqhatdot2 - dSEq2 * SEqhatdot1 - dSEq3 * SEqhatdot4 + dSEq4 * SEqhatdot3
-	float wey = dSEq1 * SEqhatdot3 + dSEq2 * SEqhatdot4 - dSEq3 * SEqhatdot1 - dSEq4 * SEqhatdot2
-	float wez = dSEq1 * SEqhatdot4 - dSEq2 * SEqhatdot3 + dSEq3 * SEqhatdot2 - dSEq4 * SEqhatdot1
+	float wex = dSEq0 * SEqhatdot1 - dSEq1 * SEqhatdot0 - dSEq2 * SEqhatdot3 + dSEq3 * SEqhatdot2
+	float wey = dSEq0 * SEqhatdot2 + dSEq1 * SEqhatdot3 - dSEq2 * SEqhatdot0 - dSEq3 * SEqhatdot1
+	float wez = dSEq0 * SEqhatdot3 - dSEq1 * SEqhatdot2 + dSEq2 * SEqhatdot1 - dSEq3 * SEqhatdot0
 
 	// Remove gyro bias
-	wbx += wex * dt * zeta
-	wby += wey * dt * zeta
-	wbz += wez * dt * zeta
-	wx -= wbx
-	wy -= wby
-	wz -= wbz
+	gyroBiases[0] += wex * dt * zeta
+	gyroBiases[1] += wey * dt * zeta
+	gyroBiases[2] += wez * dt * zeta
+	wx -= gyroBiases[0]
+	wy -= gyroBiases[1]
+	wz -= gyroBiases[2]
 
 	// Quaternion rate of change (gyro)
-	SEqdot1 = -hSEq2 * wx - hSEq3 * wy - hSEq4 * wz
-	SEqdot2 = hSEq1 * wx + hSEq3 * wz - hSEq4 * wy
-	SEqdot3 = hSEq1 * wy - hSEq2 * wz + hSEq4 * wx
-	SEqdot4 = hSEq1 * wz + hSEq2 * wy - hSEq3 * wx
+	SEqdot0 = -hSEq1 * wx - hSEq2 * wy - hSEq3 * wz
+	SEqdot1 = hSEq0 * wx + hSEq2 * wz - hSEq3 * wy
+	SEqdot2 = hSEq0 * wy - hSEq1 * wz + hSEq3 * wx
+	SEqdot3 = hSEq0 * wz + hSEq1 * wy - hSEq2 * wx
 
 	// Update orientation quaternion
+	SEq0 += (SEqdot0 - (beta * SEqhatdot0)) * dt
 	SEq1 += (SEqdot1 - (beta * SEqhatdot1)) * dt
 	SEq2 += (SEqdot2 - (beta * SEqhatdot2)) * dt
 	SEq3 += (SEqdot3 - (beta * SEqhatdot3)) * dt
-	SEq4 += (SEqdot4 - (beta * SEqhatdot4)) * dt
 
 	// Normalize orientation quaternion
-	// can SIMD this
-	tempNorm = sqrt(SEq1 * SEq1 + SEq2 * SEq2 + SEq3 * SEq3 + SEq4 * SEq4)
+	tempNorm = sqrt(SEq0 * SEq0 + SEq1 * SEq1 + SEq2 * SEq2 + SEq3 * SEq3)
+	SEq0 /= tempNorm
 	SEq1 /= tempNorm
 	SEq2 /= tempNorm
 	SEq3 /= tempNorm
-	SEq4 /= tempNorm
 
 	// b-field in earth frame
+	float SEq0SEq1 = SEq0 * SEq1
+	float SEq0SEq2 = SEq0 * SEq2
+	float SEq0SEq3 = SEq0 * SEq3
+	float SEq2SEq3 = SEq2 * SEq3
 	float SEq1SEq2 = SEq1 * SEq2
 	float SEq1SEq3 = SEq1 * SEq3
-	float SEq1SEq4 = SEq1 * SEq4
-	float SEq3SEq4 = SEq3 * SEq4
-	float SEq2SEq3 = SEq2 * SEq3
-	float SEq2SEq4 = SEq2 * SEq4
 
-	float hx = dmx * (0.5 - SEq3 * SEq3 - SEq4 * SEq4) + dmy * (SEq2SEq3 - SEq1SEq4) + dmz * (SEq2SEq4 + SEq1SEq3)
-	float hy = dmx * (SEq2SEq3 + SEq1SEq4) + dmy * (0.5 - SEq2 * SEq2 - SEq4 * SEq4) + dmz * (SEq3SEq4 - SEq1SEq2)
-	float hz = dmx * (SEq2SEq4 - SEq1SEq3) + dmy * (SEq3SEq4 + SEq1SEq2) + dmz * (0.5 - SEq2 * SEq2 - SEq3 * SEq3)
+	float hx = dmx * (0.5 - SEq2 * SEq2 - SEq3 * SEq3) + dmy * (SEq1SEq2 - SEq0SEq3) + dmz * (SEq1SEq3 + SEq0SEq2)
+	float hy = dmx * (SEq1SEq2 + SEq0SEq3) + dmy * (0.5 - SEq1 * SEq1 - SEq3 * SEq3) + dmz * (SEq2SEq3 - SEq0SEq1)
+	float hz = dmx * (SEq1SEq3 - SEq0SEq2) + dmy * (SEq2SEq3 + SEq0SEq1) + dmz * (0.5 - SEq1 * SEq1 - SEq2 * SEq2)
 
 	// Normalize flux vector to eliminate y component
 	bx = sqrt(hx * hx + hy * hy)
