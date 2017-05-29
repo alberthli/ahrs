@@ -27,9 +27,6 @@ class I2C8Bit
                 // function to write byte data into a register of an I2C device
         int readReg(unsigned char reg_addr, unsigned char &data);
                 // function to read byte data from a register of an I2C device
-
-    private:
-        //private member functions
         int openI2C(); //open an I2C device. Called only in constructors
         int closeI2C(); // close an I2C device. Called only in destructor
 
@@ -37,6 +34,10 @@ class I2C8Bit
         std::string  i2cFileName; //i2c device name e.g."/dev/i2c-0" or "/dev/i2c-1"
                 int i2cDescriptor;  // i2c device descriptor
         unsigned char deviceAddress; // i2c device address
+
+    private:
+        //private member functions
+        
 };
 
 #endif
