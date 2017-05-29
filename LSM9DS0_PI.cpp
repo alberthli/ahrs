@@ -674,6 +674,8 @@ int main() {
 	lsm.initialize();
 
 	lsm.printRawData();
+	lsm.printRawData();
+	lsm.printRawData();
 
 	lsm.calibrateGyroOffsets();
 	lsm.calibrateHardSoftIronEffect();
