@@ -678,7 +678,7 @@ void LSM9DS0::madgwickFilterUpdate() {
 
 		// DEBUG PRINTS
 		if(count%10000 == 0) {
-			printf("dt: %.8d\n", sum);
+			printf("dt: %.8g\n", sum);
 			sum = 0;
 		}
 		count++;
