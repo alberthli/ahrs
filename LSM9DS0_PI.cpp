@@ -32,8 +32,8 @@ void LSM9DS0::initXM() {
 	writeXM(CTRL_REG7_XM, 0x00); // Defaults
 
 	// These values need to be changed if you change the operating range of the sensors!
-	accelGain = 0.000122;
-	magGain = 0.00008;
+	accelGain = 0.000122f;
+	magGain = 0.00008f;
 }
 
 // Initializing desired settings on the G
@@ -47,7 +47,7 @@ void LSM9DS0::initG() {
 	writeG(CTRL_REG_5_G, 0x00); // Defaults
 
 	// This value needs to be changed if you change the operating range of the gyro!
-	gyroGain = 0.00875;
+	gyroGain = 0.00875f;
 }
 
 /////////////////
