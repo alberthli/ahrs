@@ -1,9 +1,11 @@
 #include "LSM9DS0.h"
 #include <Wire.h>
-#include <Arduino.h>
+
+// [MCU]
+// #include <Arduino.h>
 
 // A lot of this code can only be compiled on a MCU OR on the PI. I have used these comment
-// flags to denote this:
+// flags to denote this (LOOK IN THE HEADER FILE TOO!):
 // [MCU] Code that should be uncommented for MCU use
 // [PI] Code that should be uncommented for Pi use
 

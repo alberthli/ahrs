@@ -1,7 +1,8 @@
 #ifndef LSM9DS0_H
 #define LSM9DS0_H
 
-#include <Arduino.h>
+// [MCU]
+// #include <Arduino.h>
 
 /* 
 /////////////////////////////////////////
