@@ -179,7 +179,7 @@ void LSM9DS0::startLSM() {
 	prevTime = std::chrono::steady_clock::now();
 	ax = getxAccel() - X_AB_OFFSET;
 	ay = getyAccel() - Y_AB_OFFSET;
-	az = getzAccel() - Z_AB_OFFSET;
+	az = -(getzAccel() - Z_AB_OFFSET);
 	mx = (getxMag() - X_HI_OFFSET) * X_SI_SCALE;
 	mx = (getyMag() - Y_HI_OFFSET) * Y_SI_SCALE;
 	mx = (getzMag() - Z_HI_OFFSET) * Z_SI_SCALE;
@@ -189,10 +189,12 @@ void LSM9DS0::startLSM() {
 
 	startTime = prevTime;
 	lastPrintTime = prevTime;
+
+	madgwickFilterUpdate(); // [TODO] Make this run on a different thread!
 }
 
 void LSM9DS0::madgwickFilterUpdate() {
-	
+
 }
 
 // Calibration method for accelerometer bias
@@ -214,8 +216,6 @@ void LSM9DS0::calibrateAccelOffsets() {
 	float az2 = 0.0f;
 	float az3 = 0.0f;
 	float az4 = 0.0f;
-
-	char read;
 
 	cout << "*** ACCELEROMETER CALIBRATION PROTOCOL STARTED ***\n";
 	cout << "There are going to be six positions to orient the sensor in. It must be still while calibrating.\n";
@@ -462,7 +462,7 @@ void LSM9DS0::calibrateGyroOffsets() {
 	Z_GB_OFFSET = sumz / GYRO_CALIB_SAMPLES;
 
 	cout << "Calibration complete!\n";
-	cout << "We've already set these values for you in the system, but the offsets are printed for your convenience.\n"
+	cout << "We've already set these values for you in the system, but the offsets are printed for your convenience.\n";
 
 	cout << "X Offset: " << X_GB_OFFSET << "\n";
 	cout << "Y Offset: " << Y_GB_OFFSET << "\n";
