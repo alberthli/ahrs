@@ -1,7 +1,7 @@
 #ifndef LSM9DS0_H
 #define LSM9DS0_H
 
-#include <I2C8Bit.h>
+#include "I2C8Bit.h"
 #include <chrono>
 
 /* 
