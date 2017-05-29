@@ -371,6 +371,7 @@ class LSM9DS0:
 			while True:
 				self.madgwickFilterUpdate()
 
+				now = time.clock()
 				print("Time: " + str(now - self.startTime))
 				print(" | dt: " + str(self.dt), end = "")
 
