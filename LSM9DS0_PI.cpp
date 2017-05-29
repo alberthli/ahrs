@@ -684,16 +684,6 @@ void LSM9DS0::madgwickFilterUpdate() {
 	}
 }
 
-////////////////////
-// Timing Methods //
-////////////////////
-
-inline uint64_t timestamp_us() {
-  struct timeval tv;
-  gettimeofday(&tv,NULL);
-  return 1000000L * tv.tv_sec + tv.tv_usec;
-}
-
 // DIRECT CALL TO MAIN MEANS WE ARE DEBUGGING. COMMENT OUT OTHERWISE.
 int main() {
 	LSM9DS0 lsm = LSM9DS0();
