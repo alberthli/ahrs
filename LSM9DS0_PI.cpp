@@ -142,7 +142,8 @@ float LSM9DS0::getyMag() {
 	uint8_t yMag_LSBs = readXM(OUT_Y_L_M);
 	// 16 bit resolution, left-justified
 	int16_t yBitMag = (uint16_t) yMag_MSBs << 8 | yMag_LSBs;
-
+	cout << yBitMag << endl;
+	cout << magGain << endl;
 	return yBitMag * magGain;
 }
 
