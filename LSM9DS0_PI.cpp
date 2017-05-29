@@ -17,8 +17,7 @@ LSM9DS0::~LSM9DS0() {
 ////////////////////////////
 
 void LSM9DS0::initialize() {
-	I2C8Bit xm(XM_ADDRESS, string("/dev/i2c-1"));
-	I2C8Bit g(G_ADDRESS, string("/dev/i2c-1"));
+	
 }
 
 // Initializing desired settings on the XM
@@ -518,7 +517,8 @@ void LSM9DS0::madgwickFilterUpdate() {
 
 int main() {
 	LSM9DS0 lsm = LSM9DS0();
-	lsm.initialize();
+	I2C8Bit xm(XM_ADDRESS, string("/dev/i2c-1"));
+	I2C8Bit g(G_ADDRESS, string("/dev/i2c-1"));
 
 	lsm.printRawData();
 
