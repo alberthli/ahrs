@@ -385,18 +385,19 @@ class LSM9DS0:
 				self.roll = 180 - (self.roll * 180 / PI)
 				if self.roll > 180:
 					self.roll -= 360
-
+				"""
 				# Debug print statements
 				now = time.clock()
 				if now - self.lastPrintTime >= 0.25:
 					print("Time: " + str(now - self.startTime))
 					print(" | dt: " + str(self.dt), end = "")
+					"""
 					print(" | Yaw (No reference): " + str(self.yaw), end = "")
 					print(" | Pitch: " + str(self.pitch), end = "")
 					print(" | Roll: " + str(self.roll))
-
+					"""
 					self.lastPrintTime = now
-				"""
+				
 
 		except KeyboardInterrupt:
 			print("Exited Test")
