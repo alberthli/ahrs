@@ -674,9 +674,11 @@ void LSM9DS0::madgwickFilterUpdate() {
 
 		// DEBUG PRINTS
 		cout << "dt: " << dt << "\n";
+		/*
 		cout << "Yaw: " << atan2(2.0f * (SEq[1] * SEq[2] - SEq[0] * SEq[3]), 2.0f * (SEq[0] * SEq[0] + SEq[1] * SEq[1]) - 1.0f) << "\n";
 		cout << "Pitch: " << asin(2.0f * (SEq[0] * SEq[2] - SEq[1] * SEq[3])) << "\n";
 		cout << "Roll: " << atan2(2.0f * (SEq[0] * SEq[1] + SEq[2] * SEq[3]), 1.0f - 2.0f * (SEq[1] * SEq[1] + SEq[2] * SEq[2])) << "\n\n";
+		*/
 	}
 }
 
