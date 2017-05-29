@@ -28,7 +28,7 @@ int main() {
 	cout << retrieving[2] << endl;
 	cout << retrieving[3] << endl;
 
-	cout << "Testing SQRT" << endl;
+	cout << "Testing Reciprocal Sqrt Estimate" << endl;
 	float testSqrts[4] = {4.0f, 16.0f, 25.0f, 36.0f};
 	float32x4_t sqrts = vrsqrteq_f32(vld1q_f32(testSqrts));
 	vst1q_f32(retrieving, sqrts);

@@ -604,6 +604,7 @@ private:
 
 	// Madgwick Variables
 	std::chrono::steady_clock::time_point prevTime; // Timing for Processing Loop
+	float dt;
 
 	float BETA; // beta parameter
 	float ZETA; // zeta parameter
