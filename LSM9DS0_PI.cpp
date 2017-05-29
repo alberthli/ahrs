@@ -17,8 +17,8 @@ LSM9DS0::~LSM9DS0() {
 ////////////////////////////
 
 void LSM9DS0::initialize() {
-	I2C8Bit xm(XM_ADDRESS, string("/dev/i2c-1"));
-	I2C8Bit g(G_ADDRESS, string("/dev/i2c-1"));
+	
+	
 }
 
 // Initializing desired settings on the XM
@@ -57,6 +57,8 @@ void LSM9DS0::initG() {
 
 // Reads data from the XM device and returns it as an unsigned int
 uint8_t LSM9DS0::readXM(uint8_t reg_address) {
+	I2C8Bit xm(XM_ADDRESS, string("/dev/i2c-1"));
+
 	unsigned char data = 0;
 	xm.readReg(reg_address, data);
 	return (uint8_t)data;
@@ -64,6 +66,8 @@ uint8_t LSM9DS0::readXM(uint8_t reg_address) {
 
 // Reads data from the G device and returns it as an unsigned int
 uint8_t LSM9DS0::readG(uint8_t reg_address) {
+	I2C8Bit g(G_ADDRESS, string("/dev/i2c-1"));
+
 	unsigned char data = 0;
 	g.readReg(reg_address, data);
 	return (uint8_t)data;
@@ -71,11 +75,13 @@ uint8_t LSM9DS0::readG(uint8_t reg_address) {
 
 // Writes data to the XM device
 void LSM9DS0::writeXM(uint8_t reg_address, uint8_t data) {
+	I2C8Bit xm(XM_ADDRESS, string("/dev/i2c-1"));
 	xm.writeReg((unsigned char)reg_address, (unsigned char)data);
 }
 
 // Writes data to the G device
 void LSM9DS0::writeG(uint8_t reg_address, uint8_t data) {
+	I2C8Bit g(G_ADDRESS, string("/dev/i2c-1"));
 	g.writeReg((unsigned char)reg_address, (unsigned char)data);
 }
 
