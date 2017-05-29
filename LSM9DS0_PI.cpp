@@ -12,6 +12,10 @@ LSM9DS0::~LSM9DS0() {
 
 }
 
+////////////////////////////
+// INITIALIZATION METHODS //
+////////////////////////////
+
 void LSM9DS0::start() {
 	xm = I2C8Bit(XM_ADDRESS, string("/dev/i2c-1"));
 	g = I2C8Bit(G_ADDRESS, string("/dev/i2c-1"));
@@ -47,6 +51,10 @@ void LSM9DS0::initG() {
 	gyroGain = 0.00875;
 }
 
+/////////////////
+// I2C Methods //
+/////////////////
+
 // Reads data from the XM device and returns it as an unsigned int
 uint8_t LSM9DS0::readXM(uint8_t reg_address) {
 	unsigned char data = 0;
@@ -70,6 +78,10 @@ void LSM9DS0::writeXM(uint8_t reg_address, uint8_t data) {
 void LSM9DS0::writeG(uint8_t reg_address, uint8_t data) {
 	g.writeReg((unsigned char)reg_address, (unsigned char)data);
 }
+
+//////////////////////////////
+// Sensor Retrieval Methods //
+//////////////////////////////
 
 // Retrieves the temperature (deg C)
 float LSM9DS0::getTemp() {
@@ -175,27 +187,9 @@ float LSM9DS0::getzGyro() {
 	return zBitGyro * gyroGain;
 }
 
-void LSM9DS0::startLSM() {
-	prevTime = std::chrono::steady_clock::now();
-	ax = getxAccel() - X_AB_OFFSET;
-	ay = getyAccel() - Y_AB_OFFSET;
-	az = -(getzAccel() - Z_AB_OFFSET);
-	mx = (getxMag() - X_HI_OFFSET) * X_SI_SCALE;
-	mx = (getyMag() - Y_HI_OFFSET) * Y_SI_SCALE;
-	mx = (getzMag() - Z_HI_OFFSET) * Z_SI_SCALE;
-	wx = getxGyro() - X_GB_OFFSET;
-	wx = getyGyro() - Y_GB_OFFSET;
-	wx = getzGyro() - Z_GB_OFFSET;
-
-	startTime = prevTime;
-	lastPrintTime = prevTime;
-
-	madgwickFilterUpdate(); // [TODO] Make this run on a different thread!
-}
-
-void LSM9DS0::madgwickFilterUpdate() {
-
-}
+/////////////////////////
+// Calibration Methods //
+/////////////////////////
 
 // Calibration method for accelerometer bias
 // Use this calibration protocol (pg 3): http://kionixfs.kionix.com/en/document/AN012%20Accelerometer%20Errors.pdf
@@ -493,6 +487,34 @@ void LSM9DS0::printRawData() {
 	cout << "Z Gyro: " << zgyr << "\n";
 	cout << "Temp: " << temp << "\n";
 }
+
+/////////////////////////////
+// Madgwick Filter Methods //
+/////////////////////////////
+
+void LSM9DS0::startLSM() {
+	prevTime = std::chrono::steady_clock::now();
+	ax = getxAccel() - X_AB_OFFSET;
+	ay = getyAccel() - Y_AB_OFFSET;
+	az = -(getzAccel() - Z_AB_OFFSET);
+	mx = (getxMag() - X_HI_OFFSET) * X_SI_SCALE;
+	mx = (getyMag() - Y_HI_OFFSET) * Y_SI_SCALE;
+	mx = (getzMag() - Z_HI_OFFSET) * Z_SI_SCALE;
+	wx = getxGyro() - X_GB_OFFSET;
+	wx = getyGyro() - Y_GB_OFFSET;
+	wx = getzGyro() - Z_GB_OFFSET;
+
+	startTime = prevTime;
+	lastPrintTime = prevTime;
+
+	madgwickFilterUpdate(); // [TODO] Make this run on a different thread!
+}
+
+void LSM9DS0::madgwickFilterUpdate() {
+
+}
+
+// -------------------- //
 
 int main() {
 
