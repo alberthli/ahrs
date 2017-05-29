@@ -554,6 +554,30 @@ FIFO Watermark Level (Bits 4-8)
 #define GYRO_CALIB_SAMPLES 5000 // 5000 samples to calibrate gyro bias
 #define ACCEL_CALIB_SAMPLES 1000 // 1000 samples per sensor orientation for accelerometer bias
 
+// Moved this class here
+class I2C8Bit
+{
+    public:
+        I2C8Bit(void); // default constructor
+        I2C8Bit(unsigned char dev_addr, std::string i2cfilename);
+        //over loaded constructor
+        ~I2C8Bit(void); // destructor
+        int writeReg(unsigned char reg_addr, unsigned char data);
+                // function to write byte data into a register of an I2C device
+        int readReg(unsigned char reg_addr, unsigned char &data);
+                // function to read byte data from a register of an I2C device
+
+    private:
+        //private member functions
+        int openI2C(); //open an I2C device. Called only in constructors
+        int closeI2C(); // close an I2C device. Called only in destructor
+
+        // private member variables
+        std::string  i2cFileName; //i2c device name e.g."/dev/i2c-0" or "/dev/i2c-1"
+                int i2cDescriptor;  // i2c device descriptor
+        unsigned char deviceAddress; // i2c device address
+};
+
 class LSM9DS0 {
 public:
 	LSM9DS0();
@@ -626,31 +650,6 @@ private:
 	std::chrono::steady_clock::time_point lastPrintTime;
 	std::chrono::steady_clock::time_point startTime;
 
-};
-
-// Moved this class here
-
-class I2C8Bit
-{
-    public:
-        I2C8Bit(void); // default constructor
-        I2C8Bit(unsigned char dev_addr, std::string i2cfilename);
-        //over loaded constructor
-        ~I2C8Bit(void); // destructor
-        int writeReg(unsigned char reg_addr, unsigned char data);
-                // function to write byte data into a register of an I2C device
-        int readReg(unsigned char reg_addr, unsigned char &data);
-                // function to read byte data from a register of an I2C device
-
-    private:
-        //private member functions
-        int openI2C(); //open an I2C device. Called only in constructors
-        int closeI2C(); // close an I2C device. Called only in destructor
-
-        // private member variables
-        std::string  i2cFileName; //i2c device name e.g."/dev/i2c-0" or "/dev/i2c-1"
-                int i2cDescriptor;  // i2c device descriptor
-        unsigned char deviceAddress; // i2c device address
 };
 
 extern LSM9DS0 lsm9ds0;
