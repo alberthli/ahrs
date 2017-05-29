@@ -592,6 +592,9 @@ public:
 	void printRawData();
 
 private:
+	I2C8Bit xm;
+	I2C8Bit g;
+
 	// Private XM Variables
 	float accelGain, magGain;
 
