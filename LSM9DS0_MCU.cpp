@@ -1,3 +1,6 @@
+/*
+[NOTE] FOR NOW, THIS FILE IS NOT IN USE.
+*/
 #include "LSM9DS0_MCU.h"
 #include <Wire.h>
 #include <Arduino.h>

@@ -1,3 +1,6 @@
+/*
+[NOTE] FOR NOW, THIS FILE IS NOT IN USE.
+*/
 #ifndef LSM9DS0_H
 #define LSM9DS0_H
 
