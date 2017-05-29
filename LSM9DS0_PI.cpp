@@ -531,144 +531,144 @@ void LSM9DS0::madgwickFilterUpdate() {
 	/*********************************/
 	float32x4_t se_Vector = ld1q_f32(SEq);
 
-	float hSEq0 = 0.5 * SEq[0]
-	float hSEq1 = 0.5 * SEq[1]
-	float hSEq2 = 0.5 * SEq[2]
-	float hSEq3 = 0.5 * SEq[3]
+	float hSEq0 = 0.5 * SEq[0];
+	float hSEq1 = 0.5 * SEq[1];
+	float hSEq2 = 0.5 * SEq[2];
+	float hSEq3 = 0.5 * SEq[3];
 
-	float dSEq0 = 2 * SEq[0]
-	float dSEq1 = 2 * SEq[1]
-	float dSEq2 = 2 * SEq[2]
-	float dSEq3 = 2 * SEq[3]
+	float dSEq0 = 2 * SEq[0];
+	float dSEq1 = 2 * SEq[1];
+	float dSEq2 = 2 * SEq[2];
+	float dSEq3 = 2 * SEq[3];
 
-	float sSEq2 = SEq[2] * SEq[2]
+	float sSEq2 = SEq[2] * SEq[2];
 
-	float dbx = 2 * bx
-	float dbz = 2 * bz
+	float dbx = 2 * bx;
+	float dbz = 2 * bz;
 
-	float dbxSEq0 = dbx * SEq[0]
-	float dbxSEq1 = dbx * SEq[1]
-	float dbxSEq2 = dbx * SEq[2]
-	float dbxSEq3 = dbx * SEq[3]
-	float dbzSEq0 = dbz * SEq[0]
-	float dbzSEq1 = dbz * SEq[1]
-	float dbzSEq2 = dbz * SEq[2]
-	float dbzSEq3 = dbz * SEq[3]
+	float dbxSEq0 = dbx * SEq[0];
+	float dbxSEq1 = dbx * SEq[1];
+	float dbxSEq2 = dbx * SEq[2];
+	float dbxSEq3 = dbx * SEq[3];
+	float dbzSEq0 = dbz * SEq[0];
+	float dbzSEq1 = dbz * SEq[1];
+	float dbzSEq2 = dbz * SEq[2];
+	float dbzSEq3 = dbz * SEq[3];
 
-	float SEq0SEq2 = SEq[0] * SEq[2]
-	float SEq1SEq3 = SEq[1] * SEq[3]
+	float SEq0SEq2 = SEq[0] * SEq[2];
+	float SEq1SEq3 = SEq[1] * SEq[3];
 
 	/**************************/
 	/* Beginning of Algorithm */
 	/**************************/
 
 	// Normalize acceleration and magnetometer values
-	float tempNorm = sqrt(ax * ax + ay * ay + az * az)
-	ax /= tempNorm
-	ay /= tempNorm
-	az /= tempNorm
+	float tempNorm = sqrt(ax * ax + ay * ay + az * az);
+	ax /= tempNorm;
+	ay /= tempNorm;
+	az /= tempNorm;
 
-	tempNorm = sqrt(mx * mx + my * my + mz * mz)
-	mx /= tempNorm
-	my /= tempNorm
-	mz /= tempNorm
+	tempNorm = sqrt(mx * mx + my * my + mz * mz);
+	mx /= tempNorm;
+	my /= tempNorm;
+	mz /= tempNorm;
 
-	float dmx = 2 * mx
-	float dmy = 2 * my
-	float dmz = 2 * mz
+	float dmx = 2 * mx;
+	float dmy = 2 * my;
+	float dmz = 2 * mz;
 
 	// Combined cost function + Jacobian
 	// Functions from g-field
-	float f1 = dSEq1 * SEq[3] - dSEq0 * SEq[2] - ax
-	float f2 = dSEq0 * SEq[1] + dSEq2 * SEq[3] - ay
-	float f3 = 1 - dSEq1 * SEq[1] - dSEq2 * SEq[2] - az
+	float f1 = dSEq1 * SEq[3] - dSEq0 * SEq[2] - ax;
+	float f2 = dSEq0 * SEq[1] + dSEq2 * SEq[3] - ay;
+	float f3 = 1 - dSEq1 * SEq[1] - dSEq2 * SEq[2] - az;
 
 	// Functions from b-field
-	float f4 = dbx * (0.5 - sSEq2 - SEq[3] * SEq[3]) + dbz * (SEq1SEq3 - SEq0SEq2) - mx
-	float f5 = dbx * (SEq[1] * SEq[2] - SEq[0] * SEq[3]) + dbz * (SEq[0] * SEq[1] + SEq[2] * SEq[3]) - my
-	float f6 = dbx * (SEq0SEq2 + SEq1SEq3) + dbz * (0.5 - SEq[1] * SEq[1] - sSEq2) - mz
+	float f4 = dbx * (0.5 - sSEq2 - SEq[3] * SEq[3]) + dbz * (SEq1SEq3 - SEq0SEq2) - mx;
+	float f5 = dbx * (SEq[1] * SEq[2] - SEq[0] * SEq[3]) + dbz * (SEq[0] * SEq[1] + SEq[2] * SEq[3]) - my;
+	float f6 = dbx * (SEq0SEq2 + SEq1SEq3) + dbz * (0.5 - SEq[1] * SEq[1] - sSEq2) - mz;
 
 	// Jacobian entries
-	float J1124 = dSEq2
-	float J1223 = dSEq3
-	float J1322 = dSEq0
-	float J1421 = dSEq1
-	float J32 = 2 * J1421
-	float J33 = 2 * J1124
-	float J41 = dbzSEq2
-	float J42 = dbzSEq3
-	float J43 = 2 * dbxSEq2 + dbzSEq0
-	float J44 = 2 * dbxSEq3 - dbzSEq1
-	float J51 = dbxSEq3 - dbzSEq1
-	float J52 = dbxSEq2 + dbzSEq0
-	float J53 = dbxSEq1 + dbzSEq3
-	float J54 = dbxSEq0 - dbzSEq2
-	float J61 = dbxSEq2
-	float J62 = dbxSEq3 - 2 * dbzSEq1
-	float J63 = dbxSEq0 - 2 * dbzSEq2
-	float J64 = dbxSEq1
+	float J1124 = dSEq2;
+	float J1223 = dSEq3;
+	float J1322 = dSEq0;
+	float J1421 = dSEq1;
+	float J32 = 2 * J1421;
+	float J33 = 2 * J1124;
+	float J41 = dbzSEq2;
+	float J42 = dbzSEq3;
+	float J43 = 2 * dbxSEq2 + dbzSEq0;
+	float J44 = 2 * dbxSEq3 - dbzSEq1;
+	float J51 = dbxSEq3 - dbzSEq1;
+	float J52 = dbxSEq2 + dbzSEq0;
+	float J53 = dbxSEq1 + dbzSEq3;
+	float J54 = dbxSEq0 - dbzSEq2;
+	float J61 = dbxSEq2;
+	float J62 = dbxSEq3 - 2 * dbzSEq1;
+	float J63 = dbxSEq0 - 2 * dbzSEq2;
+	float J64 = dbxSEq1;
 
 	// Gradient Descent Optimization
 	// Gradients
-	float SEqhatdot0 = -J1124 * f1 + J1421 * f2 - J41 * f4 - J51 * f5 + J61 * f6
-	float SEqhatdot1 = J1223 * f1 + J1322 * f2 - J32 * f3 + J42 * f4 + J52 * f5 + J62 * f6
-	float SEqhatdot2 = -J1322 * f1 + J1223 * f2 - J33 * f3 - J43 * f4 + J53 * f5 + J63 * f6
-	float SEqhatdot3 = J1421 * f1 + J1124 * f2 - J44 * f4 - J54 * f5 + J64 * f6
+	float SEqhatdot0 = -J1124 * f1 + J1421 * f2 - J41 * f4 - J51 * f5 + J61 * f6;
+	float SEqhatdot1 = J1223 * f1 + J1322 * f2 - J32 * f3 + J42 * f4 + J52 * f5 + J62 * f6;
+	float SEqhatdot2 = -J1322 * f1 + J1223 * f2 - J33 * f3 - J43 * f4 + J53 * f5 + J63 * f6;
+	float SEqhatdot3 = J1421 * f1 + J1124 * f2 - J44 * f4 - J54 * f5 + J64 * f6;
 
 	// Normalizing Gradients
-	tempNorm = sqrt(SEqhatdot0 * SEqhatdot0 + SEqhatdot1 * SEqhatdot1 + SEqhatdot2 * SEqhatdot2 + SEqhatdot3 * SEqhatdot3)
-	SEqhatdot0 /= tempNorm
-	SEqhatdot1 /= tempNorm
-	SEqhatdot2 /= tempNorm
-	SEqhatdot3 /= tempNorm
+	tempNorm = sqrt(SEqhatdot0 * SEqhatdot0 + SEqhatdot1 * SEqhatdot1 + SEqhatdot2 * SEqhatdot2 + SEqhatdot3 * SEqhatdot3);
+	SEqhatdot0 /= tempNorm;
+	SEqhatdot1 /= tempNorm;
+	SEqhatdot2 /= tempNorm;
+	SEqhatdot3 /= tempNorm;
 
 	// Angular estimated direction of gyro error
-	float wex = dSEq0 * SEqhatdot1 - dSEq1 * SEqhatdot0 - dSEq2 * SEqhatdot3 + dSEq3 * SEqhatdot2
-	float wey = dSEq0 * SEqhatdot2 + dSEq1 * SEqhatdot3 - dSEq2 * SEqhatdot0 - dSEq3 * SEqhatdot1
-	float wez = dSEq0 * SEqhatdot3 - dSEq1 * SEqhatdot2 + dSEq2 * SEqhatdot1 - dSEq3 * SEqhatdot0
+	float wex = dSEq0 * SEqhatdot1 - dSEq1 * SEqhatdot0 - dSEq2 * SEqhatdot3 + dSEq3 * SEqhatdot2;
+	float wey = dSEq0 * SEqhatdot2 + dSEq1 * SEqhatdot3 - dSEq2 * SEqhatdot0 - dSEq3 * SEqhatdot1;
+	float wez = dSEq0 * SEqhatdot3 - dSEq1 * SEqhatdot2 + dSEq2 * SEqhatdot1 - dSEq3 * SEqhatdot0;
 
 	// Remove gyro bias
-	gyroBiases[0] += wex * dt * zeta
-	gyroBiases[1] += wey * dt * zeta
-	gyroBiases[2] += wez * dt * zeta
-	wx -= gyroBiases[0]
-	wy -= gyroBiases[1]
-	wz -= gyroBiases[2]
+	gyroBiases[0] += wex * dt * zeta;
+	gyroBiases[1] += wey * dt * zeta;
+	gyroBiases[2] += wez * dt * zeta;
+	wx -= gyroBiases[0];
+	wy -= gyroBiases[1];
+	wz -= gyroBiases[2];
 
 	// Quaternion rate of change (gyro)
-	SEqdot0 = -hSEq1 * wx - hSEq2 * wy - hSEq3 * wz
-	SEqdot1 = hSEq0 * wx + hSEq2 * wz - hSEq3 * wy
-	SEqdot2 = hSEq0 * wy - hSEq1 * wz + hSEq3 * wx
-	SEqdot3 = hSEq0 * wz + hSEq1 * wy - hSEq2 * wx
+	SEqdot0 = -hSEq1 * wx - hSEq2 * wy - hSEq3 * wz;
+	SEqdot1 = hSEq0 * wx + hSEq2 * wz - hSEq3 * wy;
+	SEqdot2 = hSEq0 * wy - hSEq1 * wz + hSEq3 * wx;
+	SEqdot3 = hSEq0 * wz + hSEq1 * wy - hSEq2 * wx;
 
 	// Update orientation quaternion
-	SEq0 += (SEqdot0 - (beta * SEqhatdot0)) * dt
-	SEq1 += (SEqdot1 - (beta * SEqhatdot1)) * dt
-	SEq2 += (SEqdot2 - (beta * SEqhatdot2)) * dt
-	SEq3 += (SEqdot3 - (beta * SEqhatdot3)) * dt
+	SEq0 += (SEqdot0 - (beta * SEqhatdot0)) * dt;
+	SEq1 += (SEqdot1 - (beta * SEqhatdot1)) * dt;
+	SEq2 += (SEqdot2 - (beta * SEqhatdot2)) * dt;
+	SEq3 += (SEqdot3 - (beta * SEqhatdot3)) * dt;
 
 	// Normalize orientation quaternion
-	tempNorm = sqrt(SEq0 * SEq0 + SEq1 * SEq1 + SEq2 * SEq2 + SEq3 * SEq3)
-	SEq0 /= tempNorm
-	SEq1 /= tempNorm
-	SEq2 /= tempNorm
-	SEq3 /= tempNorm
+	tempNorm = sqrt(SEq0 * SEq0 + SEq1 * SEq1 + SEq2 * SEq2 + SEq3 * SEq3);
+	SEq0 /= tempNorm;
+	SEq1 /= tempNorm;
+	SEq2 /= tempNorm;
+	SEq3 /= tempNorm;
 
 	// b-field in earth frame
-	float SEq0SEq1 = SEq0 * SEq1
-	float SEq0SEq2 = SEq0 * SEq2
-	float SEq0SEq3 = SEq0 * SEq3
-	float SEq2SEq3 = SEq2 * SEq3
-	float SEq1SEq2 = SEq1 * SEq2
-	float SEq1SEq3 = SEq1 * SEq3
+	float SEq0SEq1 = SEq0 * SEq1;
+	float SEq0SEq2 = SEq0 * SEq2;
+	float SEq0SEq3 = SEq0 * SEq3;
+	float SEq2SEq3 = SEq2 * SEq3;
+	float SEq1SEq2 = SEq1 * SEq2;
+	float SEq1SEq3 = SEq1 * SEq3;
 
-	float hx = dmx * (0.5 - SEq2 * SEq2 - SEq3 * SEq3) + dmy * (SEq1SEq2 - SEq0SEq3) + dmz * (SEq1SEq3 + SEq0SEq2)
-	float hy = dmx * (SEq1SEq2 + SEq0SEq3) + dmy * (0.5 - SEq1 * SEq1 - SEq3 * SEq3) + dmz * (SEq2SEq3 - SEq0SEq1)
-	float hz = dmx * (SEq1SEq3 - SEq0SEq2) + dmy * (SEq2SEq3 + SEq0SEq1) + dmz * (0.5 - SEq1 * SEq1 - SEq2 * SEq2)
+	float hx = dmx * (0.5 - SEq2 * SEq2 - SEq3 * SEq3) + dmy * (SEq1SEq2 - SEq0SEq3) + dmz * (SEq1SEq3 + SEq0SEq2);
+	float hy = dmx * (SEq1SEq2 + SEq0SEq3) + dmy * (0.5 - SEq1 * SEq1 - SEq3 * SEq3) + dmz * (SEq2SEq3 - SEq0SEq1);
+	float hz = dmx * (SEq1SEq3 - SEq0SEq2) + dmy * (SEq2SEq3 + SEq0SEq1) + dmz * (0.5 - SEq1 * SEq1 - SEq2 * SEq2);
 
 	// Normalize flux vector to eliminate y component
-	bx = sqrt(hx * hx + hy * hy)
-	bz = hz
+	bx = sqrt(hx * hx + hy * hy);
+	bz = hz;
 }
 
 // DIRECT CALL TO MAIN MEANS WE ARE DEBUGGING. COMMENT OUT OTHERWISE.
