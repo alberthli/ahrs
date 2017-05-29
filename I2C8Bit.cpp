@@ -149,7 +149,3 @@ int I2C8Bit::readReg(unsigned char reg_addr, unsigned char &data){
 
     return retVal;
 }
-
-int main() {
-    I2C8Bit x(0x1D, string("/dev/i2c-1"));
-}
