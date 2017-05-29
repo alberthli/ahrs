@@ -519,7 +519,7 @@ void LSM9DS0::madgwickFilterUpdate() {
 int main() {
 	LSM9DS0 lsm = LSM9DS0();
 
-	cout << getyAccel() << endl;
+	cout << lsm.getyAccel() << endl;
 
 	/*
 	lsm.calibrateGyroOffsets();
