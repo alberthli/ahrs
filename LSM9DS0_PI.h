@@ -603,8 +603,8 @@ private:
 	float yaw, roll, pitch; // Euler Angles
 
 	// Madgwick Variables
-	std::chrono::steady_clock::time_point prevTime; // Timing for Processing Loop
-	float dt;
+	uint64_t prevTime; // Timing for Processing Loop
+	uint64_t dt;
 
 	float BETA; // beta parameter
 	float ZETA; // zeta parameter
@@ -619,8 +619,8 @@ private:
 	float gyroBiases[3] = {0.0f, 0.0f, 0.0f}; // Dynamic gyro bias estimates
 
 	// Debug Variables
-	std::chrono::steady_clock::time_point lastPrintTime;
-	std::chrono::steady_clock::time_point startTime;
+	uint64_t lastPrintTime;
+	uint64_t startTime;
 
 };
 

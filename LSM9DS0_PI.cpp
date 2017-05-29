@@ -1,7 +1,8 @@
 #include <iostream>
-#include <chrono>
+// #include <chrono>
 #include <cmath>
 #include <arm_neon.h>
+#include <sys/time.h>
 
 #include "LSM9DS0_PI.h"
 #include "I2CInterface.h"
@@ -502,7 +503,7 @@ void LSM9DS0::printRawData() {
 /////////////////////////////
 
 void LSM9DS0::startLSM() {
-	prevTime = std::chrono::steady_clock::now();
+	prevTime = timestamp_us();
 
 	ax = getxAccel() - X_AB_OFFSET;
 	ay = getyAccel() - Y_AB_OFFSET;
@@ -523,8 +524,8 @@ void LSM9DS0::startLSM() {
 void LSM9DS0::madgwickFilterUpdate() {
 
 	while(true) {
-		std::chrono::steady_clock::time_point currTime = std::chrono::steady_clock::now();
-		dt = std::chrono::duration_cast<std::chrono::microseconds>(currTime - prevTime).count() / 1000.0f;
+		uint64_t currTime = timestamp_us();
+		dt = (currTime - prevTime) / 1000.0f;
 		prevTime = currTime;
 
 		/*********************************/
@@ -673,7 +674,7 @@ void LSM9DS0::madgwickFilterUpdate() {
 		bz = hz;
 
 		// DEBUG PRINTS
-		printf("dt: %.5f\n", dt);
+		printf("dt: %.8f\n", dt);
 		/*
 		cout << "dt: " << dt << "\n";
 		cout << "Yaw: " << atan2(2.0f * (SEq[1] * SEq[2] - SEq[0] * SEq[3]), 2.0f * (SEq[0] * SEq[0] + SEq[1] * SEq[1]) - 1.0f) << "\n";
@@ -681,6 +682,16 @@ void LSM9DS0::madgwickFilterUpdate() {
 		cout << "Roll: " << atan2(2.0f * (SEq[0] * SEq[1] + SEq[2] * SEq[3]), 1.0f - 2.0f * (SEq[1] * SEq[1] + SEq[2] * SEq[2])) << "\n\n";
 		*/
 	}
+}
+
+////////////////////
+// Timing Methods //
+////////////////////
+
+inline uint64_t timestamp_us() {
+  struct timeval tv;
+  gettimeofday(&tv,NULL);
+  return 1000000L * tv.tv_sec + tv.tv_usec;
 }
 
 // DIRECT CALL TO MAIN MEANS WE ARE DEBUGGING. COMMENT OUT OTHERWISE.
