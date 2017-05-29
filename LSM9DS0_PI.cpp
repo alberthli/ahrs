@@ -49,20 +49,18 @@ void LSM9DS0::initG() {
 
 // Reads data from the XM device and returns it as an unsigned int
 uint8_t LSM9DS0::readXM(uint8_t reg_address) {
-	unsigned char *data = (unsigned char *)malloc(sizeof(unsigned char));
-	data = 0;
+	unsigned char data = 0;
 	unsigned char r = (unsigned char)reg_address;
 	xm.readReg(r, data);
-	return (uint8_t) *data;
+	return (uint8_t)data;
 }
 
 // Reads data from the G device and returns it as an unsigned int
 uint8_t LSM9DS0::readG(uint8_t reg_address) {
-	unsigned char *data = (unsigned char *)malloc(sizeof(unsigned char));
-	data = 0;
+	unsigned char data = 0;
 	unsigned char r = (unsigned char)reg_address;
-	g.readReg(r, data);
-	return (uint8_t) *data;
+	g.readReg(r, &data);
+	return (uint8_t)data;
 }
 
 // Writes data to the XM device
