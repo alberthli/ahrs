@@ -79,7 +79,7 @@ void LSM9DS0::writeXM(uint8_t reg_address, uint8_t data) {
 
 // Writes data to the G device
 void LSM9DS0::writeG(uint8_t reg_address, uint8_t data) {
-	I2CInterface.writeRegister(XM_ADDRESS, reg_address, &data, 1);
+	I2CInterface.writeRegister(G_ADDRESS, reg_address, &data, 1);
 }
 
 //////////////////////////////
