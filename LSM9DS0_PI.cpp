@@ -463,7 +463,7 @@ void LSM9DS0::calibrateGyroOffsets() {
 
 	cout << "X Offset: " << X_GB_OFFSET << "\n";
 	cout << "Y Offset: " << Y_GB_OFFSET << "\n";
-	cout << "Z Offset: " << Z_GB_OFFSET << "\n";
+	cout << "Z Offset: " << Z_GB_OFFSET << "\n\n";
 }
 
 // Debugging method for raw sensor values
