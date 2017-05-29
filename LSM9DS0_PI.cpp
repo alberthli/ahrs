@@ -524,7 +524,7 @@ void LSM9DS0::madgwickFilterUpdate() {
 
 	while(true) {
 		std::chrono::steady_clock::time_point currTime = std::chrono::steady_clock::now();
-		dt = std::chrono::duration_cast<std::chrono::microseconds>(currTime - prevTime).count() / 1000000;
+		dt = std::chrono::duration_cast<std::chrono::microseconds>(currTime - prevTime).count() / 1000000.0f;
 		prevTime = currTime;
 
 		/*********************************/
