@@ -540,7 +540,7 @@ FIFO Watermark Level (Bits 4-8)
 #define TEMP_GAIN 0.125f
 
 // Calibration Constants
-#define MAG_CALIB_SAMPLES 25000 // 10000 samples to calibrate hard/soft iron effect
+#define MAG_CALIB_SAMPLES 20000 // 10000 samples to calibrate hard/soft iron effect
 #define GYRO_CALIB_SAMPLES 10000 // 5000 samples to calibrate gyro bias
 #define ACCEL_CALIB_SAMPLES 1000 // 1000 samples per sensor orientation for accelerometer bias
 
@@ -582,9 +582,11 @@ public:
 	void printRawData();
 
 	// SHOULD BE PRIVATE. PUBLIC FOR DEBUGGING ONLY.
+	/*
 	float ax, ay, az; // Accelerometer raw values
 	float mx, my, mz; // Magnetometer raw values
 	float wx, wy, wz; // Gyro raw values
+	*/
 
 private:
 	// Private XM Variables
@@ -607,11 +609,11 @@ private:
 	float BETA; // beta parameter
 	float ZETA; // zeta parameter
 	float SEq1, SEq2, SEq3, SEq4; // Orientation Quaternion Values
-	/* SHOULD BE PRIVATE. PUBLIC FOR DEBUGGING ONLY
+
+	// SHOULD BE PRIVATE. PUBLIC FOR DEBUGGING ONLY
 	float ax, ay, az; // Accelerometer raw values
 	float mx, my, mz; // Magnetometer raw values
 	float wx, wy, wz; // Gyro raw values
-	*/
 
 	float bx, bz; // Earth magnetic field reference directions
 	float wbx, wby, wbz; // Dynamic gyro bias estimates
