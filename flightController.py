@@ -371,6 +371,9 @@ class LSM9DS0:
 			while True:
 				self.madgwickFilterUpdate()
 
+				print("Time: " + str(now - self.startTime))
+				print(" | dt: " + str(self.dt), end = "")
+
 				# Local Euler angle calculations for sensor debugging. Uncomment entire block to use.
 				"""
 				# Calculating Euler angles locally
@@ -385,18 +388,19 @@ class LSM9DS0:
 				self.roll = 180 - (self.roll * 180 / PI)
 				if self.roll > 180:
 					self.roll -= 360
-				"""
+				
 				# Debug print statements
 				now = time.clock()
 				if now - self.lastPrintTime >= 0.25:
 					print("Time: " + str(now - self.startTime))
 					print(" | dt: " + str(self.dt), end = "")
-					"""
+					
 					print(" | Yaw (No reference): " + str(self.yaw), end = "")
 					print(" | Pitch: " + str(self.pitch), end = "")
 					print(" | Roll: " + str(self.roll))
-					"""
+					
 					self.lastPrintTime = now
+				"""
 				
 
 		except KeyboardInterrupt:
