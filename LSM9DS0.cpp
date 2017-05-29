@@ -228,7 +228,7 @@ void LSM9DS0::calibrateAccelOffsets() {
 	cout << "|     |\n";
 	cout << "|     |\n";
 	cout << "-------\n";
-	cout << "Press any key to continue.\n";
+	cout << "Press ENTER to continue.\n";
 	cin.ignore();
 	cout << "Gathering data. Please wait...\n\n";
 
@@ -272,7 +272,7 @@ void LSM9DS0::calibrateAccelOffsets() {
 	cout << "|          |\n";
 	cout << "|.         |\n";
 	cout << "|----------|\n";
-	cout << "Press any key to continue.\n";
+	cout << "Press ENTER to continue.\n";
 	cin.ignore();
 	cout << "Gathering data. Please wait...\n\n";
 
@@ -316,7 +316,7 @@ void LSM9DS0::calibrateAccelOffsets() {
 	cout << "|     |\n";
 	cout << "|    .|\n";
 	cout << "-------\n";
-	cout << "Press any key to continue.\n";
+	cout << "Press ENTER to continue.\n";
 	cin.ignore();
 	cout << "Gathering data. Please wait...\n\n";
 
@@ -360,7 +360,7 @@ void LSM9DS0::calibrateAccelOffsets() {
 	cout << "|         .|\n";
 	cout << "|          |\n";
 	cout << "|----------|\n";
-	cout << "Press any key to continue.\n";
+	cout << "Press ENTER to continue.\n";
 	cin.ignore();
 	cout << "Gathering data. Please wait...\n\n";
 
@@ -403,7 +403,7 @@ void LSM9DS0::calibrateAccelOffsets() {
 	cout << "|         |\n";
 	cout << "-----------\n";
 	cout << "   BOTTOM  \n";
-	cout << "Press any key to continue.\n";
+	cout << "Press ENTER to continue.\n";
 	cin.ignore();
 	cout << "Gathering data. Please wait...\n\n";
 
@@ -449,7 +449,7 @@ void LSM9DS0::calibrateAccelOffsets() {
 	cout << "|         |\n";
 	cout << "-.---------\n";
 	cout << "    TOP    \n";
-	cout << "Press any key to continue.\n";
+	cout << "Press ENTER to continue.\n";
 	cin.ignore();
 	cout << "Gathering data. Please wait...\n\n";
 
@@ -519,7 +519,7 @@ void LSM9DS0::calibrateHardSoftIronEffect() {
 	// [PI]
 	cout << "*** MAGNETOMETER CALIBRATION PROTOCOL STARTED ***\n";
 	cout << "Please turn the device through the air in a figure 8 fashion until calibration finishes.\n\n";
-	cout << "Press any key to continue.\n";
+	cout << "Press ENTER to continue.\n";
 	cin.ignore();
 	cout << "Calibrating. Continue turning...\n";
 
@@ -626,7 +626,7 @@ void LSM9DS0::calibrateGyroOffsets() {
 
 	// [PI]
 	cout << "\n*** GYROSCOPE CALIBRATION PROTOCOL STARTED ***\n";
-	cout << "Please keep the device still for calibration. Press any key to continue.\n";
+	cout << "Please keep the device still for calibration. Press ENTER to continue.\n";
 	cin.ignore();
 	cout << "Calibrating. Please Wait...\n"; 
 
