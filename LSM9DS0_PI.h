@@ -607,7 +607,7 @@ private:
 
 	float BETA; // beta parameter
 	float ZETA; // zeta parameter
-	float[4] SEq; // Orientation Quaternion Values
+	float SEq[4]; // Orientation Quaternion Values
 
 	// SHOULD BE PRIVATE. PUBLIC FOR DEBUGGING ONLY
 	float ax, ay, az; // Accelerometer raw values
@@ -615,7 +615,7 @@ private:
 	float wx, wy, wz; // Gyro raw values
 
 	float bx, bz; // Earth magnetic field reference directions
-	float[3] gyroBiases; // Dynamic gyro bias estimates
+	float gyroBiases[3]; // Dynamic gyro bias estimates
 
 	// Debug Variables
 	std::chrono::steady_clock::time_point lastPrintTime;

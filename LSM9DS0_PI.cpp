@@ -1,5 +1,6 @@
 #include <iostream>
 #include <chrono>
+#include <cmath>
 
 #include "LSM9DS0_PI.h"
 #include "I2CInterface.h"
@@ -10,7 +11,7 @@ LSM9DS0::LSM9DS0() {
 	// Madgwick Variables Initialization
 	SEq = [1.0f, 0.0f, 0.0f, 0.0f];
 	BETA = 12.5;
-	ZETA - 0.01;
+	ZETA = 0.01;
 	bx = 1.0f;
 	bz = 0.0f;
 	gyroBiases = [0, 0, 0];
@@ -636,10 +637,10 @@ void LSM9DS0::madgwickFilterUpdate() {
 	wz -= gyroBiases[2];
 
 	// Quaternion rate of change (gyro)
-	SEqdot0 = -hSEq1 * wx - hSEq2 * wy - hSEq3 * wz;
-	SEqdot1 = hSEq0 * wx + hSEq2 * wz - hSEq3 * wy;
-	SEqdot2 = hSEq0 * wy - hSEq1 * wz + hSEq3 * wx;
-	SEqdot3 = hSEq0 * wz + hSEq1 * wy - hSEq2 * wx;
+	float SEqdot0 = -hSEq1 * wx - hSEq2 * wy - hSEq3 * wz;
+	float SEqdot1 = hSEq0 * wx + hSEq2 * wz - hSEq3 * wy;
+	float SEqdot2 = hSEq0 * wy - hSEq1 * wz + hSEq3 * wx;
+	float SEqdot3 = hSEq0 * wz + hSEq1 * wy - hSEq2 * wx;
 
 	// Update orientation quaternion
 	SEq0 += (SEqdot0 - (beta * SEqhatdot0)) * dt;
