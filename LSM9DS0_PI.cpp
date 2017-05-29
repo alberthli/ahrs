@@ -511,15 +511,14 @@ void LSM9DS0::startLSM() {
 	startTime = prevTime;
 	lastPrintTime = prevTime;
 
-	madgwickFilterUpdate(); // [TODO] Make this run on a different thread!
+	madgwickFilterUpdate();
 }
 
 void LSM9DS0::madgwickFilterUpdate() {
 
 }
 
-// -------------------- //
-
+// DIRECT CALL TO MAIN MEANS WE ARE DEBUGGING. COMMENT OUT OTHERWISE.
 int main() {
 	LSM9DS0 lsm = LSM9DS0();
 	lsm.initialize();
@@ -529,14 +528,4 @@ int main() {
 	lsm.calibrateAccelOffsets();
 	
 	lsm.startLSM();
-
-	cout << lsm.ax << "\n";
-	cout << lsm.ay << "\n";
-	cout << lsm.az << "\n";
-	cout << lsm.mx << "\n";
-	cout << lsm.my << "\n";
-	cout << lsm.mz << "\n";
-	cout << lsm.wx << "\n";
-	cout << lsm.wy << "\n";
-	cout << lsm.wz << "\n";
 }
