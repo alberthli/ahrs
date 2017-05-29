@@ -544,6 +544,9 @@ FIFO Watermark Level (Bits 4-8)
 #define GYRO_CALIB_SAMPLES 5000 // 5000 samples to calibrate gyro bias
 #define ACCEL_CALIB_SAMPLES 1000 // 1000 samples per sensor orientation for accelerometer bias
 
+const I2C8Bit xm(XM_ADDRESS, string("/dev/i2c-1"));
+const I2C8Bit g(G_ADDRESS, string("/dev/i2c-1"));
+
 class LSM9DS0 {
 public:
 	LSM9DS0();
@@ -582,10 +585,6 @@ public:
 	void printRawData();
 
 private:
-	// I2C Objects
-	I2C8Bit xm;
-	I2C8Bit g;
-
 	// Private XM Variables
 	float accelGain, magGain;
 
