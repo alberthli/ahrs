@@ -3,7 +3,7 @@
 #include <iostream>
 using namespace std;
 
-main{
+int main() {
 	
 	cout << "Test Code" << "\n";
 	cout << "Test Vector Storing and Retreaving" << "\n";
@@ -26,5 +26,6 @@ main{
 	cout << retreaving[2] << endl;
 	cout << retreaving[3] << endl;
 
+	return 0;
 
 }
