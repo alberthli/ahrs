@@ -18,10 +18,6 @@ LSM9DS0::~LSM9DS0() {
 // INITIALIZATION METHODS //
 ////////////////////////////
 
-void LSM9DS0::initialize() {
-	// I2CInterface = I2CInterfaceClass();
-}
-
 // Initializing desired settings on the XM
 void LSM9DS0::initXM() {
 	// [TODO] REWRITE THIS TO HAVE CORRECT CALLS
@@ -522,13 +518,12 @@ void LSM9DS0::madgwickFilterUpdate() {
 
 int main() {
 	LSM9DS0 lsm = LSM9DS0();
-	lsm.initialize();
 
-	lsm.printRawData();
-	lsm.printRawData();
-	lsm.printRawData();
+	cout << getyAccel() << endl;
 
+	/*
 	lsm.calibrateGyroOffsets();
 	lsm.calibrateHardSoftIronEffect();
 	lsm.calibrateAccelOffsets();
+	*/
 }
