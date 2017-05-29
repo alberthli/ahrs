@@ -1,15 +1,4 @@
 #include "LSM9DS0.h"
-#include <Wire.h>
-
-// [MCU]
-// #include <Arduino.h>
-
-// A lot of this code can only be compiled on a MCU OR on the PI. I have used these comment
-// flags to denote this (LOOK IN THE HEADER FILE TOO!):
-// [MCU] Code that should be uncommented for MCU use
-// [PI] Code that should be uncommented for Pi use
-
-// [PI]
 #include <iostream>
 
 LSM9DS0::LSM9DS0() {
@@ -208,20 +197,10 @@ void LSM9DS0::calibrateAccelOffsets() {
 
 	char read;
 
-	// [PI]
 	cout << "*** ACCELEROMETER CALIBRATION PROTOCOL STARTED ***\n";
 	cout << "There are going to be six positions to orient the sensor in. It must be still while calibrating.\n";
 	cout << "It may help to have a corner so you are as close to perpendicular as possible.\n\n";
 
-	// [MCU]
-	/*
-	Serial.println("*** ACCELEROMETER CALIBRATION PROTOCOL STARTED ***");
-	Serial.println("There are going to be six positions to orient the sensor in. It must be still while calibrating.");
-	Serial.println("It may help to have a corner so you are as close to perpendicular as possible.\n");
-	*/
-
-	// POSITION 1 //
-	// [PI]
 	cout << "Position 1 is like such:\n";
 	cout << "-------\n";
 	cout << "|.    |\n";
@@ -231,28 +210,6 @@ void LSM9DS0::calibrateAccelOffsets() {
 	cout << "Press ENTER to continue.\n";
 	cin.ignore();
 	cout << "Gathering data. Please wait...\n\n";
-
-	// [MCU]
-	/*
-	Serial.println("Position 1 is like such:");
-	Serial.println("-------");
-	Serial.println("|.    |");
-	Serial.println("|     |");
-	Serial.println("|     |");
-	Serial.println("-------");
-	Serial.println("Enter Y when ready. Enter anything else to exit calibration.");
-	
-	while(Serial.available() == 0) {}
-
-		read = Serial.read();
-
-		if(read != 'y' && read != 'Y') {
-			Serial.println("Calibration exited.");
-			return;
-		}
-
-	Serial.println("Gathering data. Please wait...\n");
-	*/
 
 	while(n < ACCEL_CALIB_SAMPLES) {
 		n += 1;
@@ -266,7 +223,6 @@ void LSM9DS0::calibrateAccelOffsets() {
 
 
 	// POSITION 2 //
-	// [PI]
 	cout << "Position 2 is like such:\n";
 	cout << "|----------|\n";
 	cout << "|          |\n";
@@ -275,27 +231,6 @@ void LSM9DS0::calibrateAccelOffsets() {
 	cout << "Press ENTER to continue.\n";
 	cin.ignore();
 	cout << "Gathering data. Please wait...\n\n";
-
-	// [MCU]
-	/*
-	Serial.println("Position 2 is like such:");
-	Serial.println("|----------|");
-	Serial.println("|          |");
-	Serial.println("|.         |");
-	Serial.println("|----------|");
-	Serial.println("Enter Y when ready. Enter anything else to exit calibration.");
-	
-	while(Serial.available() == 0) {}
-
-		read = Serial.read();
-
-		if(read != 'y' && read != 'Y') {
-			Serial.println("Calibration exited.");
-			return;
-		}
-
-	Serial.println("Gathering data. Please wait...\n");
-	*/
 
 	while(n < ACCEL_CALIB_SAMPLES) {
 		n += 1;
@@ -309,7 +244,6 @@ void LSM9DS0::calibrateAccelOffsets() {
 
 
 	// POSITION 3 //
-	// [PI]
 	cout << "Position 3 is like such:\n";
 	cout << "-------\n";
 	cout << "|     |\n";
@@ -319,28 +253,6 @@ void LSM9DS0::calibrateAccelOffsets() {
 	cout << "Press ENTER to continue.\n";
 	cin.ignore();
 	cout << "Gathering data. Please wait...\n\n";
-
-	// [MCU]
-	/*
-	Serial.println("Position 3 is like such:");
-	Serial.println("-------");
-	Serial.println("|     |");
-	Serial.println("|     |");
-	Serial.println("|    .|");
-	Serial.println("-------");
-	Serial.println("Enter Y when ready. Enter anything else to exit calibration.");
-	
-	while(Serial.available() == 0) {}
-
-		read = Serial.read();
-
-		if(read != 'y' && read != 'Y') {
-			Serial.println("Calibration exited.");
-			return;
-		}
-
-	Serial.println("Gathering data. Please wait...\n");
-	*/
 
 	while(n < ACCEL_CALIB_SAMPLES) {
 		n += 1;
@@ -354,7 +266,6 @@ void LSM9DS0::calibrateAccelOffsets() {
 
 
 	// POSITION 4 //
-	// [PI]
 	cout << "Position 4 is like such:\n";
 	cout << "|----------|\n";
 	cout << "|         .|\n";
@@ -363,27 +274,6 @@ void LSM9DS0::calibrateAccelOffsets() {
 	cout << "Press ENTER to continue.\n";
 	cin.ignore();
 	cout << "Gathering data. Please wait...\n\n";
-
-	// [MCU]
-	/*
-	Serial.println("Position 4 is like such:");
-	Serial.println("|----------|");
-	Serial.println("|         .|");
-	Serial.println("|          |");
-	Serial.println("|----------|");
-	Serial.println("Enter Y when ready. Enter anything else to exit calibration.");
-	
-	while(Serial.available() == 0) {}
-
-		read = Serial.read();
-
-		if(read != 'y' && read != 'Y') {
-			Serial.println("Calibration exited.");
-			return;
-		}
-
-	Serial.println("Gathering data. Please wait...\n");
-	*/
 
 	while(n < ACCEL_CALIB_SAMPLES) {
 		n += 1;
@@ -396,7 +286,6 @@ void LSM9DS0::calibrateAccelOffsets() {
 	az4 /= ACCEL_CALIB_SAMPLES;
 
 	// POSITION 5 //
-	// [PI]
 	cout << "Position 5 is like such:\n";
 	cout << "    TOP    \n";
 	cout << "-.---------\n";
@@ -406,28 +295,6 @@ void LSM9DS0::calibrateAccelOffsets() {
 	cout << "Press ENTER to continue.\n";
 	cin.ignore();
 	cout << "Gathering data. Please wait...\n\n";
-
-	// [MCU]
-	/*
-	Serial.println("Position 5 is like such:");
-	Serial.println("    TOP    ");
-	Serial.println("-.---------");
-	Serial.println("|         |");
-	Serial.println("-----------");
-	Serial.println("   BOTTOM  ");
-	Serial.println("Enter Y when ready. Enter anything else to exit calibration.");
-	
-	while(Serial.available() == 0) {}
-
-		read = Serial.read();
-
-		if(read != 'y' && read != 'Y') {
-			Serial.println("Calibration exited.");
-			return;
-		}
-
-	Serial.println("Gathering data. Please wait...\n");
-	*/
 
 	while(n < ACCEL_CALIB_SAMPLES) {
 		n += 1;
@@ -441,8 +308,6 @@ void LSM9DS0::calibrateAccelOffsets() {
 
 
 	// POSITION 6 //
-
-	// [PI]
 	cout << "Position 6 is like such:\n";
 	cout << "   BOTTOM  \n";
 	cout << "-----------\n";
@@ -452,28 +317,6 @@ void LSM9DS0::calibrateAccelOffsets() {
 	cout << "Press ENTER to continue.\n";
 	cin.ignore();
 	cout << "Gathering data. Please wait...\n\n";
-
-	// [MCU]
-	/*
-	Serial.println("Position 6 is like such:");
-	Serial.println("   BOTTOM  ");
-	Serial.println("-----------");
-	Serial.println("|         |");
-	Serial.println("-.---------");
-	Serial.println("    TOP    ");
-	Serial.println("Enter Y when ready. Enter anything else to exit calibration.");
-	
-	while(Serial.available() == 0) {}
-
-		read = Serial.read();
-
-		if(read != 'y' && read != 'Y') {
-			Serial.println("Calibration exited.");
-			return;
-		}
-
-	Serial.println("Gathering data. Please wait...\n");
-	*/
 
 	while(n < ACCEL_CALIB_SAMPLES) {
 		n += 1;
@@ -491,18 +334,12 @@ void LSM9DS0::calibrateAccelOffsets() {
 	Y_AB_OFFSET = (ay2 + ay4 + ay5 + ay6) / 4.0f;
 	Z_AB_OFFSET = (az1 + az2 + az3 + az4) / 4.0f;
 
-	// [PI]
+	cout << "Calibration complete!\n";
+	cout << "We've already set these values for you in the system, but the offsets are printed for your convenience.\n\n";
 
-	// [MCU]
-	/*
-	Serial.println("Calibration complete!");
-	Serial.println("We've already set these values for you in the system, but the offsets are printed for your convenience.\n");
-
-	Serial.print("X Offset: "); Serial.println(X_AB_OFFSET);
-	Serial.print("Y Offset: "); Serial.println(Y_AB_OFFSET);
-	Serial.print("Z Offset: "); Serial.println(Z_AB_OFFSET);
-	Serial.println();
-	*/
+	cout << "X Offset: " << X_AB_OFFSET << "\n";
+	cout << "Y Offset: " << Y_AB_OFFSET << "\n";
+	cout << "Z Offset: " << Z_AB_OFFSET << "\n\n";
 }
 
 // Calibration method for hard and soft iron effects
@@ -516,30 +353,11 @@ void LSM9DS0::calibrateHardSoftIronEffect() {
 
 	int n = 0;
 
-	// [PI]
 	cout << "*** MAGNETOMETER CALIBRATION PROTOCOL STARTED ***\n";
 	cout << "Please turn the device through the air in a figure 8 fashion until calibration finishes.\n\n";
 	cout << "Press ENTER to continue.\n";
 	cin.ignore();
 	cout << "Calibrating. Continue turning...\n";
-
-	// [MCU]
-	/*
-	Serial.println("*** MAGNETOMETER CALIBRATION PROTOCOL STARTED ***");
-	Serial.println("Please turn the device through the air in a figure 8 fashion until calibration finishes.\n");
-	Serial.println("When ready, send Y. To exit, send anything else.");
-
-	while(Serial.available() == 0) {}
-
-	char read = Serial.read();
-
-	if(read != 'y' && read != 'Y') {
-		Serial.println("Calibration exited.");
-		return;
-	}
-
-	Serial.println("Calibrating. Continue turning...");
-	*/
 
 	float xtemp;
 	float ytemp;
@@ -587,7 +405,6 @@ void LSM9DS0::calibrateHardSoftIronEffect() {
 	Y_SI_SCALE = allAvg / (ymax - ymin);
 	Z_SI_SCALE = allAvg / (zmax - zmin);
 
-	// [PI]
 	cout << "Calibration complete!\n";
 	cout << "We've already set these values for you in the system, but the offsets are printed for your convenience.\n";
 
@@ -598,22 +415,6 @@ void LSM9DS0::calibrateHardSoftIronEffect() {
 	cout << "X Soft-Iron Scale: " << X_SI_SCALE << "\n";
 	cout << "Y Soft-Iron Scale: " << Y_SI_SCALE << "\n";
 	cout << "Z Soft-Iron Scale: " << Z_SI_SCALE << "\n\n";
-
-	// [MCU]
-	/*
-	Serial.println("Calibration complete!");
-	Serial.println("We've already set these values for you in the system, but the offsets are printed for your convenience.\n");
-
-	Serial.print("X Hard-Iron Offset: "); Serial.println(X_HI_OFFSET);
-	Serial.print("Y Hard-Iron Offset: "); Serial.println(Y_HI_OFFSET);
-	Serial.print("Z Hard-Iron Offset: "); Serial.println(Z_HI_OFFSET);
-	Serial.println();
-
-	Serial.print("X Soft-Iron Scale: "); Serial.println(X_SI_SCALE);
-	Serial.print("Y Soft-Iron Scale: "); Serial.println(Y_SI_SCALE);
-	Serial.print("Z Soft-Iron Scale: "); Serial.println(Z_SI_SCALE);
-	Serial.println();
-	*/
 }
 
 // Calibration method for gyro offsets
@@ -624,29 +425,10 @@ void LSM9DS0::calibrateGyroOffsets() {
 	float sumy = 0.0f;
 	float sumz = 0.0f;
 
-	// [PI]
 	cout << "\n*** GYROSCOPE CALIBRATION PROTOCOL STARTED ***\n";
 	cout << "Please keep the device still for calibration. Press ENTER to continue.\n";
 	cin.ignore();
 	cout << "Calibrating. Please Wait...\n"; 
-
-	// [MCU]
-	/*
-	Serial.flush();
-	Serial.println("\n*** GYROSCOPE CALIBRATION PROTOCOL STARTED ***");
-	Serial.println("Please keep the device still for calibration. When ready, send Y. To exit, send anything else.\n");
-	
-	while(Serial.available() == 0) {}
-
-	char read = Serial.read();
-
-	if(read != 'y' && read != 'Y') {
-		Serial.println("Calibration exited.");
-		return;
-	}
-
-	Serial.println("Calibrating. Please wait...");
-	*/
 
 	while (n < GYRO_CALIB_SAMPLES) {
 		n += 1;
@@ -659,24 +441,12 @@ void LSM9DS0::calibrateGyroOffsets() {
 	Y_GB_OFFSET = sumy / GYRO_CALIB_SAMPLES;
 	Z_GB_OFFSET = sumz / GYRO_CALIB_SAMPLES;
 
-	// [PI]
 	cout << "Calibration complete!\n";
 	cout << "We've already set these values for you in the system, but the offsets are printed for your convenience.\n"
 
 	cout << "X Offset: " << X_GB_OFFSET << "\n";
 	cout << "Y Offset: " << Y_GB_OFFSET << "\n";
 	cout << "Z Offset: " << Z_GB_OFFSET << "\n";
-
-	// [MCU]
-	/*
-	Serial.println("Calibration complete!");
-	Serial.println("We've already set these values for you in the system, but the offsets are printed for your convenience.\n");
-
-	Serial.print("X Offset: "); Serial.println(X_GB_OFFSET);
-	Serial.print("Y Offset: "); Serial.println(Y_GB_OFFSET);
-	Serial.print("Z Offset: "); Serial.println(Z_GB_OFFSET);
-	Serial.println("\n");
-	*/
 }
 
 // Debugging method for raw sensor values
@@ -691,23 +461,7 @@ void LSM9DS0::printRawData() {
 	float ygyr = getyGyro();
 	float zgyr = getzGyro();
 	float temp = getTemp();
-
-	// [MCU]
-	/*
-	Serial.print("X Accel: "); Serial.println(xacc);
-	Serial.print("Y Accel: "); Serial.println(yacc);
-	Serial.print("Z Accel: "); Serial.println(zacc);
-	Serial.print("X Mag: "); Serial.println(xmag);
-	Serial.print("Y Mag: "); Serial.println(ymag);
-	Serial.print("Z Mag: "); Serial.println(zmag);
-	Serial.print("X Gyro: "); Serial.println(xgyr);
-	Serial.print("Y Gyro: "); Serial.println(ygyr);
-	Serial.print("Z Gyro: "); Serial.println(zgyr);
-	Serial.print("Temp: "); Serial.println(temp);
-	Serial.println();
-	*/
-
-	// [PI]
+	
 	cout << "X Accel: " << xacc << "\n";
 	cout << "Y Accel: " << yacc << "\n";
 	cout << "Z Accel: " << zacc << "\n";
