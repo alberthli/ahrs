@@ -1,4 +1,4 @@
-#include "LSM9DS0.h"
+#include "LSM9DS0_MCU.h"
 #include <Wire.h>
 #include <Arduino.h>
 
