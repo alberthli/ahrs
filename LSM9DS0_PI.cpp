@@ -629,6 +629,15 @@ void LSM9DS0::madgwickFilterUpdate() {
 		SEqhatdot1 /= tempNorm;
 		SEqhatdot2 /= tempNorm;
 		SEqhatdot3 /= tempNorm;
+		printf("SEqhatdot's\n");
+		printf("%f\n", SEqhatdot0);
+		printf("%f\n", SEqhatdot1);
+		printf("%f\n", SEqhatdot2);
+		printf("%f\n\n", SEqhatdot3);
+		for(int i = 0; i < 100000000; i++){
+
+		}
+
 
 		// Angular estimated direction of gyro error
 		float wex = dSEq0 * SEqhatdot1 - dSEq1 * SEqhatdot0 - dSEq2 * SEqhatdot3 + dSEq3 * SEqhatdot2;
@@ -648,6 +657,14 @@ void LSM9DS0::madgwickFilterUpdate() {
 		float SEqdot1 = hSEq0 * wx + hSEq2 * wz - hSEq3 * wy;
 		float SEqdot2 = hSEq0 * wy - hSEq1 * wz + hSEq3 * wx;
 		float SEqdot3 = hSEq0 * wz + hSEq1 * wy - hSEq2 * wx;
+		for(int i = 0; i < 100000000; i++){
+
+		}
+		printf("SEqdot's\n");
+		printf("%f\n", SEqdot0);
+		printf("%f\n", SEqdot1);
+		printf("%f\n", SEqdot2);
+		printf("%f\n\n", SEqdot3);
 
 		// Update orientation quaternion
 		SEq[0] += (SEqdot0 - (BETA * SEqhatdot0)) * dt;
@@ -655,10 +672,10 @@ void LSM9DS0::madgwickFilterUpdate() {
 		SEq[2] += (SEqdot2 - (BETA * SEqhatdot2)) * dt;
 		SEq[3] += (SEqdot3 - (BETA * SEqhatdot3)) * dt;
 
-		printf("%f\n", SEq[0]);
-		printf("%f\n", SEq[1]);
-		printf("%f\n", SEq[2]);
-		printf("%f\n\n", SEq[3]);
+		// printf("%f\n", SEq[0]);
+		// printf("%f\n", SEq[1]);
+		// printf("%f\n", SEq[2]);
+		// printf("%f\n\n", SEq[3]);
 		for(int i = 0; i < 100000000; i++){
 
 		}
