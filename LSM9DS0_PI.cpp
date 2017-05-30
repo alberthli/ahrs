@@ -722,8 +722,8 @@ void LSM9DS0::madgwickFilterUpdate() {
 		printf("Yaw: %f\n", yaw);
 		printf("Pitch: %f\n", pitch);
 		printf("Roll: %f\n\n", roll);
-
-		this_thread::sleep_for(chrono::milliseconds(11.0f - chrono::duration_cast<chrono::milliseconds>(chrono::steady_clock::now()-currTime).count()));
+		
+		this_thread::sleep_for(std::chrono::milliseconds(11 - std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now()-currTime).count()));
 	}
 }
 
