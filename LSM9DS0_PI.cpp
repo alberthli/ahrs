@@ -714,7 +714,7 @@ void LSM9DS0::madgwickFilterUpdate() {
 		yaw *= 180 / PI;
 		yaw += DECLINATION_ANGLE;
 		pitch *= 180 / PI;
-		roll = 180 - (self.roll * 180 / PI);
+		roll = 180 - (roll * 180 / PI);
 		if(roll > 180) {
 			roll -= 360;
 		}
@@ -722,10 +722,6 @@ void LSM9DS0::madgwickFilterUpdate() {
 		printf("Yaw: %f\n", yaw);
 		printf("Pitch: %f\n", pitch);
 		printf("Roll: %f\n\n", roll);
-
-		for(int i = 0; i < 100000000; i++) {
-
-		}
 	}
 }
 
