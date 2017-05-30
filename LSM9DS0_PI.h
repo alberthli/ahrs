@@ -581,6 +581,8 @@ public:
 	void calibrateGyroOffsets();
 	void calibrateHardSoftIronEffect();
 
+	float invSqrt();
+
 	void printRawData();
 
 	// SHOULD BE PRIVATE. PUBLIC FOR DEBUGGING ONLY.
