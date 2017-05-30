@@ -128,17 +128,17 @@ void LSM9DS0::updateTemp() {
 // Updates the sensor accelerations
 void LSM9DS0::updateAccel() {
 	uint8_t readBuffer[6];
-	I2CInterface.readRegister(XM_ADDRESS, OUT_X_L_A, readBuffer, 6);
+	I2CInterface.readRegister(XM_ADDRESS, 0x80 | OUT_X_L_A, readBuffer, 6);
 	
-	ax = static_cast<int16_t>(readBuffer[1] << 8 | readBuffer[0]);
-	ay = static_cast<int16_t>(readBuffer[3] << 8 | readBuffer[2]);
-	az = -(static_cast<int16_t>(readBuffer[5] << 8 | readBuffer[4]));
+	ax = static_cast<int16_t>(readBuffer[1] << 8 | readBuffer[0]) * accelGain * GRAV_ACCEL - X_AB_OFFSET;
+	ay = static_cast<int16_t>(readBuffer[3] << 8 | readBuffer[2]) * accelGain * GRAV_ACCEL - Y_AB_OFFSET;
+	az = -(static_cast<int16_t>(readBuffer[5] << 8 | readBuffer[4]) * accelGain * GRAV_ACCEL - Z_AB_OFFSET);
 }
 
 // Updates the magnetometer values
 void LSM9DS0::updateMag() {
 	uint8_t readBuffer[6];
-	I2CInterface.readRegister(XM_ADDRESS, OUT_X_L_M, readBuffer, 6);
+	I2CInterface.readRegister(XM_ADDRESS, 0x80 | OUT_X_L_M, readBuffer, 6);
 	
 	mx = (static_cast<int16_t>(readBuffer[1] << 8 | readBuffer[0]) * magGain - X_HI_OFFSET) * X_SI_SCALE;
 	my = (static_cast<int16_t>(readBuffer[3] << 8 | readBuffer[2]) * magGain - Y_HI_OFFSET) * Y_SI_SCALE;
@@ -148,7 +148,7 @@ void LSM9DS0::updateMag() {
 // Updates the gyro values
 void LSM9DS0::updateGyro() {
 	uint8_t readBuffer[6];
-	I2CInterface.readRegister(G_ADDRESS, OUT_X_L_G, readBuffer, 6);
+	I2CInterface.readRegister(G_ADDRESS, 0x80 | OUT_X_L_G, readBuffer, 6);
 	
 	wx = (static_cast<int16_t>(readBuffer[1]) << 8 | readBuffer[0]) * gyroGain - X_GB_OFFSET;
 	wy = (static_cast<int16_t>(readBuffer[3]) << 8 | readBuffer[2]) * gyroGain - Y_GB_OFFSET;
