@@ -760,12 +760,14 @@ void LSM9DS0::madgwickFilterUpdate() {
 		bx = sqrt(hx * hx + hy * hy);
 		bz = hz;
 
-		// Debug Print
-		// printf("dt: %f\n\n", dt);
+		// Debug Prints
+		calculateRPY();
+		printf("dt: %f\n\n", dt);
 	}
 }
 
 void LSM9DS0::calculateRPY() {
+	// Euler Angles from Orientation Quaternion
 	yaw = atan2(2.0f * (SEq[1] * SEq[2] - SEq[0] * SEq[3]), 2.0f * (SEq[0] * SEq[0] + SEq[1] * SEq[1]) - 1.0f);
 	pitch = asin(2.0f * (SEq[0] * SEq[2] - SEq[1] * SEq[3]));
 	roll = atan2(2.0f * (SEq[0] * SEq[1] + SEq[2] * SEq[3]), 1.0f - 2.0f * (SEq[1] * SEq[1] + SEq[2] * SEq[2]));
@@ -799,6 +801,7 @@ float LSM9DS0::invSqrt(float x) {
 //////////
 // MAIN //
 //////////
+
 int main() {
 	LSM9DS0 lsm = LSM9DS0();
 	lsm.initialize();
