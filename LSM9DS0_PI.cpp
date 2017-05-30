@@ -108,11 +108,57 @@ void LSM9DS0::writeG(uint8_t reg_address, uint8_t data) {
 	I2CInterface.writeRegister(G_ADDRESS, reg_address, &data, 1);
 }
 
-//////////////////////////////
-// Sensor Retrieval Methods //
-//////////////////////////////
+////////////////////////////////////////
+// Sensor Update Methods (Calibrated) //
+////////////////////////////////////////
 
 // Retrieves the temperature (deg C)
+void LSM9DS0::updateTemp() {
+	uint8_t readBuffer[2];
+	I2CInterface.readRegister(XM_ADDRESS, OUT_TEMP_L_XM, readBuffer, 2);
+	int16_t bitTemp = ((uint16_t)readBuffer[1] << 8 | readBuffer[0]) & 0x0FFF;
+
+	if(bitTemp > 2047) {
+		bitTemp -= 4096;
+	}
+
+	temperature = TEMP_INTERCEPT + (float)bitTemp * TEMP_GAIN;
+}
+
+// Updates the sensor accelerations
+void LSM9DS0::updateAccel() {
+	uint8_t readBuffer[6];
+	I2CInterface.readRegister(XM_ADDRESS, OUT_X_L_A, readBuffer, 6);
+
+	ax = (int16_t)((uint16_t) readBuffer[1] << 8 | readBuffer[0]) * accelGain * GRAV_ACCEL - X_AB_OFFSET;
+	ay = (int16_t)((uint16_t) readBuffer[3] << 8 | readBuffer[2]) * accelGain * GRAV_ACCEL - Y_AB_OFFSET;
+	az = -((int16_t)((uint16_t) readBuffer[5] << 8 | readBuffer[4]) * accelGain * GRAV_ACCEL - Z_AB_OFFSET);
+}
+
+// Updates the magnetometer values
+void LSM9DS0::updateMag() {
+	uint8_t readBuffer[6];
+	I2CInterface.readRegister(XM_ADDRESS, OUT_X_L_M, readBuffer, 6);
+
+	mx = ((int16_t)((uint16_t) readBuffer[1] << 8 | readBuffer[0]) * magGain - X_HI_OFFSET) * X_SI_SCALE;
+	my = ((int16_t)((uint16_t) readBuffer[3] << 8 | readBuffer[2]) * magGain - Y_HI_OFFSET) * Y_SI_SCALE;
+	mz = ((int16_t)((uint16_t) readBuffer[5] << 8 | readBuffer[4]) * magGain - Z_HI_OFFSET) * Z_SI_SCALE;
+}
+
+// Updates the gyro values
+void LSM9DS0::updateGyro() {
+	uint8_t readBuffer[6];
+	I2CInterface.readRegister(G_ADDRESS, OUT_X_L_G, readBuffer, 6);
+
+	wx = (int16_t)((uint16_t) readBuffer[1] << 8 | readBuffer[0]) * gyroGain - X_GB_OFFSET;
+	wy = (int16_t)((uint16_t) readBuffer[3] << 8 | readBuffer[2]) * gyroGain - Y_GB_OFFSET;
+	wz = (int16_t)((uint16_t) readBuffer[5] << 8 | readBuffer[4]) * gyroGain - Z_GB_OFFSET;
+}
+
+////////////////////////////////////
+// Sensor Retrieval Methods (Raw) //
+////////////////////////////////////
+
 float LSM9DS0::getTemp() {
 	uint8_t temp_MSBs = readXM(OUT_TEMP_H_XM);
 	uint8_t temp_LSBs = readXM(OUT_TEMP_L_XM);
@@ -213,6 +259,31 @@ float LSM9DS0::getzGyro() {
 	int16_t zBitGyro = (uint16_t) zGyro_MSBs << 8 | zGyro_LSBs;
 
 	return zBitGyro * gyroGain;
+}
+
+// Debugging method for raw sensor values
+void LSM9DS0::printRawData() {
+	float xacc = getxAccel();
+	float yacc = getyAccel();
+	float zacc = getzAccel();
+	float xmag = getxMag();
+	float ymag = getyMag();
+	float zmag = getzMag();
+	float xgyr = getxGyro();
+	float ygyr = getyGyro();
+	float zgyr = getzGyro();
+	float temp = getTemp();
+
+	cout << "X Accel: " << xacc << "\n";
+	cout << "Y Accel: " << yacc << "\n";
+	cout << "Z Accel: " << zacc << "\n";
+	cout << "X Mag: " << xmag << "\n";
+	cout << "Y Mag: " << ymag << "\n";
+	cout << "Z Mag: " << zmag << "\n";
+	cout << "X Gyro: " << xgyr << "\n";
+	cout << "Y Gyro: " << ygyr << "\n";
+	cout << "Z Gyro: " << zgyr << "\n";
+	cout << "Temp: " << temp << "\n\n";
 }
 
 /////////////////////////
@@ -491,31 +562,6 @@ void LSM9DS0::calibrateGyroOffsets() {
 	cout << "Z Offset: " << Z_GB_OFFSET << "\n\n";
 }
 
-// Debugging method for raw sensor values
-void LSM9DS0::printRawData() {
-	float xacc = getxAccel();
-	float yacc = getyAccel();
-	float zacc = getzAccel();
-	float xmag = getxMag();
-	float ymag = getyMag();
-	float zmag = getzMag();
-	float xgyr = getxGyro();
-	float ygyr = getyGyro();
-	float zgyr = getzGyro();
-	float temp = getTemp();
-
-	cout << "X Accel: " << xacc << "\n";
-	cout << "Y Accel: " << yacc << "\n";
-	cout << "Z Accel: " << zacc << "\n";
-	cout << "X Mag: " << xmag << "\n";
-	cout << "Y Mag: " << ymag << "\n";
-	cout << "Z Mag: " << zmag << "\n";
-	cout << "X Gyro: " << xgyr << "\n";
-	cout << "Y Gyro: " << ygyr << "\n";
-	cout << "Z Gyro: " << zgyr << "\n";
-	cout << "Temp: " << temp << "\n\n";
-}
-
 /////////////////////////////
 // Madgwick Filter Methods //
 /////////////////////////////
@@ -524,6 +570,11 @@ void LSM9DS0::startLSM() {
 	currTime = std::chrono::steady_clock::now();
 	prevTime = std::chrono::steady_clock::now();
 
+	updateAccel();
+	updateMag();
+	updateGyro();
+
+	/*
 	ax = getxAccel() - X_AB_OFFSET;
 	ay = getyAccel() - Y_AB_OFFSET;
 	az = -(getzAccel() - Z_AB_OFFSET);
@@ -533,6 +584,7 @@ void LSM9DS0::startLSM() {
 	wx = getxGyro() - X_GB_OFFSET;
 	wy = getyGyro() - Y_GB_OFFSET;
 	wz = getzGyro() - Z_GB_OFFSET;
+	*/
 
 	startTime = prevTime;
 	lastPrintTime = prevTime;
@@ -548,17 +600,9 @@ void LSM9DS0::madgwickFilterUpdate() {
 		prevTime = currTime;
 
 		// Poll new values
-		/*
-		ax = getxAccel() - X_AB_OFFSET;
-		ay = getyAccel() - Y_AB_OFFSET;
-		az = -(getzAccel() - Z_AB_OFFSET);
-		mx = (getxMag() - X_HI_OFFSET) * X_SI_SCALE;
-		my = (getyMag() - Y_HI_OFFSET) * Y_SI_SCALE;
-		mz = (getzMag() - Z_HI_OFFSET) * Z_SI_SCALE;
-		wx = getxGyro() - X_GB_OFFSET;
-		wy = getyGyro() - Y_GB_OFFSET;
-		wz = getzGyro() - Z_GB_OFFSET;
-		*/
+		updateAccel();
+		updateMag();
+		updateGyro();
 
 		/*********************************/
 		/* Useful Variable Manipulations */

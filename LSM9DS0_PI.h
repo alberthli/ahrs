@@ -555,6 +555,12 @@ public:
 	void initXM();
 	void initG();
 
+	void updateTemp();
+	void updateAccel();
+	void updateMag();
+	void updateGyro();
+
+	// Old Get Methods
 	float getTemp();
 
 	float getxAccel();
@@ -618,6 +624,7 @@ private:
 	float SEq[4] = {1.0f, 0.0f, 0.0f, 0.0f}; // Orientation Quaternion Values
 
 	// SHOULD BE PRIVATE. PUBLIC FOR DEBUGGING ONLY
+	float temperature;
 	float ax, ay, az; // Accelerometer raw values
 	float mx, my, mz; // Magnetometer raw values
 	float wx, wy, wz; // Gyro raw values
