@@ -594,19 +594,14 @@ void LSM9DS0::madgwickFilterUpdate() {
 		/**************************/
 
 		// Normalize acceleration and magnetometer values
-		// Fast hardware inverse sqrt for normalizing both
 		float sqrtOf = ax * ax + ay * ay + az * az;
-		unsigned int i = 0x5F1F1412 - (*(unsigned int*)&sqrtOf >> 1);
-		float tmp = *(float*)&i;
-
-		float tempNorm = tmp * (1.69000231f - 0.714158168f * sqrtOf * tmp * tmp);
+		float tempNorm = invSqrt(sqrtOf);
 		ax *= tempNorm;
 		ay *= tempNorm;
 		az *= tempNorm;
 
 		sqrtOf = mx * mx + my * my + mz * mz;
-		i = 0x5F1F1412 - (*(unsigned int*)&sqrtOf >> 1);
-		tempNorm = tmp * (1.69000231f - 0.714158168f * sqrtOf * tmp * tmp);
+		tempNorm = invSqrt(sqrtOf);
 		mx *= tempNorm;
 		my *= tempNorm;
 		mz *= tempNorm;
@@ -655,8 +650,7 @@ void LSM9DS0::madgwickFilterUpdate() {
 
 		// Normalizing Gradients
 		sqrtOf = SEqhatdot0 * SEqhatdot0 + SEqhatdot1 * SEqhatdot1 + SEqhatdot2 * SEqhatdot2 + SEqhatdot3 * SEqhatdot3;
-		i = 0x5F1F1412 - (*(unsigned int*)&sqrtOf >> 1);
-		tempNorm = tmp * (1.69000231f - 0.714158168f * sqrtOf * tmp * tmp);
+		tempNorm = invSqrt(sqrtOf);
 		SEqhatdot0 *= tempNorm;
 		SEqhatdot1 *= tempNorm;
 		SEqhatdot2 *= tempNorm;
@@ -689,8 +683,7 @@ void LSM9DS0::madgwickFilterUpdate() {
 
 		// Normalize orientation quaternion
 		sqrtOf = SEq[0] * SEq[0] + SEq[1] * SEq[1] + SEq[2] * SEq[2] + SEq[3] * SEq[3];
-		i = 0x5F1F1412 - (*(unsigned int*)&sqrtOf >> 1);
-		tempNorm = tmp * (1.69000231f - 0.714158168f * sqrtOf * tmp * tmp);
+		tempNorm = invSqrt(sqrtOf);
 		SEq[0] *= tempNorm;
 		SEq[1] *= tempNorm;
 		SEq[2] *= tempNorm;
@@ -730,6 +723,16 @@ void LSM9DS0::madgwickFilterUpdate() {
 		printf("Pitch: %f\n", pitch);
 		printf("Roll: %f\n\n", roll);
 	}
+}
+
+/////////////////////
+// Math Operations //
+/////////////////////
+
+float invSqrt(float x) {
+   uint32_t i = 0x5F1F1412 - (*(uint32_t*)&x >> 1);
+   float tmp = *(float*)&i;
+   return tmp * (1.69000231f - 0.714158168f * x * tmp * tmp);
 }
 
 // DIRECT CALL TO MAIN MEANS WE ARE DEBUGGING. COMMENT OUT OTHERWISE.
