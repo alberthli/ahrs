@@ -617,31 +617,31 @@ void LSM9DS0::madgwickFilterUpdate() {
 		// Functions from g-field
 		float f1 = dSEq1 * SEq[3] - dSEq0 * SEq[2] - ax;
 		float f2 = dSEq0 * SEq[1] + dSEq2 * SEq[3] - ay;
-		float f3 = 1 - dSEq1 * SEq[1] - dSEq2 * SEq[2] - az;
+		float f3 = 1.0f - dSEq1 * SEq[1] - dSEq2 * SEq[2] - az;
 
 		// Functions from b-field
-		float f4 = dbx * (0.5 - sSEq2 - SEq[3] * SEq[3]) + dbz * (SEq1SEq3 - SEq0SEq2) - mx;
+		float f4 = dbx * (0.5f - sSEq2 - SEq[3] * SEq[3]) + dbz * (SEq1SEq3 - SEq0SEq2) - mx;
 		float f5 = dbx * (SEq[1] * SEq[2] - SEq[0] * SEq[3]) + dbz * (SEq[0] * SEq[1] + SEq[2] * SEq[3]) - my;
-		float f6 = dbx * (SEq0SEq2 + SEq1SEq3) + dbz * (0.5 - SEq[1] * SEq[1] - sSEq2) - mz;
+		float f6 = dbx * (SEq0SEq2 + SEq1SEq3) + dbz * (0.5f - SEq[1] * SEq[1] - sSEq2) - mz;
 
 		// Jacobian entries
 		float J1124 = dSEq2;
 		float J1223 = dSEq3;
 		float J1322 = dSEq0;
 		float J1421 = dSEq1;
-		float J32 = 2 * J1421;
-		float J33 = 2 * J1124;
+		float J32 = 2.0f * J1421;
+		float J33 = 2.0f * J1124;
 		float J41 = dbzSEq2;
 		float J42 = dbzSEq3;
-		float J43 = 2 * dbxSEq2 + dbzSEq0;
-		float J44 = 2 * dbxSEq3 - dbzSEq1;
+		float J43 = 2.0f * dbxSEq2 + dbzSEq0;
+		float J44 = 2.0f * dbxSEq3 - dbzSEq1;
 		float J51 = dbxSEq3 - dbzSEq1;
 		float J52 = dbxSEq2 + dbzSEq0;
 		float J53 = dbxSEq1 + dbzSEq3;
 		float J54 = dbxSEq0 - dbzSEq2;
 		float J61 = dbxSEq2;
-		float J62 = dbxSEq3 - 2 * dbzSEq1;
-		float J63 = dbxSEq0 - 2 * dbzSEq2;
+		float J62 = dbxSEq3 - 2.0f * dbzSEq1;
+		float J63 = dbxSEq0 - 2.0f * dbzSEq2;
 		float J64 = dbxSEq1;
 
 		// Gradient Descent Optimization
@@ -698,9 +698,9 @@ void LSM9DS0::madgwickFilterUpdate() {
 		float SEq1SEq2 = SEq[1] * SEq[2];
 		SEq1SEq3 = SEq[1] * SEq[3];
 
-		float hx = dmx * (0.5 - SEq[2] * SEq[2] - SEq[3] * SEq[3]) + dmy * (SEq1SEq2 - SEq0SEq3) + dmz * (SEq1SEq3 + SEq0SEq2);
-		float hy = dmx * (SEq1SEq2 + SEq0SEq3) + dmy * (0.5 - SEq[1] * SEq[1] - SEq[3] * SEq[3]) + dmz * (SEq2SEq3 - SEq0SEq1);
-		float hz = dmx * (SEq1SEq3 - SEq0SEq2) + dmy * (SEq2SEq3 + SEq0SEq1) + dmz * (0.5 - SEq[1] * SEq[1] - SEq[2] * SEq[2]);
+		float hx = dmx * (0.5f - SEq[2] * SEq[2] - SEq[3] * SEq[3]) + dmy * (SEq1SEq2 - SEq0SEq3) + dmz * (SEq1SEq3 + SEq0SEq2);
+		float hy = dmx * (SEq1SEq2 + SEq0SEq3) + dmy * (0.5f - SEq[1] * SEq[1] - SEq[3] * SEq[3]) + dmz * (SEq2SEq3 - SEq0SEq1);
+		float hz = dmx * (SEq1SEq3 - SEq0SEq2) + dmy * (SEq2SEq3 + SEq0SEq1) + dmz * (0.5f - SEq[1] * SEq[1] - SEq[2] * SEq[2]);
 
 		// Normalize flux vector to eliminate y component
 		bx = sqrt(hx * hx + hy * hy);
@@ -714,8 +714,8 @@ void LSM9DS0::madgwickFilterUpdate() {
 		printf("Pitch: %f\n", pitch);
 		printf("Roll: %f\n\n", roll);
 
-		for(int i = 0; i < 1000000; i++) {
-			
+		for(int i = 0; i < 100000000; i++) {
+
 		}
 	}
 }
