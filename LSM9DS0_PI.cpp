@@ -26,7 +26,7 @@ LSM9DS0::LSM9DS0() {
 	X_AB_OFFSET = -0.4f;
 	Y_AB_OFFSET = -0.016f;
 	Z_AB_OFFSET = -0.23f;
-	
+
 	// Madgwick Variables Initialization
 	BETA = 12.5;
 	ZETA = 0.01;
@@ -600,21 +600,11 @@ void LSM9DS0::madgwickFilterUpdate() {
 
 		// Normalize acceleration and magnetometer values
 		float tempNorm = sqrt(ax * ax + ay * ay + az * az);
-		printf("tempNorm 1");
-		printf("%f\n", tempNorm);
-		for(int i = 0; i < 100000000; i++){
-
-		}
 		ax /= tempNorm;
 		ay /= tempNorm;
 		az /= tempNorm;
 
 		tempNorm = sqrt(mx * mx + my * my + mz * mz);
-		printf("tempNorm 2");
-		printf("%f\n", tempNorm);
-		for(int i = 0; i < 100000000; i++){
-
-		}
 		mx /= tempNorm;
 		my /= tempNorm;
 		mz /= tempNorm;
@@ -629,22 +619,10 @@ void LSM9DS0::madgwickFilterUpdate() {
 		float f2 = dSEq0 * SEq[1] + dSEq2 * SEq[3] - ay;
 		float f3 = 1 - dSEq1 * SEq[1] - dSEq2 * SEq[2] - az;
 
-
 		// Functions from b-field
 		float f4 = dbx * (0.5 - sSEq2 - SEq[3] * SEq[3]) + dbz * (SEq1SEq3 - SEq0SEq2) - mx;
 		float f5 = dbx * (SEq[1] * SEq[2] - SEq[0] * SEq[3]) + dbz * (SEq[0] * SEq[1] + SEq[2] * SEq[3]) - my;
 		float f6 = dbx * (SEq0SEq2 + SEq1SEq3) + dbz * (0.5 - SEq[1] * SEq[1] - sSEq2) - mz;
-
-		printf("F's");
-		printf("%f\n", f1);
-		printf("%f\n", f2);
-		printf("%f\n", f3);
-		printf("%f\n", f4);
-		printf("%f\n", f5);
-		printf("%f\n", f6);
-		for(int i = 0; i < 100000000; i++){
-
-		}
 
 		// Jacobian entries
 		float J1124 = dSEq2;
@@ -679,15 +657,6 @@ void LSM9DS0::madgwickFilterUpdate() {
 		SEqhatdot1 /= tempNorm;
 		SEqhatdot2 /= tempNorm;
 		SEqhatdot3 /= tempNorm;
-		printf("SEqhatdot's\n");
-		printf("%f\n", SEqhatdot0);
-		printf("%f\n", SEqhatdot1);
-		printf("%f\n", SEqhatdot2);
-		printf("%f\n\n", SEqhatdot3);
-		for(int i = 0; i < 100000000; i++){
-
-		}
-
 
 		// Angular estimated direction of gyro error
 		float wex = dSEq0 * SEqhatdot1 - dSEq1 * SEqhatdot0 - dSEq2 * SEqhatdot3 + dSEq3 * SEqhatdot2;
@@ -707,14 +676,6 @@ void LSM9DS0::madgwickFilterUpdate() {
 		float SEqdot1 = hSEq0 * wx + hSEq2 * wz - hSEq3 * wy;
 		float SEqdot2 = hSEq0 * wy - hSEq1 * wz + hSEq3 * wx;
 		float SEqdot3 = hSEq0 * wz + hSEq1 * wy - hSEq2 * wx;
-		for(int i = 0; i < 100000000; i++){
-
-		}
-		printf("SEqdot's\n");
-		printf("%f\n", SEqdot0);
-		printf("%f\n", SEqdot1);
-		printf("%f\n", SEqdot2);
-		printf("%f\n\n", SEqdot3);
 
 		// Update orientation quaternion
 		SEq[0] += (SEqdot0 - (BETA * SEqhatdot0)) * dt;
@@ -722,13 +683,6 @@ void LSM9DS0::madgwickFilterUpdate() {
 		SEq[2] += (SEqdot2 - (BETA * SEqhatdot2)) * dt;
 		SEq[3] += (SEqdot3 - (BETA * SEqhatdot3)) * dt;
 
-		// printf("%f\n", SEq[0]);
-		// printf("%f\n", SEq[1]);
-		// printf("%f\n", SEq[2]);
-		// printf("%f\n\n", SEq[3]);
-		for(int i = 0; i < 100000000; i++){
-
-		}
 		// Normalize orientation quaternion
 		tempNorm = sqrt(SEq[0] * SEq[0] + SEq[1] * SEq[1] + SEq[2] * SEq[2] + SEq[3] * SEq[3]);
 		SEq[0] /= tempNorm;
@@ -753,17 +707,12 @@ void LSM9DS0::madgwickFilterUpdate() {
 		bz = hz;
 
 		yaw = atan2(2.0f * (SEq[1] * SEq[2] - SEq[0] * SEq[3]), 2.0f * (SEq[0] * SEq[0] + SEq[1] * SEq[1]) - 1.0f);
-		/*
-		printf("%f\n", SEq[0]);
-		printf("%f\n", SEq[1]);
-		printf("%f\n", SEq[2]);
-		printf("%f\n\n", SEq[3]);
-		*/
-		/*
-		cout << "Yaw: " << atan2(2.0f * (SEq[1] * SEq[2] - SEq[0] * SEq[3]), 2.0f * (SEq[0] * SEq[0] + SEq[1] * SEq[1]) - 1.0f) << "\n";
-		cout << "Pitch: " << asin(2.0f * (SEq[0] * SEq[2] - SEq[1] * SEq[3])) << "\n";
-		cout << "Roll: " << atan2(2.0f * (SEq[0] * SEq[1] + SEq[2] * SEq[3]), 1.0f - 2.0f * (SEq[1] * SEq[1] + SEq[2] * SEq[2])) << "\n\n";
-		*/
+		pitch = asin(2.0f * (SEq[0] * SEq[2] - SEq[1] * SEq[3]));
+		roll = atan2(2.0f * (SEq[0] * SEq[1] + SEq[2] * SEq[3]), 1.0f - 2.0f * (SEq[1] * SEq[1] + SEq[2] * SEq[2]));
+
+		printf("Yaw: %f\n", yaw);
+		printf("Pitch: %f\n", pitch);
+		printf("Roll: %f\n\n", roll);
 	}
 }
 
