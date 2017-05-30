@@ -32,7 +32,7 @@ void I2CInterfaceClass::openInterface()
 }
 
 
-void I2CInterfaceClass::writeRegister(unsigned char slaveAddress, unsigned char registerAddress, unsigned char* buf, unsigned char len)
+bool I2CInterfaceClass::writeRegister(unsigned char slaveAddress, unsigned char registerAddress, unsigned char* buf, unsigned char len)
 {
     pthread_mutex_lock (&I2Cmutex_);
     setSlaveAddress_(slaveAddress);
@@ -43,7 +43,7 @@ void I2CInterfaceClass::writeRegister(unsigned char slaveAddress, unsigned char 
     pthread_mutex_unlock (&I2Cmutex_);
 }
 
-void I2CInterfaceClass::readRegister(unsigned char slaveAddress, unsigned char registerAddress, unsigned char* buf, unsigned char len)
+bool I2CInterfaceClass::readRegister(unsigned char slaveAddress, unsigned char registerAddress, unsigned char* buf, unsigned char len)
 {
     pthread_mutex_lock (&I2Cmutex_);
     setSlaveAddress_(slaveAddress);
