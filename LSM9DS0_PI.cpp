@@ -572,11 +572,21 @@ void LSM9DS0::madgwickFilterUpdate() {
 
 		// Normalize acceleration and magnetometer values
 		float tempNorm = sqrt(ax * ax + ay * ay + az * az);
+		printf("tempNorm 1");
+		printf("%f\n", tempNorm);
+		for(int i = 0; i < 100000000; i++){
+
+		}
 		ax /= tempNorm;
 		ay /= tempNorm;
 		az /= tempNorm;
 
 		tempNorm = sqrt(mx * mx + my * my + mz * mz);
+		printf("tempNorm 2");
+		printf("%f\n", tempNorm);
+		for(int i = 0; i < 100000000; i++){
+
+		}
 		mx /= tempNorm;
 		my /= tempNorm;
 		mz /= tempNorm;
@@ -591,10 +601,22 @@ void LSM9DS0::madgwickFilterUpdate() {
 		float f2 = dSEq0 * SEq[1] + dSEq2 * SEq[3] - ay;
 		float f3 = 1 - dSEq1 * SEq[1] - dSEq2 * SEq[2] - az;
 
+
 		// Functions from b-field
 		float f4 = dbx * (0.5 - sSEq2 - SEq[3] * SEq[3]) + dbz * (SEq1SEq3 - SEq0SEq2) - mx;
 		float f5 = dbx * (SEq[1] * SEq[2] - SEq[0] * SEq[3]) + dbz * (SEq[0] * SEq[1] + SEq[2] * SEq[3]) - my;
 		float f6 = dbx * (SEq0SEq2 + SEq1SEq3) + dbz * (0.5 - SEq[1] * SEq[1] - sSEq2) - mz;
+
+		printf("F's");
+		printf("%f\n", f1);
+		printf("%f\n", f2);
+		printf("%f\n", f3);
+		printf("%f\n", f4);
+		printf("%f\n", f5);
+		printf("%f\n", f6);
+		for(int i = 0; i < 100000000; i++){
+
+		}
 
 		// Jacobian entries
 		float J1124 = dSEq2;
