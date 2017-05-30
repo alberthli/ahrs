@@ -569,6 +569,8 @@ public:
 	float getyGyro();
 	float getzGyro();
 
+	void calculateRPY();
+
 	uint8_t readXM(uint8_t reg_address);
 	void writeXM(uint8_t reg_address, uint8_t data);
 	uint8_t readG(uint8_t reg_address);
