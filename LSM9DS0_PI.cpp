@@ -528,11 +528,6 @@ void LSM9DS0::madgwickFilterUpdate() {
 	float roll = 0.0f;
 	float pitch = 0.0f;
 
-	printf("%f\n", SEq[0]);
-	printf("%f\n", SEq[1]);
-	printf("%f\n", SEq[2]);
-	printf("%f\n\n", SEq[3]);
-
 	while(true) {
 		currTime = std::chrono::steady_clock::now();
 		dt = std::chrono::duration_cast<std::chrono::microseconds>(currTime - prevTime).count();
@@ -659,6 +654,12 @@ void LSM9DS0::madgwickFilterUpdate() {
 		SEq[1] += (SEqdot1 - (BETA * SEqhatdot1)) * dt;
 		SEq[2] += (SEqdot2 - (BETA * SEqhatdot2)) * dt;
 		SEq[3] += (SEqdot3 - (BETA * SEqhatdot3)) * dt;
+
+		printf("%f\n", SEq[0]);
+		printf("%f\n", SEq[1]);
+		printf("%f\n", SEq[2]);
+		printf("%f\n\n", SEq[3]);
+		delay(10000);
 
 		// Normalize orientation quaternion
 		tempNorm = sqrt(SEq[0] * SEq[0] + SEq[1] * SEq[1] + SEq[2] * SEq[2] + SEq[3] * SEq[3]);
