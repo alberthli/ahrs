@@ -723,8 +723,6 @@ void LSM9DS0::madgwickFilterUpdate() {
 		printf("Pitch: %f\n", pitch);
 		printf("Roll: %f\n", roll);
 		printf("dt: %f\n\n", dt);
-
-		this_thread::sleep_for(std::chrono::milliseconds(11 - std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now()-currTime).count()));
 	}
 }
 
