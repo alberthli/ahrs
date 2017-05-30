@@ -524,6 +524,10 @@ void LSM9DS0::startLSM() {
 
 void LSM9DS0::madgwickFilterUpdate() {
 
+	float yaw = 0.0f;
+	float roll = 0.0f;
+	float pitch = 0.0f;
+
 	while(true) {
 		currTime = std::chrono::steady_clock::now();
 		dt = std::chrono::duration_cast<std::chrono::microseconds>(currTime - prevTime).count();
@@ -674,10 +678,10 @@ void LSM9DS0::madgwickFilterUpdate() {
 		bx = sqrt(hx * hx + hy * hy);
 		bz = hz;
 
-		printf("%f\n", dt);
+		yaw = atan2(2.0f * (SEq[1] * SEq[2] - SEq[0] * SEq[3]), 2.0f * (SEq[0] * SEq[0] + SEq[1] * SEq[1]) - 1.0f);
+		fprintf("%f\n", yaw);
 
 		/*
-		cout << "dt: " << dt << "\n";
 		cout << "Yaw: " << atan2(2.0f * (SEq[1] * SEq[2] - SEq[0] * SEq[3]), 2.0f * (SEq[0] * SEq[0] + SEq[1] * SEq[1]) - 1.0f) << "\n";
 		cout << "Pitch: " << asin(2.0f * (SEq[0] * SEq[2] - SEq[1] * SEq[3])) << "\n";
 		cout << "Roll: " << atan2(2.0f * (SEq[0] * SEq[1] + SEq[2] * SEq[3]), 1.0f - 2.0f * (SEq[1] * SEq[1] + SEq[2] * SEq[2])) << "\n\n";
