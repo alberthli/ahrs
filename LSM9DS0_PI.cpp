@@ -150,9 +150,9 @@ void LSM9DS0::updateGyro() {
 	uint8_t readBuffer[6];
 	I2CInterface.readRegister(G_ADDRESS, 0x80 | OUT_X_L_G, readBuffer, 6);
 	
-	wx = (static_cast<int16_t>(readBuffer[1]) << 8 | readBuffer[0]) * gyroGain - X_GB_OFFSET;
-	wy = (static_cast<int16_t>(readBuffer[3]) << 8 | readBuffer[2]) * gyroGain - Y_GB_OFFSET;
-	wz = (static_cast<int16_t>(readBuffer[5]) << 8 | readBuffer[4]) * gyroGain - Z_GB_OFFSET;
+	wx = static_cast<int16_t>(readBuffer[1] << 8 | readBuffer[0]) * gyroGain - X_GB_OFFSET;
+	wy = static_cast<int16_t>(readBuffer[3] << 8 | readBuffer[2]) * gyroGain - Y_GB_OFFSET;
+	wz = static_cast<int16_t>(readBuffer[5] << 8 | readBuffer[4]) * gyroGain - Z_GB_OFFSET;
 }
 
 void LSM9DS0::printUpdateData() {
