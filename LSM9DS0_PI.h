@@ -447,7 +447,7 @@ FIFO Watermark Level (Bits 4-8)
 
 // Accelerometer Status Info (OVERRUN AND AVAILABILITY)
 #define STATUS_REG_A 0x27
-
+ 
 // Acceleration Data Values. 16 bit, two's complement, left-justified
 #define OUT_X_L_A 0x28
 #define OUT_X_H_A 0x29

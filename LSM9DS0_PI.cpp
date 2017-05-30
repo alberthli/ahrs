@@ -132,7 +132,7 @@ void LSM9DS0::updateAccel() {
 	
 	ax = static_cast<uint16_t>(readBuffer[1] << 8 | readBuffer[0]) * accelGain * GRAV_ACCEL - X_AB_OFFSET;
 	ay = static_cast<uint16_t>(readBuffer[3] << 8 | readBuffer[2]) * accelGain * GRAV_ACCEL - Y_AB_OFFSET;
-	az = -(static_cast<uint16_t>(readBuffer[5] << 8 | readBuffer[4]) * accelGain * GRAV_ACCEL - Z_AB_OFFSET);
+	az = -(static_cast<uint16_t>(readBuffer[5] << 8 | readBuffer[4]));
 }
 
 // Updates the magnetometer values
