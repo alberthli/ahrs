@@ -112,10 +112,12 @@ void LSM9DS0::writeG(uint8_t reg_address, uint8_t data) {
 // Sensor Update Methods (Calibrated) //
 ////////////////////////////////////////
 
+// To use multi-read correctly, you must OR the addresses with 0x80!
+
 // Retrieves the temperature (deg C)
 void LSM9DS0::updateTemp() {
 	uint8_t readBuffer[2];
-	I2CInterface.readRegister(XM_ADDRESS, OUT_TEMP_L_XM, readBuffer, 2);
+	I2CInterface.readRegister(XM_ADDRESS, 0x80 | OUT_TEMP_L_XM, readBuffer, 2);
 	int16_t bitTemp = ((uint16_t)readBuffer[1] << 8 | readBuffer[0]) & 0x0FFF;
 
 	if(bitTemp > 2047) {
@@ -125,7 +127,7 @@ void LSM9DS0::updateTemp() {
 	temperature = TEMP_INTERCEPT + (float)bitTemp * TEMP_GAIN;
 }
 
-// Updates the sensor accelerations
+// Updates the sensor accelerations (m*s^-2)
 void LSM9DS0::updateAccel() {
 	uint8_t readBuffer[6];
 	I2CInterface.readRegister(XM_ADDRESS, 0x80 | OUT_X_L_A, readBuffer, 6);
@@ -135,7 +137,7 @@ void LSM9DS0::updateAccel() {
 	az = -(static_cast<int16_t>(readBuffer[5] << 8 | readBuffer[4]) * accelGain * GRAV_ACCEL - Z_AB_OFFSET);
 }
 
-// Updates the magnetometer values
+// Updates the magnetometer values (gauss)
 void LSM9DS0::updateMag() {
 	uint8_t readBuffer[6];
 	I2CInterface.readRegister(XM_ADDRESS, 0x80 | OUT_X_L_M, readBuffer, 6);
@@ -145,7 +147,7 @@ void LSM9DS0::updateMag() {
 	mz = (static_cast<int16_t>(readBuffer[5] << 8 | readBuffer[4]) * magGain - Z_HI_OFFSET) * Z_SI_SCALE;
 }
 
-// Updates the gyro values
+// Updates the gyro values (DPS)
 void LSM9DS0::updateGyro() {
 	uint8_t readBuffer[6];
 	I2CInterface.readRegister(G_ADDRESS, 0x80 | OUT_X_L_G, readBuffer, 6);
@@ -155,6 +157,7 @@ void LSM9DS0::updateGyro() {
 	wz = static_cast<int16_t>(readBuffer[5] << 8 | readBuffer[4]) * gyroGain - Z_GB_OFFSET;
 }
 
+// Debug Method
 void LSM9DS0::printUpdateData() {
 	updateAccel();
 	updateMag();
@@ -590,18 +593,6 @@ void LSM9DS0::startLSM() {
 	updateMag();
 	updateGyro();
 
-	/*
-	ax = getxAccel() - X_AB_OFFSET;
-	ay = getyAccel() - Y_AB_OFFSET;
-	az = -(getzAccel() - Z_AB_OFFSET);
-	mx = (getxMag() - X_HI_OFFSET) * X_SI_SCALE;
-	my = (getyMag() - Y_HI_OFFSET) * Y_SI_SCALE;
-	mz = (getzMag() - Z_HI_OFFSET) * Z_SI_SCALE;
-	wx = getxGyro() - X_GB_OFFSET;
-	wy = getyGyro() - Y_GB_OFFSET;
-	wz = getzGyro() - Z_GB_OFFSET;
-	*/
-
 	startTime = prevTime;
 	lastPrintTime = prevTime;
 
@@ -768,8 +759,6 @@ void LSM9DS0::madgwickFilterUpdate() {
 		// Normalize flux vector to eliminate y component
 		bx = sqrt(hx * hx + hy * hy);
 		bz = hz;
-
-		calculateRPY();
 
 		// Debug Print
 		printf("dt: %f\n\n", dt);
