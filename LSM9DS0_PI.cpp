@@ -129,7 +129,7 @@ void LSM9DS0::updateTemp() {
 void LSM9DS0::updateAccel() {
 	uint8_t readBuffer[6];
 	I2CInterface.readRegister(XM_ADDRESS, OUT_X_L_A, readBuffer, 6);
-	cout << readBuffer << endl;
+	cout << "Accel " << readBuffer[0] << " " << readBuffer[1] << " " << readBuffer[2] << " " << readBuffer[3] << " " << readBuffer[4] << " " << readBuffer[5] << " " << endl;
 
 	ax = ((int16_t)(((uint16_t) readBuffer[1]) << 8 | readBuffer[0])) * accelGain * GRAV_ACCEL - X_AB_OFFSET;
 	ay = ((int16_t)(((uint16_t) readBuffer[3]) << 8 | readBuffer[2])) * accelGain * GRAV_ACCEL - Y_AB_OFFSET;
@@ -140,7 +140,7 @@ void LSM9DS0::updateAccel() {
 void LSM9DS0::updateMag() {
 	uint8_t readBuffer[6];
 	I2CInterface.readRegister(XM_ADDRESS, OUT_X_L_M, readBuffer, 6);
-	cout << readBuffer << endl;
+	cout << "Mag " << readBuffer[0] << " " << readBuffer[1] << " " << readBuffer[2] << " " << readBuffer[3] << " " << readBuffer[4] << " " << readBuffer[5] << " " << endl;
 
 	mx = (((int16_t)(((uint16_t) readBuffer[1]) << 8 | readBuffer[0])) * magGain - X_HI_OFFSET) * X_SI_SCALE;
 	my = (((int16_t)(((uint16_t) readBuffer[3]) << 8 | readBuffer[2])) * magGain - Y_HI_OFFSET) * Y_SI_SCALE;
@@ -151,7 +151,7 @@ void LSM9DS0::updateMag() {
 void LSM9DS0::updateGyro() {
 	uint8_t readBuffer[6];
 	I2CInterface.readRegister(G_ADDRESS, OUT_X_L_G, readBuffer, 6);
-	cout << readBuffer << endl;
+	cout << "Gyro " << readBuffer[0] << " " << readBuffer[1] << " " << readBuffer[2] << " " << readBuffer[3] << " " << readBuffer[4] << " " << readBuffer[5] << " " << endl;
 
 	wx = ((int16_t)(((uint16_t) readBuffer[1]) << 8 | readBuffer[0])) * gyroGain - X_GB_OFFSET;
 	wy = ((int16_t)(((uint16_t) readBuffer[3]) << 8 | readBuffer[2])) * gyroGain - Y_GB_OFFSET;
