@@ -594,15 +594,19 @@ void LSM9DS0::madgwickFilterUpdate() {
 		/**************************/
 
 		// Normalize acceleration and magnetometer values
-		float tempNorm = sqrt(ax * ax + ay * ay + az * az);
-		ax /= tempNorm;
-		ay /= tempNorm;
-		az /= tempNorm;
+		// Fast hardware inverse sqrt for normalizing both
+		unsigned int i = 0x5F1F1412 - (*(unsigned int*)&x >> 1);
+		float tmp = *(float*)&i;
 
-		tempNorm = sqrt(mx * mx + my * my + mz * mz);
-		mx /= tempNorm;
-		my /= tempNorm;
-		mz /= tempNorm;
+		float tempnorm = tmp * (1.69000231f - 0.714158168f * (ax * ax + ay * ay + az * az) * tmp * tmp);
+		ax *= tempNorm;
+		ay *= tempNorm;
+		az *= tempNorm;
+
+		tempnorm = tmp * (1.69000231f - 0.714158168f * (mx * mx + my * my + mz * mz) * tmp * tmp);
+		mx *= tempNorm;
+		my *= tempNorm;
+		mz *= tempNorm;
 
 		float dmx = 2 * mx;
 		float dmy = 2 * my;
@@ -647,11 +651,11 @@ void LSM9DS0::madgwickFilterUpdate() {
 		float SEqhatdot3 = J1421 * f1 + J1124 * f2 - J44 * f4 - J54 * f5 + J64 * f6;
 
 		// Normalizing Gradients
-		tempNorm = sqrt(SEqhatdot0 * SEqhatdot0 + SEqhatdot1 * SEqhatdot1 + SEqhatdot2 * SEqhatdot2 + SEqhatdot3 * SEqhatdot3);
-		SEqhatdot0 /= tempNorm;
-		SEqhatdot1 /= tempNorm;
-		SEqhatdot2 /= tempNorm;
-		SEqhatdot3 /= tempNorm;
+		tempnorm = tmp * (1.69000231f - 0.714158168f * (SEqhatdot0 * SEqhatdot0 + SEqhatdot1 * SEqhatdot1 + SEqhatdot2 * SEqhatdot2 + SEqhatdot3 * SEqhatdot3) * tmp * tmp);
+		SEqhatdot0 *= tempNorm;
+		SEqhatdot1 *= tempNorm;
+		SEqhatdot2 *= tempNorm;
+		SEqhatdot3 *= tempNorm;
 
 		// Angular estimated direction of gyro error
 		float wex = dSEq0 * SEqhatdot1 - dSEq1 * SEqhatdot0 - dSEq2 * SEqhatdot3 + dSEq3 * SEqhatdot2;
@@ -679,11 +683,11 @@ void LSM9DS0::madgwickFilterUpdate() {
 		SEq[3] += (SEqdot3 - (BETA * SEqhatdot3)) * dt;
 
 		// Normalize orientation quaternion
-		tempNorm = sqrt(SEq[0] * SEq[0] + SEq[1] * SEq[1] + SEq[2] * SEq[2] + SEq[3] * SEq[3]);
-		SEq[0] /= tempNorm;
-		SEq[1] /= tempNorm;
-		SEq[2] /= tempNorm;
-		SEq[3] /= tempNorm;
+		tempnorm = tmp * (1.69000231f - 0.714158168f * (SEq[0] * SEq[0] + SEq[1] * SEq[1] + SEq[2] * SEq[2] + SEq[3] * SEq[3]) * tmp * tmp);
+		SEq[0] *= tempNorm;
+		SEq[1] *= tempNorm;
+		SEq[2] *= tempNorm;
+		SEq[3] *= tempNorm;
 
 		// b-field in earth frame
 		float SEq0SEq1 = SEq[0] * SEq[1];
