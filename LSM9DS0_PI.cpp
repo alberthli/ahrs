@@ -512,7 +512,7 @@ void LSM9DS0::printRawData() {
 	cout << "X Gyro: " << xgyr << "\n";
 	cout << "Y Gyro: " << ygyr << "\n";
 	cout << "Z Gyro: " << zgyr << "\n";
-	cout << "Temp: " << temp << "\n";
+	cout << "Temp: " << temp << "\n\n";
 }
 
 /////////////////////////////
@@ -721,11 +721,14 @@ int main() {
 	LSM9DS0 lsm = LSM9DS0();
 	lsm.initialize();
 
+	while(true) {
+		lsm.printRawData();
+	}
 	/*
 	lsm.calibrateGyroOffsets();
 	lsm.calibrateHardSoftIronEffect();
 	lsm.calibrateAccelOffsets();
 	*/
 	
-	lsm.startLSM();
+	// lsm.startLSM();
 }
