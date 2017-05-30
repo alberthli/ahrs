@@ -25,8 +25,8 @@ LSM9DS0::LSM9DS0() {
 	Z_AB_OFFSET = -0.23f;
 
 	// Madgwick Variables Initialization
-	BETA = 10.0f;
-	ZETA = 10.0f;
+	BETA = 12.5f;
+	ZETA = 0.01f;
 	bx = 1.0f;
 	bz = 0.0f;
 }
