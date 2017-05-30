@@ -28,8 +28,8 @@ LSM9DS0::LSM9DS0() {
 	Z_AB_OFFSET = -0.23f;
 
 	// Madgwick Variables Initialization
-	BETA = 0.041;
-	ZETA = 0.015;
+	BETA = 3.0f;
+	ZETA = 1.0f;
 	bx = 1.0f;
 	bz = 0.0f;
 }
@@ -567,15 +567,15 @@ void LSM9DS0::madgwickFilterUpdate() {
 		// float32x4_t hSEq_vec = {0.5f * SEq[0], 0.5f * SEq[1], 0.5f * SEq[2], 0.5f * SEq[3]};
 		// float32x4_t dSEq_vec = {2.0f * SEq[0], 2.0f * SEq[1], 2.0f * SEq[2], 2.0f * SEq[3]};
 
-		float hSEq0 = 0.5 * SEq[0];
-		float hSEq1 = 0.5 * SEq[1];
-		float hSEq2 = 0.5 * SEq[2];
-		float hSEq3 = 0.5 * SEq[3];
+		float hSEq0 = 0.5f * SEq[0];
+		float hSEq1 = 0.5f * SEq[1];
+		float hSEq2 = 0.5f * SEq[2];
+		float hSEq3 = 0.5f * SEq[3];
 		
-		float dSEq0 = 2 * SEq[0];
-		float dSEq1 = 2 * SEq[1];
-		float dSEq2 = 2 * SEq[2];
-		float dSEq3 = 2 * SEq[3];
+		float dSEq0 = 2.0f * SEq[0];
+		float dSEq1 = 2.0f * SEq[1];
+		float dSEq2 = 2.0f * SEq[2];
+		float dSEq3 = 2.0f * SEq[3];
 
 		float sSEq2 = SEq[2] * SEq[2];
 
