@@ -599,14 +599,14 @@ void LSM9DS0::madgwickFilterUpdate() {
 		unsigned int i = 0x5F1F1412 - (*(unsigned int*)&sqrtOf >> 1);
 		float tmp = *(float*)&i;
 
-		float tempnorm = tmp * (1.69000231f - 0.714158168f * sqrtOf * tmp * tmp);
+		float tempNorm = tmp * (1.69000231f - 0.714158168f * sqrtOf * tmp * tmp);
 		ax *= tempNorm;
 		ay *= tempNorm;
 		az *= tempNorm;
 
 		sqrtOf = mx * mx + my * my + mz * mz;
 		i = 0x5F1F1412 - (*(unsigned int*)&sqrtOf >> 1);
-		tempnorm = tmp * (1.69000231f - 0.714158168f * sqrtOf * tmp * tmp);
+		tempNorm = tmp * (1.69000231f - 0.714158168f * sqrtOf * tmp * tmp);
 		mx *= tempNorm;
 		my *= tempNorm;
 		mz *= tempNorm;
@@ -656,7 +656,7 @@ void LSM9DS0::madgwickFilterUpdate() {
 		// Normalizing Gradients
 		sqrtOf = SEqhatdot0 * SEqhatdot0 + SEqhatdot1 * SEqhatdot1 + SEqhatdot2 * SEqhatdot2 + SEqhatdot3 * SEqhatdot3;
 		i = 0x5F1F1412 - (*(unsigned int*)&sqrtOf >> 1);
-		tempnorm = tmp * (1.69000231f - 0.714158168f * sqrtOf * tmp * tmp);
+		tempNorm = tmp * (1.69000231f - 0.714158168f * sqrtOf * tmp * tmp);
 		SEqhatdot0 *= tempNorm;
 		SEqhatdot1 *= tempNorm;
 		SEqhatdot2 *= tempNorm;
@@ -690,7 +690,7 @@ void LSM9DS0::madgwickFilterUpdate() {
 		// Normalize orientation quaternion
 		sqrtOf = SEq[0] * SEq[0] + SEq[1] * SEq[1] + SEq[2] * SEq[2] + SEq[3] * SEq[3];
 		i = 0x5F1F1412 - (*(unsigned int*)&sqrtOf >> 1);
-		tempnorm = tmp * (1.69000231f - 0.714158168f * sqrtOf * tmp * tmp);
+		tempNorm = tmp * (1.69000231f - 0.714158168f * sqrtOf * tmp * tmp);
 		SEq[0] *= tempNorm;
 		SEq[1] *= tempNorm;
 		SEq[2] *= tempNorm;
@@ -709,6 +709,7 @@ void LSM9DS0::madgwickFilterUpdate() {
 		float hz = dmx * (SEq1SEq3 - SEq0SEq2) + dmy * (SEq2SEq3 + SEq0SEq1) + dmz * (0.5f - SEq[1] * SEq[1] - SEq[2] * SEq[2]);
 
 		// Normalize flux vector to eliminate y component
+		sqrtOf = 
 		bx = sqrt(hx * hx + hy * hy);
 		bz = hz;
 
