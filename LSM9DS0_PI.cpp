@@ -130,8 +130,8 @@ void LSM9DS0::updateAccel() {
 	uint8_t readBuffer[6];
 	I2CInterface.readRegister(XM_ADDRESS, OUT_X_L_A, readBuffer, 6);
 	
-	ax = static_cast<int16_t>(readBuffer[1] << 8 | readBuffer[0]) * accelGain * GRAV_ACCEL - X_AB_OFFSET;
-	ay = static_cast<int16_t>(readBuffer[3] << 8 | readBuffer[2]) * accelGain * GRAV_ACCEL - Y_AB_OFFSET;
+	ax = static_cast<int16_t>(readBuffer[1] << 8 | readBuffer[0]);
+	ay = static_cast<int16_t>(readBuffer[3] << 8 | readBuffer[2]);
 	az = -(static_cast<int16_t>(readBuffer[5] << 8 | readBuffer[4]));
 }
 
