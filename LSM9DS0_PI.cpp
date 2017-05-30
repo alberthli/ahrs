@@ -548,6 +548,7 @@ void LSM9DS0::madgwickFilterUpdate() {
 		prevTime = currTime;
 
 		// Poll new values
+		/*
 		ax = getxAccel() - X_AB_OFFSET;
 		ay = getyAccel() - Y_AB_OFFSET;
 		az = -(getzAccel() - Z_AB_OFFSET);
@@ -557,6 +558,7 @@ void LSM9DS0::madgwickFilterUpdate() {
 		wx = getxGyro() - X_GB_OFFSET;
 		wy = getyGyro() - Y_GB_OFFSET;
 		wz = getzGyro() - Z_GB_OFFSET;
+		*/
 
 		/*********************************/
 		/* Useful Variable Manipulations */
