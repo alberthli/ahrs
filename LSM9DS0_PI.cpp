@@ -129,33 +129,30 @@ void LSM9DS0::updateTemp() {
 void LSM9DS0::updateAccel() {
 	uint8_t readBuffer[6];
 	I2CInterface.readRegister(XM_ADDRESS, OUT_X_L_A, readBuffer, 6);
-	cout << "Accel " << readBuffer[0] << " " << readBuffer[1] << " " << readBuffer[2] << " " << readBuffer[3] << " " << readBuffer[4] << " " << readBuffer[5] << " " << endl;
-
-	ax = ((int16_t)(((uint16_t) readBuffer[1]) << 8 | readBuffer[0])) * accelGain * GRAV_ACCEL - X_AB_OFFSET;
-	ay = ((int16_t)(((uint16_t) readBuffer[3]) << 8 | readBuffer[2])) * accelGain * GRAV_ACCEL - Y_AB_OFFSET;
-	az = -(((int16_t)(((uint16_t) readBuffer[5]) << 8 | readBuffer[4])) * accelGain * GRAV_ACCEL - Z_AB_OFFSET);
+	
+	ax = static_cast<uint16_t>(readBuffer[1] << 8 | readBuffer[0]) * accelGain * GRAV_ACCEL - X_AB_OFFSET;
+	ay = static_cast<uint16_t>(readBuffer[3] << 8 | readBuffer[2]) * accelGain * GRAV_ACCEL - Y_AB_OFFSET;
+	az = -(static_cast<uint16_t>(readBuffer[5] << 8 | readBuffer[4]) * accelGain * GRAV_ACCEL - Z_AB_OFFSET);
 }
 
 // Updates the magnetometer values
 void LSM9DS0::updateMag() {
 	uint8_t readBuffer[6];
 	I2CInterface.readRegister(XM_ADDRESS, OUT_X_L_M, readBuffer, 6);
-	cout << "Mag " << readBuffer[0] << " " << readBuffer[1] << " " << readBuffer[2] << " " << readBuffer[3] << " " << readBuffer[4] << " " << readBuffer[5] << " " << endl;
-
-	mx = (((int16_t)(((uint16_t) readBuffer[1]) << 8 | readBuffer[0])) * magGain - X_HI_OFFSET) * X_SI_SCALE;
-	my = (((int16_t)(((uint16_t) readBuffer[3]) << 8 | readBuffer[2])) * magGain - Y_HI_OFFSET) * Y_SI_SCALE;
-	mz = (((int16_t)(((uint16_t) readBuffer[5]) << 8 | readBuffer[4])) * magGain - Z_HI_OFFSET) * Z_SI_SCALE;
+	
+	mx = (static_cast<uint16_t>(readBuffer[1] << 8 | readBuffer[0]) * magGain - X_HI_OFFSET) * X_SI_SCALE;
+	my = (static_cast<uint16_t>(readBuffer[3] << 8 | readBuffer[2]) * magGain - Y_HI_OFFSET) * Y_SI_SCALE;
+	mz = (static_cast<uint16_t>(readBuffer[5] << 8 | readBuffer[4]) * magGain - Z_HI_OFFSET) * Z_SI_SCALE;
 }
 
 // Updates the gyro values
 void LSM9DS0::updateGyro() {
 	uint8_t readBuffer[6];
 	I2CInterface.readRegister(G_ADDRESS, OUT_X_L_G, readBuffer, 6);
-	cout << "Gyro " << readBuffer[0] << " " << readBuffer[1] << " " << readBuffer[2] << " " << readBuffer[3] << " " << readBuffer[4] << " " << readBuffer[5] << " " << endl;
-
-	wx = ((int16_t)(((uint16_t) readBuffer[1]) << 8 | readBuffer[0])) * gyroGain - X_GB_OFFSET;
-	wy = ((int16_t)(((uint16_t) readBuffer[3]) << 8 | readBuffer[2])) * gyroGain - Y_GB_OFFSET;
-	wz = ((int16_t)(((uint16_t) readBuffer[5]) << 8 | readBuffer[4])) * gyroGain - Z_GB_OFFSET;
+	
+	wx = (static_cast<uint16_t>(readBuffer[1]) << 8 | readBuffer[0]) * gyroGain - X_GB_OFFSET;
+	wy = (static_cast<uint16_t>(readBuffer[3]) << 8 | readBuffer[2]) * gyroGain - Y_GB_OFFSET;
+	wz = (static_cast<uint16_t>(readBuffer[5]) << 8 | readBuffer[4]) * gyroGain - Z_GB_OFFSET;
 }
 
 void LSM9DS0::printUpdateData() {
