@@ -561,28 +561,6 @@ void LSM9DS0::madgwickFilterUpdate() {
 		wy = getyGyro() - Y_GB_OFFSET;
 		wz = getzGyro() - Z_GB_OFFSET;
 
-		for(int i = 0; i < 49; i++) {
-			ax += getxAccel() - X_AB_OFFSET;
-			ay += getyAccel() - Y_AB_OFFSET;
-			az += -(getzAccel() - Z_AB_OFFSET);
-			mx += (getxMag() - X_HI_OFFSET) * X_SI_SCALE;
-			my += (getyMag() - Y_HI_OFFSET) * Y_SI_SCALE;
-			mz += (getzMag() - Z_HI_OFFSET) * Z_SI_SCALE;
-			wx += getxGyro() - X_GB_OFFSET;
-			wy += getyGyro() - Y_GB_OFFSET;
-			wz += getzGyro() - Z_GB_OFFSET;
-		}
-
-		ax /= 50;
-		ay /= 50;
-		az /= 50;
-		mx /= 50;
-		my /= 50;
-		mz /= 50;
-		wx /= 50;
-		wy /= 50;
-		wz /= 50;
-
 		/*********************************/
 		/* Useful Variable Manipulations */
 		/*********************************/
