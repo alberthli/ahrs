@@ -729,7 +729,7 @@ void LSM9DS0::madgwickFilterUpdate() {
 // Math Operations //
 /////////////////////
 
-float invSqrt(float x) {
+float LSM9DS0::invSqrt(float x) {
    uint32_t i = 0x5F1F1412 - (*(uint32_t*)&x >> 1);
    float tmp = *(float*)&i;
    return tmp * (1.69000231f - 0.714158168f * x * tmp * tmp);
