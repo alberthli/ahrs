@@ -581,7 +581,7 @@ public:
 	void calibrateGyroOffsets();
 	void calibrateHardSoftIronEffect();
 
-	float invSqrt();
+	float invSqrt(float sqrtOf);
 
 	void printRawData();
 
