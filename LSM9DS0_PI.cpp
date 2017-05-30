@@ -10,6 +10,23 @@
 using namespace std;
 
 LSM9DS0::LSM9DS0() {
+	// Sensor Default Offsets
+	X_HI_OFFSET = -0.06f;
+	Y_HI_OFFSET = -0.06f;
+	Z_HI_OFFSET = 0.08f;
+
+	X_SI_SCALE = 1.0f;
+	Y_SI_SCALE = 0.95f;
+	Z_SI_SCALE = 1.1f;
+
+	X_GB_OFFSET = 0.5f;
+	Y_GB_OFFSET = -0.3f;
+	Z_GB_OFFSET = -4.5f;
+
+	X_AB_OFFSET = -0.4f;
+	Y_AB_OFFSET = -0.016f;
+	Z_AB_OFFSET = -0.23f;
+	
 	// Madgwick Variables Initialization
 	BETA = 12.5;
 	ZETA = 0.01;
