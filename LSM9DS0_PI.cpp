@@ -1,11 +1,8 @@
 #include <iostream>
-// #include <chrono>
 #include <cmath>
 #include <arm_neon.h>
-#include <sys/time.h>
 
 #include "LSM9DS0_PI.h"
-#include "I2CInterface.h"
 
 using namespace std;
 
@@ -28,8 +25,8 @@ LSM9DS0::LSM9DS0() {
 	Z_AB_OFFSET = -0.23f;
 
 	// Madgwick Variables Initialization
-	BETA = 3.0f;
-	ZETA = 1.0f;
+	BETA = 10.0f;
+	ZETA = 10.0f;
 	bx = 1.0f;
 	bz = 0.0f;
 }
@@ -49,7 +46,6 @@ void LSM9DS0::initialize() {
 
 // Initializing desired settings on the XM
 void LSM9DS0::initXM() {
-	// [TODO] REWRITE THIS TO HAVE CORRECT CALLS
 	// Bit Register Configuration Info in Header File
 	writeXM(CTRL_REG0_XM, 0x00); // All disabled, defaults
 	writeXM(CTRL_REG1_XM, 0x57); // 100 Hz Accel. Sampling Rate, Continuous Update, All Axes Enabled
@@ -67,7 +63,6 @@ void LSM9DS0::initXM() {
 
 // Initializing desired settings on the G
 void LSM9DS0::initG() {
-	// [TODO] REWRITE THIS TO HAVE CORRECT CALLS
 	// Bit Register Configuration Info in Header File
 	writeG(CTRL_REG_1_G, 0x0F); // Default ODR and Bandwidth, Normal Mode, All Axes Enabled
 	writeG(CTRL_REG_2_G, 0x00); // Normal Mode, 7.2 Hz HPF Cutoff Frequency
