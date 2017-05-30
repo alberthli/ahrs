@@ -679,7 +679,7 @@ void LSM9DS0::madgwickFilterUpdate() {
 		bz = hz;
 
 		yaw = atan2(2.0f * (SEq[1] * SEq[2] - SEq[0] * SEq[3]), 2.0f * (SEq[0] * SEq[0] + SEq[1] * SEq[1]) - 1.0f);
-		fprintf("%f\n", yaw);
+		printf("%f\n", yaw);
 
 		/*
 		cout << "Yaw: " << atan2(2.0f * (SEq[1] * SEq[2] - SEq[0] * SEq[3]), 2.0f * (SEq[0] * SEq[0] + SEq[1] * SEq[1]) - 1.0f) << "\n";
