@@ -595,15 +595,18 @@ void LSM9DS0::madgwickFilterUpdate() {
 
 		// Normalize acceleration and magnetometer values
 		// Fast hardware inverse sqrt for normalizing both
-		unsigned int i = 0x5F1F1412 - (*(unsigned int*)&x >> 1);
+		float sqrtOf = ax * ax + ay * ay + az * az;
+		unsigned int i = 0x5F1F1412 - (*(unsigned int*)&sqrtOf >> 1);
 		float tmp = *(float*)&i;
 
-		float tempnorm = tmp * (1.69000231f - 0.714158168f * (ax * ax + ay * ay + az * az) * tmp * tmp);
+		float tempnorm = tmp * (1.69000231f - 0.714158168f * sqrtOf * tmp * tmp);
 		ax *= tempNorm;
 		ay *= tempNorm;
 		az *= tempNorm;
 
-		tempnorm = tmp * (1.69000231f - 0.714158168f * (mx * mx + my * my + mz * mz) * tmp * tmp);
+		sqrtOf = mx * mx + my * my + mz * mz;
+		i = 0x5F1F1412 - (*(unsigned int*)&sqrtOf >> 1);
+		tempnorm = tmp * (1.69000231f - 0.714158168f * sqrtOf * tmp * tmp);
 		mx *= tempNorm;
 		my *= tempNorm;
 		mz *= tempNorm;
@@ -651,7 +654,9 @@ void LSM9DS0::madgwickFilterUpdate() {
 		float SEqhatdot3 = J1421 * f1 + J1124 * f2 - J44 * f4 - J54 * f5 + J64 * f6;
 
 		// Normalizing Gradients
-		tempnorm = tmp * (1.69000231f - 0.714158168f * (SEqhatdot0 * SEqhatdot0 + SEqhatdot1 * SEqhatdot1 + SEqhatdot2 * SEqhatdot2 + SEqhatdot3 * SEqhatdot3) * tmp * tmp);
+		sqrtOf = SEqhatdot0 * SEqhatdot0 + SEqhatdot1 * SEqhatdot1 + SEqhatdot2 * SEqhatdot2 + SEqhatdot3 * SEqhatdot3;
+		i = 0x5F1F1412 - (*(unsigned int*)&sqrtOf >> 1);
+		tempnorm = tmp * (1.69000231f - 0.714158168f * sqrtOf * tmp * tmp);
 		SEqhatdot0 *= tempNorm;
 		SEqhatdot1 *= tempNorm;
 		SEqhatdot2 *= tempNorm;
@@ -683,7 +688,9 @@ void LSM9DS0::madgwickFilterUpdate() {
 		SEq[3] += (SEqdot3 - (BETA * SEqhatdot3)) * dt;
 
 		// Normalize orientation quaternion
-		tempnorm = tmp * (1.69000231f - 0.714158168f * (SEq[0] * SEq[0] + SEq[1] * SEq[1] + SEq[2] * SEq[2] + SEq[3] * SEq[3]) * tmp * tmp);
+		sqrtOf = SEq[0] * SEq[0] + SEq[1] * SEq[1] + SEq[2] * SEq[2] + SEq[3] * SEq[3];
+		i = 0x5F1F1412 - (*(unsigned int*)&sqrtOf >> 1);
+		tempnorm = tmp * (1.69000231f - 0.714158168f * sqrtOf * tmp * tmp);
 		SEq[0] *= tempNorm;
 		SEq[1] *= tempNorm;
 		SEq[2] *= tempNorm;
