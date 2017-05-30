@@ -659,7 +659,9 @@ void LSM9DS0::madgwickFilterUpdate() {
 		printf("%f\n", SEq[1]);
 		printf("%f\n", SEq[2]);
 		printf("%f\n\n", SEq[3]);
+		for(int i = 0; i < 100000000; i++){
 
+		}
 		// Normalize orientation quaternion
 		tempNorm = sqrt(SEq[0] * SEq[0] + SEq[1] * SEq[1] + SEq[2] * SEq[2] + SEq[3] * SEq[3]);
 		SEq[0] /= tempNorm;
