@@ -533,6 +533,17 @@ void LSM9DS0::madgwickFilterUpdate() {
 		dt = std::chrono::duration_cast<std::chrono::microseconds>(currTime - prevTime).count();
 		prevTime = currTime;
 
+		// Poll new values
+		ax = getxAccel() - X_AB_OFFSET;
+		ay = getyAccel() - Y_AB_OFFSET;
+		az = -(getzAccel() - Z_AB_OFFSET);
+		mx = (getxMag() - X_HI_OFFSET) * X_SI_SCALE;
+		my = (getyMag() - Y_HI_OFFSET) * Y_SI_SCALE;
+		mz = (getzMag() - Z_HI_OFFSET) * Z_SI_SCALE;
+		wx = getxGyro() - X_GB_OFFSET;
+		wy = getyGyro() - Y_GB_OFFSET;
+		wz = getzGyro() - Z_GB_OFFSET;
+
 		/*********************************/
 		/* Useful Variable Manipulations */
 		/*********************************/
