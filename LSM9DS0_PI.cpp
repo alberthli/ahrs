@@ -753,6 +753,8 @@ void LSM9DS0::madgwickFilterUpdate() {
 		bx = sqrt(hx * hx + hy * hy);
 		bz = hz;
 
+		calculateRPY();
+
 		// Debug Print
 		printf("dt: %f\n\n", dt);
 	}
