@@ -590,16 +590,6 @@ public:
 	float wx, wy, wz; // Gyro raw values
 	*/
 
-	//////////////////////
-	// Inline Functions //
-	//////////////////////
-
-	inline uint64_t timestamp_us() {
-		struct timeval tv;
-		gettimeofday(&tv, NULL);
-		return 1000000L * tv.tv_sec + tv.tv_usec;
-	}
-
 private:
 	// Private XM Variables
 	float accelGain, magGain;
