@@ -30,6 +30,11 @@ LSM9DS0::LSM9DS0() {
 	ZETA = 0.01f;
 	bx = 1.0f;
 	bz = 0.0f;
+
+	// Euler Angles
+	roll = 0.0f;
+	pitch = 0.0f;
+	yaw = 0.0f;
 }
 
 LSM9DS0::~LSM9DS0() {
@@ -537,10 +542,6 @@ void LSM9DS0::startLSM() {
 
 void LSM9DS0::madgwickFilterUpdate() {
 
-	float yaw = 0.0f;
-	float roll = 0.0f;
-	float pitch = 0.0f;
-
 	while(true) {
 		currTime = std::chrono::steady_clock::now();
 		dt = std::chrono::duration_cast<std::chrono::microseconds>(currTime - prevTime).count() / 1000000.0f;
@@ -706,24 +707,29 @@ void LSM9DS0::madgwickFilterUpdate() {
 		bx = sqrt(hx * hx + hy * hy);
 		bz = hz;
 
-		yaw = atan2(2.0f * (SEq[1] * SEq[2] - SEq[0] * SEq[3]), 2.0f * (SEq[0] * SEq[0] + SEq[1] * SEq[1]) - 1.0f);
-		pitch = asin(2.0f * (SEq[0] * SEq[2] - SEq[1] * SEq[3]));
-		roll = atan2(2.0f * (SEq[0] * SEq[1] + SEq[2] * SEq[3]), 1.0f - 2.0f * (SEq[1] * SEq[1] + SEq[2] * SEq[2]));
-
-		// Angle conversion
-		yaw *= 180 / PI;
-		yaw += DECLINATION_ANGLE;
-		pitch *= 180 / PI;
-		roll = 180 - (roll * 180 / PI);
-		if(roll > 180) {
-			roll -= 360;
-		}
-
-		printf("Yaw: %f\n", yaw);
-		printf("Pitch: %f\n", pitch);
-		printf("Roll: %f\n", roll);
+		// Debug Print
 		printf("dt: %f\n\n", dt);
 	}
+}
+
+void LSM9DS0::calculateRPY() {
+	yaw = atan2(2.0f * (SEq[1] * SEq[2] - SEq[0] * SEq[3]), 2.0f * (SEq[0] * SEq[0] + SEq[1] * SEq[1]) - 1.0f);
+	pitch = asin(2.0f * (SEq[0] * SEq[2] - SEq[1] * SEq[3]));
+	roll = atan2(2.0f * (SEq[0] * SEq[1] + SEq[2] * SEq[3]), 1.0f - 2.0f * (SEq[1] * SEq[1] + SEq[2] * SEq[2]));
+
+	// Angle conversion
+	yaw *= 180 / PI;
+	yaw += DECLINATION_ANGLE;
+	pitch *= 180 / PI;
+	roll = 180 - (roll * 180 / PI);
+	if(roll > 180) {
+		roll -= 360;
+	}
+
+	// Debug prints
+	printf("Yaw: %f\n", yaw);
+	printf("Pitch: %f\n", pitch);
+	printf("Roll: %f\n", roll);
 }
 
 /////////////////////
