@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cmath>
 #include <arm_neon.h>
+#include <thread>
 
 #include "LSM9DS0_PI.h"
 
@@ -702,7 +703,6 @@ void LSM9DS0::madgwickFilterUpdate() {
 		float hz = dmx * (SEq1SEq3 - SEq0SEq2) + dmy * (SEq2SEq3 + SEq0SEq1) + dmz * (0.5f - SEq[1] * SEq[1] - SEq[2] * SEq[2]);
 
 		// Normalize flux vector to eliminate y component
-		sqrtOf = 
 		bx = sqrt(hx * hx + hy * hy);
 		bz = hz;
 
@@ -722,6 +722,8 @@ void LSM9DS0::madgwickFilterUpdate() {
 		printf("Yaw: %f\n", yaw);
 		printf("Pitch: %f\n", pitch);
 		printf("Roll: %f\n\n", roll);
+
+		this_thread::sleep_for(chrono::milliseconds(11.0f - chrono::duration_cast<chrono::milliseconds>(chrono::steady_clock::now()-currTime).count()));
 	}
 }
 
