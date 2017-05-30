@@ -713,6 +713,10 @@ void LSM9DS0::madgwickFilterUpdate() {
 		printf("Yaw: %f\n", yaw);
 		printf("Pitch: %f\n", pitch);
 		printf("Roll: %f\n\n", roll);
+
+		for(int i = 0; i < 1000000; i++) {
+			
+		}
 	}
 }
 
@@ -721,14 +725,11 @@ int main() {
 	LSM9DS0 lsm = LSM9DS0();
 	lsm.initialize();
 
-	while(true) {
-		lsm.printRawData();
-	}
 	/*
 	lsm.calibrateGyroOffsets();
 	lsm.calibrateHardSoftIronEffect();
 	lsm.calibrateAccelOffsets();
 	*/
 	
-	// lsm.startLSM();
+	lsm.startLSM();
 }
