@@ -535,6 +535,7 @@ FIFO Watermark Level (Bits 4-8)
 
 #define TEMP_INTERCEPT 24.0f
 #define GRAV_ACCEL 9.80665f
+#define DECLINATION_ANGLE 13.55f
 
 // Temperature gain is always .125 for this sensor
 #define TEMP_GAIN 0.125f

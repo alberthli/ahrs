@@ -710,6 +710,15 @@ void LSM9DS0::madgwickFilterUpdate() {
 		pitch = asin(2.0f * (SEq[0] * SEq[2] - SEq[1] * SEq[3]));
 		roll = atan2(2.0f * (SEq[0] * SEq[1] + SEq[2] * SEq[3]), 1.0f - 2.0f * (SEq[1] * SEq[1] + SEq[2] * SEq[2]));
 
+		// Angle conversion
+		yaw *= 180 / PI;
+		yaw += DECLINATION_ANGLE;
+		pitch *= 180 / PI;
+		roll = 180 - (self.roll * 180 / PI);
+		if(roll > 180) {
+			roll -= 360;
+		}
+
 		printf("Yaw: %f\n", yaw);
 		printf("Pitch: %f\n", pitch);
 		printf("Roll: %f\n\n", roll);
