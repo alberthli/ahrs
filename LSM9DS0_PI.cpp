@@ -811,14 +811,11 @@ int main() {
 	LSM9DS0 lsm = LSM9DS0();
 	lsm.initialize();
 
-	while(true) {
-		lsm.printUpdateData();
-	}
 	/*
 	lsm.calibrateGyroOffsets();
 	lsm.calibrateHardSoftIronEffect();
 	lsm.calibrateAccelOffsets();
 	*/
 	
-	// lsm.startLSM();
+	lsm.startLSM();
 }
