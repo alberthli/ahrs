@@ -1,11 +1,11 @@
 #include <iostream>
 #include <cmath>
 #include <arm_neon.h>
-#include <thread>
 
 #include "LSM9DS0_PI.h"
 
 using namespace std;
+using namespace Eigen;
 
 LSM9DS0::LSM9DS0() {
 	// Sensor Default Offsets
@@ -599,9 +599,29 @@ void LSM9DS0::startLSM() {
 	madgwickFilterUpdate();
 }
 
+// Performing the filter operations using the eigen library
+void LSM9DS0::madgwickFilterUpdateEigen() {
+
+	while(true) {
+		// Keeping track of integration time step
+		currTime = std::chrono::steady_clock::now();
+		dt = std::chrono::duration_cast<std::chrono::microseconds>(currTime - prevTime).count() / 1000000.0f;
+		prevTime = currTime;
+
+		// Poll new values
+		updateAccel();
+		updateMag();
+		updateGyro();
+
+
+	}
+
+}
+
 void LSM9DS0::madgwickFilterUpdate() {
 
 	while(true) {
+		// Keeping track of integration time step
 		currTime = std::chrono::steady_clock::now();
 		dt = std::chrono::duration_cast<std::chrono::microseconds>(currTime - prevTime).count() / 1000000.0f;
 		prevTime = currTime;

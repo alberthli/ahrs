@@ -585,6 +585,7 @@ public:
 	void writeG(uint8_t reg_address, uint8_t data);
 
 	void startLSM();
+	void madgwickFilterUpdateEigen();
 	void madgwickFilterUpdate();
 
 	void calibrateAccelOffsets();
