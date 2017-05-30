@@ -560,6 +560,8 @@ public:
 	void updateMag();
 	void updateGyro();
 
+	void printUpdateData();
+
 	// Old Get Methods
 	float getTemp();
 

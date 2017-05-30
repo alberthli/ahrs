@@ -155,6 +155,22 @@ void LSM9DS0::updateGyro() {
 	wz = (int16_t)((uint16_t) readBuffer[5] << 8 | readBuffer[4]) * gyroGain - Z_GB_OFFSET;
 }
 
+void LSM9DS0::printUpdateData() {
+	updateAccel();
+	updateMag();
+	updateGyro();
+
+	printf("%f\n", ax);
+	printf("%f\n", ay);
+	printf("%f\n", az);
+	printf("%f\n", mx);
+	printf("%f\n", my);
+	printf("%f\n", mz);
+	printf("%f\n", wx);
+	printf("%f\n", wy);
+	printf("%f\n\n", wz);
+}
+
 ////////////////////////////////////
 // Sensor Retrieval Methods (Raw) //
 ////////////////////////////////////
@@ -794,12 +810,15 @@ float LSM9DS0::invSqrt(float x) {
 int main() {
 	LSM9DS0 lsm = LSM9DS0();
 	lsm.initialize();
-
+	
+	while(true) {
+		lsm.printUpdateData();
+	}
 	/*
 	lsm.calibrateGyroOffsets();
 	lsm.calibrateHardSoftIronEffect();
 	lsm.calibrateAccelOffsets();
 	*/
 	
-	lsm.startLSM();
+	// lsm.startLSM();
 }
