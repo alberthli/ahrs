@@ -613,6 +613,7 @@ private:
 	float yaw, roll, pitch; // Euler Angles
 
 	// Madgwick Variables
+	uint64_t currTime;
 	uint64_t prevTime; // Timing for Processing Loop
 	float dt;
 

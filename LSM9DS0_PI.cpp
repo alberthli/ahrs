@@ -503,6 +503,7 @@ void LSM9DS0::printRawData() {
 /////////////////////////////
 
 void LSM9DS0::startLSM() {
+	currTime = timestamp_us();
 	prevTime = timestamp_us();
 
 	ax = getxAccel() - X_AB_OFFSET;
@@ -527,8 +528,8 @@ void LSM9DS0::madgwickFilterUpdate() {
 		printf("cur: %lli.8\n", currTime);
 		printf("pre: %lli.8\n", prevTime);
 		printf("dt: %f\n\n", dt);
-		
-		uint64_t currTime = timestamp_us();
+
+		currTime = timestamp_us();
 		dt = (float)(currTime - prevTime) / 1000.0f;
 		prevTime = currTime;
 
