@@ -503,8 +503,8 @@ void LSM9DS0::printRawData() {
 /////////////////////////////
 
 void LSM9DS0::startLSM() {
-	currTime = timestamp_us();
-	prevTime = timestamp_us();
+	currTime = std::chrono::steady_clock::now();
+	prevTime = std::chrono::steady_clock::now();
 
 	ax = getxAccel() - X_AB_OFFSET;
 	ay = getyAccel() - Y_AB_OFFSET;
@@ -525,12 +525,8 @@ void LSM9DS0::startLSM() {
 void LSM9DS0::madgwickFilterUpdate() {
 
 	while(true) {
-		printf("cur: %lli.8\n", currTime);
-		printf("pre: %lli.8\n", prevTime);
-		printf("dt: %f\n\n", dt);
-
-		currTime = timestamp_us();
-		dt = (float)(currTime - prevTime) / 1000.0f;
+		currTime = std::chrono::steady_clock::now();
+		dt = std::chrono::duration_cast<std::chrono::microseconds>(currTime - prevTime).count();
 		prevTime = currTime;
 
 		/*********************************/
@@ -677,6 +673,8 @@ void LSM9DS0::madgwickFilterUpdate() {
 		// Normalize flux vector to eliminate y component
 		bx = sqrt(hx * hx + hy * hy);
 		bz = hz;
+
+		printf("%f\n", dt);
 
 		/*
 		cout << "dt: " << dt << "\n";
