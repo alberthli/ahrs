@@ -398,7 +398,6 @@ class LSM9DS0:
 					
 					self.lastPrintTime = now
 				
-				
 
 		except KeyboardInterrupt:
 			print("Exited Test")
