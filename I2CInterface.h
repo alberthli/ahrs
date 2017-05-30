@@ -28,8 +28,8 @@ class I2CInterfaceClass
 public:
     I2CInterfaceClass();
     virtual ~I2CInterfaceClass();
-    bool writeRegister(unsigned char slaveAddress, unsigned char registerAddress, unsigned char* buf, unsigned char len);
-    bool readRegister(unsigned char slaveAddress, unsigned char registerAddress, unsigned char* buf, unsigned char len);
+    void writeRegister(unsigned char slaveAddress, unsigned char registerAddress, unsigned char* buf, unsigned char len);
+    void readRegister(unsigned char slaveAddress, unsigned char registerAddress, unsigned char* buf, unsigned char len);
     void openInterface();
 
 private:
