@@ -2,7 +2,6 @@
 #define LSM9DS0_H
 
 #include "I2CInterface.h"
-#include "Eigen/Core"
 
 #include <chrono>
 
@@ -640,11 +639,6 @@ private:
 	// Debug Variables
 	std::chrono::steady_clock::time_point lastPrintTime;
 	std::chrono::steady_clock::time_point startTime;
-
-	// Variables for Eigen Madgwick Algorithm
-	Eigen::Vector4f SEq_Eigen;
-	Eigen::Vector3f gyroBiases_Eigen;
-	Eigen::Vector3f bField_Eigen;
 
 };
 

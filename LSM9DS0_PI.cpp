@@ -5,7 +5,6 @@
 #include "LSM9DS0_PI.h"
 
 using namespace std;
-using namespace Eigen;
 
 LSM9DS0::LSM9DS0() {
 	// Sensor Default Offsets
@@ -35,11 +34,6 @@ LSM9DS0::LSM9DS0() {
 	roll = 0.0f;
 	pitch = 0.0f;
 	yaw = 0.0f;
-
-	// Eigen Variable Initialization
-	SEq_Eigen = Vector4f(1.0, 0.0, 0.0, 0.0);
-	gyroBiases_Eigen = Vector3f(0.0, 0.0, 0.0);
-	bField_Eigen = Vector3f(1.0, 0.0, 0.0);
 }
 
 LSM9DS0::~LSM9DS0() {
@@ -601,99 +595,7 @@ void LSM9DS0::startLSM() {
 	startTime = prevTime;
 	lastPrintTime = prevTime;
 
-	madgwickFilterUpdateEigen();
-	// madgwickFilterUpdate();
-}
-
-// Performing the filter operations using the eigen library
-void LSM9DS0::madgwickFilterUpdateEigen() {
-
-	while(true) {
-		// Keeping track of integration time step
-		currTime = std::chrono::steady_clock::now();
-		dt = std::chrono::duration_cast<std::chrono::microseconds>(currTime - prevTime).count() / 1000000.0f;
-		prevTime = currTime;
-
-		// Poll new values
-		updateAccel();
-		updateMag();
-		updateGyro();
-
-		// Making Eigen Vector objects
-		Vector4f hSEq_Eigen = 0.5f * SEq_Eigen;
-		Vector4f dSEq_Eigen = 2.0f * SEq_Eigen;
-		Vector3f dbField_Eigen = 2.0f * bField_Eigen;
-		Vector4f dbxSEq_Eigen = dbField_Eigen[0] * SEq_Eigen;
-		Vector4f dbzSEq_Eigen = dbField_Eigen[2] * SEq_Eigen;
-
-		/**************************/
-		/* Beginning of Algorithm */
-		/**************************/
-
-		// Normalize acceleration and magnetometer values
-		float sqrtOf = ax * ax + ay * ay + az * az;
-		float tempNorm = invSqrt(sqrtOf);
-		ax *= tempNorm;
-		ay *= tempNorm;
-		az *= tempNorm;
-
-		sqrtOf = mx * mx + my * my + mz * mz;
-		tempNorm = invSqrt(sqrtOf);
-		mx *= tempNorm;
-		my *= tempNorm;
-		mz *= tempNorm;
-
-		Vector3f m_Eigen = Vector3f(mx, my, mz);
-		Vector3f a_Eigen = Vector3f(ax, ay, az);
-		Vector3f dm_Eigen = 2.0f * m_Eigen;
-
-		// Function Vector
-		VectorXf f;
-		f << dSEq_Eigen[1] * SEq_Eigen[3] - dSEq_Eigen[0] * SEq_Eigen[2] - a_Eigen[0],
-			 dSEq_Eigen[0] * SEq_Eigen[1] + dSEq_Eigen[2] * SEq_Eigen[3] - a_Eigen[1],
-			 1.0f - dSEq_Eigen[1] * SEq_Eigen[1] - dSEq_Eigen[2] * SEq_Eigen[2] - a_Eigen[2],
-			 dbField_Eigen[0] * (0.5f - SEq_Eigen[2] * SEq_Eigen[2] - SEq_Eigen[3] * SEq_Eigen[3]) + dbField_Eigen[2] * (SEq_Eigen[1] *SEq_Eigen[3] - SEq_Eigen[0] *SEq_Eigen[2]) - m_Eigen[0],
-			 dbField_Eigen[0] * (SEq_Eigen[1] * SEq_Eigen[2] - SEq_Eigen[0] * SEq_Eigen[3]) + bField_Eigen[2] * (SEq_Eigen[0] * SEq_Eigen[1] + SEq_Eigen[2] * SEq_Eigen[3]) - m_Eigen[1],
-			 dbField_Eigen[0] * (SEq_Eigen[0] * SEq_Eigen[2] + SEq_Eigen[1] * SEq_Eigen[3]) + bField_Eigen[2] * (0.5f - SEq_Eigen[1] * SEq_Eigen[1] - SEq_Eigen[2] * SEq_Eigen[2]) - m_Eigen[2];
-
-		// Jacobian Matrix
-		MatrixXf J(4,6);
-		J << -dSEq_Eigen[2], dSEq_Eigen[1], 0.0, dbzSEq_Eigen[2], dbzSEq_Eigen[1] - dbxSEq_Eigen[3], dbxSEq_Eigen[2],
-			 dSEq_Eigen[3], dSEq_Eigen[0], -2.0f * dSEq_Eigen[1], dbzSEq_Eigen[3], dbxSEq_Eigen[2] + dbzSEq_Eigen[0], dbxSEq_Eigen[3] - 2.0f * dbzSEq_Eigen[1],
-			 -dSEq_Eigen[0], dSEq_Eigen[3], -2.0f * dSEq_Eigen[2], -2.0f * dbxSEq_Eigen[2] - dbzSEq_Eigen[0], dbxSEq_Eigen[1] + dbzSEq_Eigen[3], dbxSEq_Eigen[0] - 2.0f * dbzSEq_Eigen[2],
-			 dSEq_Eigen[1], dSEq_Eigen[2], 0.0, -2.0f * dbxSEq_Eigen[3] + dbzSEq_Eigen[1], -dbxSEq_Eigen[0] + dbzSEq_Eigen[2], dbxSEq_Eigen[1];
-
-		Vector4f SEqhatdot_Eigen = J * f;
-		SEqhatdot_Eigen.normalize();
-
-		// Gyro Error Matrix
-		MatrixXf GE(3,4);
-		GE << -dSEq_Eigen[1], dSEq_Eigen[0], dSEq_Eigen[3], -dSEq_Eigen[2],
-			  -dSEq_Eigen[2], -dSEq_Eigen[3], dSEq_Eigen[0], dSEq_Eigen[1],
-			  -dSEq_Eigen[3], dSEq_Eigen[2], -dSEq_Eigen[1], dSEq_Eigen[0];
-
-		Vector3f gyroError_Eigen = GE * SEqhatdot_Eigen;
-		gyroError_Eigen = gyroError_Eigen * dt * ZETA;
-		gyroBiases_Eigen = gyroBiases_Eigen - gyroError_Eigen;
-
-		wx -= gyroBiases_Eigen[0];
-		wy -= gyroBiases_Eigen[1];
-		wz -= gyroBiases_Eigen[2];
-
-		// Quaternion Rate of Change Matrix
-		MatrixXf QD(4,3);
-		QD << -hSEq_Eigen[1], -hSEq_Eigen[2], -hSEq_Eigen[3],
-			  hSEq_Eigen[0], -hSEq_Eigen[3], hSEq_Eigen[2],
-			  hSEq_Eigen[3], hSEq_Eigen[0], -hSEq_Eigen[1],
-			  -hSEq_Eigen[2], hSEq_Eigen[1], hSEq_Eigen[0];
-		Vector3f w_Eigen = Vector3f(wx, wy, wz);
-		Vector4f SEqdot_Eigen = QD * w_Eigen;
-
-		// Update Orientation Matrix
-		printf("%f\n", dt);
-
-	}
-
+	madgwickFilterUpdate();
 }
 
 void LSM9DS0::madgwickFilterUpdate() {
