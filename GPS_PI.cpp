@@ -82,3 +82,8 @@ void GPS::printRawData() {
 		printf(serial.readLine()); printf("\n");
 	}
 }
+
+int main() {
+	GPS gps = GPS();
+	gps.printRawData();
+}
