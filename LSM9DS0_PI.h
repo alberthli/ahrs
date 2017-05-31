@@ -644,6 +644,7 @@ private:
 	// Variables for Eigen Madgwick Algorithm
 	Eigen::Vector4f SEq_Eigen;
 	Eigen::Vector3f gyroBiases_Eigen;
+	Eigen::Vector3f bField_Eigen;
 
 };
 
