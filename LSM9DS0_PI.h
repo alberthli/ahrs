@@ -642,8 +642,8 @@ private:
 	std::chrono::steady_clock::time_point startTime;
 
 	// Variables for Eigen Madgwick Algorithm
-	Eigen::Vector4f SEq_Eigen(1.0f, 0.0f, 0.0f, 0.0f);
-	Eigen::Vector3f gyroBiases_Eigen(0.0f, 0.0f, 0.0f);
+	Eigen::Vector4f SEq_Eigen(1.0, 0.0, 0.0, 0.0);
+	Eigen::Vector3f gyroBiases_Eigen(0.0, 0.0, 0.0);
 
 };
 
