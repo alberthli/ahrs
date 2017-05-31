@@ -4,9 +4,8 @@
 using namespace std;
 using namespace boost;
 
-SerialInterface::SerialInterface(string port, unsigned int baudrate) {
-	io = asio::io_service();
-	serial = asio::serial_port(io, port);
+SerialInterface::SerialInterface(string port, unsigned int baudrate) 
+: io(), serial(io,port) {
 	serial.set_option(boost::asio::serial_port_base::baud_rate(baud_rate));
 }
 
