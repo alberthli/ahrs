@@ -3,7 +3,6 @@
 #include <arm_neon.h>
 
 #include "LSM9DS0_PI.h"
-#include "Eigen/Core"
 
 using namespace std;
 using namespace Eigen;
@@ -614,6 +613,8 @@ void LSM9DS0::madgwickFilterUpdateEigen() {
 		updateMag();
 		updateGyro();
 
+		// Making Eigen Vector objects
+		Vector4f hSEq = 0.5f * SEq;
 
 	}
 
