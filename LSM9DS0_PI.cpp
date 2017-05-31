@@ -1,6 +1,6 @@
 #include <iostream>
 #include <cmath>
-#include <arm_neon.h>
+// #include <arm_neon.h>
 
 #include "LSM9DS0_PI.h"
 
