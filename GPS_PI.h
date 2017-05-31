@@ -1,6 +1,9 @@
 #ifndef GPS_H
 #define GPS_H
 
+#define UPDATE_10HZ_CODE "$PMTK220,100*2F\r\n"
+#define BAUDRATE_115200_CODE "$PMTK251,115200*1F\r\n"
+
 class GPS {
 public:
 	GPS();
