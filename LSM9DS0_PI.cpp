@@ -789,9 +789,9 @@ void LSM9DS0::madgwickFilterUpdate() {
 
 		// For dynamic low pass filtering
 		SEq[0] = SEq[0] * conj + weight_prev * prev_SEq[0] + weight_prev_prev * prev_prev_SEq[0] + weight_prev_prev_prev * prev_prev_prev_SEq[0] + weight_prev_prev_prev_prev * prev_prev_prev_prev_SEq[0];
-		SEq[1] = SEq[1] * conj + weight_prev * prev_SEq[1] + weight_prev_prev * prev_prev_SEq[1] + weight_prev_prev_prev * prev_prev_prev_SEq[0] + weight_prev_prev_prev_prev * prev_prev_prev_prev_SEq[0];
-		SEq[2] = SEq[2] * conj + weight_prev * prev_SEq[2] + weight_prev_prev * prev_prev_SEq[2] + weight_prev_prev_prev * prev_prev_prev_SEq[0] + weight_prev_prev_prev_prev * prev_prev_prev_prev_SEq[0];
-		SEq[3] = SEq[3] * conj + weight_prev * prev_SEq[3] + weight_prev_prev * prev_prev_SEq[3] + weight_prev_prev_prev * prev_prev_prev_SEq[0] + weight_prev_prev_prev_prev * prev_prev_prev_prev_SEq[0];
+		SEq[1] = SEq[1] * conj + weight_prev * prev_SEq[1] + weight_prev_prev * prev_prev_SEq[1] + weight_prev_prev_prev * prev_prev_prev_SEq[1] + weight_prev_prev_prev_prev * prev_prev_prev_prev_SEq[1];
+		SEq[2] = SEq[2] * conj + weight_prev * prev_SEq[2] + weight_prev_prev * prev_prev_SEq[2] + weight_prev_prev_prev * prev_prev_prev_SEq[2] + weight_prev_prev_prev_prev * prev_prev_prev_prev_SEq[2];
+		SEq[3] = SEq[3] * conj + weight_prev * prev_SEq[3] + weight_prev_prev * prev_prev_SEq[3] + weight_prev_prev_prev * prev_prev_prev_SEq[3] + weight_prev_prev_prev_prev * prev_prev_prev_prev_SEq[3];
 
 		prev_prev_prev_prev_SEq[0] = prev_prev_prev_SEq[0];
 		prev_prev_prev_prev_SEq[1] = prev_prev_prev_SEq[1];
