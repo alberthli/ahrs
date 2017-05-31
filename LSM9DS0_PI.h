@@ -642,6 +642,4 @@ private:
 
 };
 
-extern LSM9DS0 lsm9ds0;
-
 #endif
