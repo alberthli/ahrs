@@ -657,7 +657,7 @@ void LSM9DS0::madgwickFilterUpdateEigen() {
 			 dbField_Eigen[0] * (SEq_Eigen[0] * SEq_Eigen[2] + SEq_Eigen[1] * SEq_Eigen[3]) + bField_Eigen[2] * (0.5f - SEq_Eigen[1] * SEq_Eigen[1] - SEq_Eigen[2] * SEq_Eigen[2]) - m_Eigen[2];
 
 		// Jacobian Matrix
-		MatrixXf J;
+		MatrixXf J(4,6);
 		J << -dSEq_Eigen[2], dSEq_Eigen[1], 0.0, dbzSEq_Eigen[2], dbzSEq_Eigen[1] - dbxSEq_Eigen[3], dbxSEq_Eigen[2],
 			 dSEq_Eigen[3], dSEq_Eigen[0], -2.0f * dSEq_Eigen[1], dbzSEq_Eigen[3], dbxSEq_Eigen[2] + dbzSEq_Eigen[0], dbxSEq_Eigen[3] - 2.0f * dbzSEq_Eigen[1],
 			 -dSEq_Eigen[0], dSEq_Eigen[3], -2.0f * dSEq_Eigen[2], -2.0f * dbxSEq_Eigen[2] - dbzSEq_Eigen[0], dbxSEq_Eigen[1] + dbzSEq_Eigen[3], dbxSEq_Eigen[0] - 2.0f * dbzSEq_Eigen[2],
@@ -667,7 +667,7 @@ void LSM9DS0::madgwickFilterUpdateEigen() {
 		SEqhatdot_Eigen.normalize();
 
 		// Gyro Error Matrix
-		MatrixXf GE;
+		MatrixXf GE(3,4);
 		GE << -dSEq_Eigen[1], dSEq_Eigen[0], dSEq_Eigen[3], -dSEq_Eigen[2],
 			  -dSEq_Eigen[2], -dSEq_Eigen[3], dSEq_Eigen[0], dSEq_Eigen[1],
 			  -dSEq_Eigen[3], dSEq_Eigen[2], -dSEq_Eigen[1], dSEq_Eigen[0];
@@ -681,7 +681,7 @@ void LSM9DS0::madgwickFilterUpdateEigen() {
 		wz -= gyroBiases_Eigen[2];
 
 		// Quaternion Rate of Change Matrix
-		MatrixXf QD;
+		MatrixXf QD(4,3);
 		QD << -hSEq_Eigen[1], -hSEq_Eigen[2], -hSEq_Eigen[3],
 			  hSEq_Eigen[0], -hSEq_Eigen[3], hSEq_Eigen[2],
 			  hSEq_Eigen[3], hSEq_Eigen[0], -hSEq_Eigen[1],
