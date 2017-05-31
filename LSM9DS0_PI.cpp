@@ -600,7 +600,14 @@ void LSM9DS0::startLSM() {
 
 void LSM9DS0::madgwickFilterUpdate() {
 
+	float prev_SEq[4] = [1, 0, 0, 0];
+	float weight = 0.9;
+	float conj = 1 - weight;
+
+
 	while(true) {
+
+
 		// Keeping track of integration time step
 		currTime = std::chrono::steady_clock::now();
 		dt = std::chrono::duration_cast<std::chrono::microseconds>(currTime - prevTime).count() / 1000000.0f;
@@ -759,6 +766,19 @@ void LSM9DS0::madgwickFilterUpdate() {
 		// Normalize flux vector to eliminate y component
 		bx = sqrt(hx * hx + hy * hy);
 		bz = hz;
+
+
+
+		// For dynamic low pass filtering
+		SEq[0] = SEq[0] * weight + conj * prev_SEq[0];
+		SEq[1] = SEq[1] * weight + conj * prev_SEq[1];
+		SEq[2] = SEq[2] * weight + conj * prev_SEq[2];
+		SEq[3] = SEq[3] * weight + conj * prev_SEq[3];
+
+		prev_SEq[0] = SEq[0];
+		prev_SEq[1] = SEq[1];
+		prev_SEq[2] = SEq[2];
+		prev_SEq[3] = SEq[3];
 
 		// Debug Prints
 		calculateRPY();
