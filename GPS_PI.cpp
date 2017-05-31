@@ -25,7 +25,7 @@ GPS::~GPS() {
 
 void GPS::initialize() {
 	// Trying with Boost
-	SerialInterface serial = SerialInterface("/dev/ttyS0", 9600);
+	SerialInterface serial("/dev/ttyS0", 9600);
 	serial.writeString(BAUDRATE_115200_CODE);
 	serial.changeBaudrate(115200);
 	serial.writeString(UPDATE_10HZ_CODE);
