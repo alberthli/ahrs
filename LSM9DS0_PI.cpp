@@ -25,7 +25,7 @@ LSM9DS0::LSM9DS0() {
 	Z_AB_OFFSET = -0.23f;
 
 	// Madgwick Variables Initialization
-	BETA = 25.5f;
+	BETA = 3.14f;
 	ZETA = 0.01f;
 	bx = 1.0f;
 	bz = 0.0f;
@@ -601,7 +601,7 @@ void LSM9DS0::startLSM() {
 void LSM9DS0::madgwickFilterUpdate() {
 
 	float prev_SEq[4] = {1, 0, 0, 0};
-	float weight = 0.9;
+	float weight = 0.125;
 	float conj = 1 - weight;
 
 
