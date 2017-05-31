@@ -2,6 +2,9 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <termios.h>
+#include <string.h>
+#include <thread>
+#include <chrono>
 
 #include "GPS_PI.h"
 
@@ -40,12 +43,21 @@ void GPS::initialize() {
 	// PARODD - Odd parity (else even)
 	struct termios options;
 	tcgetattr(uart_filestream, &options);
-	options.c_cflag = B9600 | CS8 | CLOCAL | CREAD;		//<Set baud rate
+	options.c_cflag = B115200 | CS8 | CLOCAL | CREAD;
 	options.c_iflag = IGNPAR;
 	options.c_oflag = 0;
 	options.c_lflag = 0;
 	tcflush(uart_filestream, TCIFLUSH);
 	tcsetattr(uart_filestream, TCSANOW, &options);
+
+	unsigned char update_10_hz_code[17] = {'$', 'P', 'M', 'T', 'K', '2', '2', '0', ',', '1', '0', '0', '*', '2', 'F', '\r', '\n'};
+	unsigned char baudrate_115200_code[20] = {'$', 'P', 'M', 'T', 'K', '2', '5', '1', ',', '1', '1', '5', '2', '0', '0', '*', '1', 'F', '\r', '\n'};
+
+	write(uart_filestream, baudrate_115200_code, strlen(baudrate_115200_code));
+	std::this_thread::sleep_for(std::chrono::seconds(1));
+
+	write(uart_filestream, update_10_hz_code, strlen(update_10_hz_code));
+	std::this_thread::sleep_for(std::chrono::seconds(1));
 }
 
 void GPS::startGPS() {
@@ -53,5 +65,7 @@ void GPS::startGPS() {
 }
 
 void GPS::printRawData() {
-
+	while(true) {
+		
+	}
 }
