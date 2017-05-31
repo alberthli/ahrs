@@ -25,7 +25,7 @@ LSM9DS0::LSM9DS0() {
 	Z_AB_OFFSET = -0.23f;
 
 	// Madgwick Variables Initialization
-	BETA = 3.14f;
+	BETA = 12.25f;
 	ZETA = 0.01f;
 	bx = 1.0f;
 	bz = 0.0f;
@@ -599,10 +599,22 @@ void LSM9DS0::startLSM() {
 }
 
 void LSM9DS0::madgwickFilterUpdate() {
+	float hSEq0;
+	float hSEq1;
+	float hSEq2;
+	float hSEq3;
+
+	float dSEq0;
+	float dSEq1; 
+	float dSEq2; 
+	float dSEq3;  
 
 	float prev_SEq[4] = {1, 0, 0, 0};
-	float weight = 0.125;
-	float conj = 1 - weight;
+	float prev_prev_SEq[4] = {1, 0, 0, 0};
+
+	float weight_prev = 0.35;
+	float weight_prev_prev = 0.35;
+	float conj = 1 - weight_prev - weight_prev_prev;
 
 
 	while(true) {
@@ -624,15 +636,15 @@ void LSM9DS0::madgwickFilterUpdate() {
 		// float32x4_t hSEq_vec = {0.5f * SEq[0], 0.5f * SEq[1], 0.5f * SEq[2], 0.5f * SEq[3]};
 		// float32x4_t dSEq_vec = {2.0f * SEq[0], 2.0f * SEq[1], 2.0f * SEq[2], 2.0f * SEq[3]};
 
-		float hSEq0 = 0.5f * SEq[0];
-		float hSEq1 = 0.5f * SEq[1];
-		float hSEq2 = 0.5f * SEq[2];
-		float hSEq3 = 0.5f * SEq[3];
+		hSEq0 = 0.5f * SEq[0];
+		hSEq1 = 0.5f * SEq[1];
+		hSEq2 = 0.5f * SEq[2];
+		hSEq3 = 0.5f * SEq[3];
 		
-		float dSEq0 = 2.0f * SEq[0];
-		float dSEq1 = 2.0f * SEq[1];
-		float dSEq2 = 2.0f * SEq[2];
-		float dSEq3 = 2.0f * SEq[3];
+		dSEq0 = 2.0f * SEq[0];
+		dSEq1 = 2.0f * SEq[1];
+		dSEq2 = 2.0f * SEq[2];
+		dSEq3 = 2.0f * SEq[3];
 
 		float sSEq2 = SEq[2] * SEq[2];
 
@@ -770,10 +782,15 @@ void LSM9DS0::madgwickFilterUpdate() {
 
 
 		// For dynamic low pass filtering
-		SEq[0] = SEq[0] * weight + conj * prev_SEq[0];
-		SEq[1] = SEq[1] * weight + conj * prev_SEq[1];
-		SEq[2] = SEq[2] * weight + conj * prev_SEq[2];
-		SEq[3] = SEq[3] * weight + conj * prev_SEq[3];
+		SEq[0] = SEq[0] * conj + weight_prev * prev_SEq[0] + weight_prev_prev * prev_prev_SEq[0];
+		SEq[1] = SEq[1] * conj + weight_prev * prev_SEq[1] + weight_prev_prev * prev_prev_SEq[1];
+		SEq[2] = SEq[2] * conj + weight_prev * prev_SEq[2] + weight_prev_prev * prev_prev_SEq[2];
+		SEq[3] = SEq[3] * conj + weight_prev * prev_SEq[3] + weight_prev_prev * prev_prev_SEq[3];
+
+		prev_prev_SEq[0] = prev_SEq[0];
+		prev_prev_SEq[1] = prev_SEq[1];
+		prev_prev_SEq[2] = prev_SEq[2];
+		prev_prev_SEq[3] = prev_SEq[3];
 
 		prev_SEq[0] = SEq[0];
 		prev_SEq[1] = SEq[1];
