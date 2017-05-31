@@ -35,6 +35,10 @@ LSM9DS0::LSM9DS0() {
 	roll = 0.0f;
 	pitch = 0.0f;
 	yaw = 0.0f;
+
+	// Eigen Variable Initialization
+	SEq_Eigen = Vector4f(1.0, 0.0, 0.0, 0.0);
+	gyroBiases_Eigen = Vector3f(0.0, 0.0, 0.0);
 }
 
 LSM9DS0::~LSM9DS0() {
