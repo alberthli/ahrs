@@ -614,7 +614,7 @@ void LSM9DS0::madgwickFilterUpdateEigen() {
 		updateGyro();
 
 		// Making Eigen Vector objects
-		Vector4f hSEq = 0.5f * SEq;
+		Vector4f hSEq = 0.5f * SEq_Eigen;
 
 	}
 
