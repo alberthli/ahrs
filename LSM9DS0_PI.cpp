@@ -600,7 +600,7 @@ void LSM9DS0::startLSM() {
 
 void LSM9DS0::madgwickFilterUpdate() {
 
-	float prev_SEq[4] = [1, 0, 0, 0];
+	float prev_SEq[4] = {1, 0, 0, 0};
 	float weight = 0.9;
 	float conj = 1 - weight;
 
