@@ -3,6 +3,7 @@
 #include <arm_neon.h>
 
 #include "LSM9DS0_PI.h"
+#include "Eigen/Core"
 
 using namespace std;
 using namespace Eigen;
