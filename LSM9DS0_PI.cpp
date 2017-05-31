@@ -601,7 +601,8 @@ void LSM9DS0::startLSM() {
 	startTime = prevTime;
 	lastPrintTime = prevTime;
 
-	madgwickFilterUpdate();
+	madgwickFilterUpdateEigen();
+	// madgwickFilterUpdate();
 }
 
 // Performing the filter operations using the eigen library
@@ -649,7 +650,7 @@ void LSM9DS0::madgwickFilterUpdateEigen() {
 		// Function Vector
 		VectorXf f;
 		f << dSEq_Eigen[1] * SEq_Eigen[3] - dSEq_Eigen[0] * SEq_Eigen[2] - a_Eigen[0],
-			 dSEq_Eigen[0] * SEq_Eigen[1] + dSEq_Eigen[2] * SEq_Eigen3 - a_Eigen[1],
+			 dSEq_Eigen[0] * SEq_Eigen[1] + dSEq_Eigen[2] * SEq_Eigen[3] - a_Eigen[1],
 			 1.0f - dSEq_Eigen[1] * SEq_Eigen[1] - dSEq_Eigen[2] * SEq_Eigen[2] - a_Eigen[2],
 			 dbField_Eigen[0] * (0.5f - SEq_Eigen[2] * SEq_Eigen[2] - SEq_Eigen[3] * SEq_Eigen[3]) + dbField_Eigen[2] * (SEq_Eigen[1] *SEq_Eigen[3] - SEq_Eigen[0] *SEq_Eigen[2]) - m_Eigen[0],
 			 dbField_Eigen[0] * (SEq_Eigen[1] * SEq_Eigen[2] - SEq_Eigen[0] * SEq_Eigen[3]) + bField_Eigen[2] * (SEq_Eigen[0] * SEq_Eigen[1] + SEq_Eigen[2] * SEq_Eigen[3]) - m_Eigen[1],
