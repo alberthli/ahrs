@@ -76,7 +76,7 @@ void GPS::startGPS() {
 
 }
 
-void GPS::printRawData(SerialInterface serial) {
+void GPS::printRawData() {
 	while(true) {
 		printf(serialInterface.readLine()); printf("\n");
 	}
