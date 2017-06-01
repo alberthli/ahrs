@@ -1,8 +1,6 @@
 #ifndef GPS_H
 #define GPS_H
 
-#include "SerialInterface.h"
-
 #define UPDATE_10HZ_CODE "$PMTK220,100*2F\r\n"
 #define BAUDRATE_115200_CODE "$PMTK251,115200*1F\r\n"
 
@@ -23,7 +21,6 @@ private:
 	int numSats;
 	float hdop;
 	int uart_filestream;
-	SerialInterface serial;
 };
 
 #endif

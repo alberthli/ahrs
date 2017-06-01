@@ -25,10 +25,9 @@ GPS::~GPS() {
 
 void GPS::initialize() {
 	// Trying with Boost
-	SerialInterface serial("/dev/ttyS0", 9600);
-	serial.writeString(BAUDRATE_115200_CODE);
-	serial.changeBaudrate(115200);
-	serial.writeString(UPDATE_10HZ_CODE);
+	serialInterface.writeString(BAUDRATE_115200_CODE);
+	serialInterface.changeBaudrate(115200);
+	serialInterface.writeString(UPDATE_10HZ_CODE);
 
 	// [ISSUES] 
 	// I need to start the baudrate at 9600 and then switch it to 115200
@@ -77,9 +76,9 @@ void GPS::startGPS() {
 
 }
 
-void GPS::printRawData() {
+void GPS::printRawData(SerialInterface serial) {
 	while(true) {
-		printf(serial.readLine()); printf("\n");
+		printf(serialInterface.readLine()); printf("\n");
 	}
 }
 

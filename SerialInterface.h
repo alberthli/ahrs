@@ -47,4 +47,6 @@ private:
     boost::asio::serial_port serial;
 };
 
+extern SerialInterface serialInterface("/dev/ttyS0", 9600);
+
 #endif
