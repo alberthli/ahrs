@@ -638,7 +638,7 @@ private:
 	float p_ax = 0, p_ay = 0, p_az = 0;
 	float p_mx = 0, p_my = 0, p_mz = 0;
 	float p_wx = 0, p_wy = 0, p_wz = 0;
-	float p_weight = 0.9;
+	float p_weight = 0.99;
 	float conj_p_weight = 1 - p_weight; 
 
 	float bx, bz; // Earth magnetic field reference directions
