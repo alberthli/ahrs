@@ -51,7 +51,7 @@ void GPS::printRawData() {
 
 vector<string> split(const string &s, char delim) {
     vector<std::string> elems;
-    split(s, delim, back_inserter(elems));
+    std::split(s, delim, back_inserter(elems));
     return elems;
 }
 
