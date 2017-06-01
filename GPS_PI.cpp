@@ -25,11 +25,11 @@ GPS::~GPS() {
 
 void GPS::initialize() {
 	serialInterface.writeString(BAUDRATE_115200_CODE);
-	this_thread::sleep_for(chrono::seconds(1));
+	std::this_thread::sleep_for(std::chrono::seconds(1));
 	serialInterface.changeBaudrate(115200);
-	this_thread::sleep_for(chrono::seconds(1));
+	std::this_thread::sleep_for(std::chrono::seconds(1));
 	serialInterface.writeString(UPDATE_10HZ_CODE);
-	this_thread::sleep_for(chrono::seconds(1));
+	std::this_thread::sleep_for(std::chrono::seconds(1));
 }
 
 void GPS::startGPS() {
