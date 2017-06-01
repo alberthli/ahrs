@@ -42,12 +42,12 @@ void GPS::startGPS() {
 void GPS::printRawData() {
 	while(true) {
 		// std::cout << serialInterface.readLine().c_str()[0] << "\n";
-		std::vector<std::string> lineData = split(serialInterface.readLine(), ',');
+		std::vector<std::string> lineData = splitString(serialInterface.readLine(), ',');
 		std::cout << lineData.at(0) << "\n";
 	}
 }
 
-std::vector<std::string> split(const std::string &s, char delim) {
+std::vector<std::string> splitString(const std::string &s, char delim) {
     std::vector<std::string> elems;
     split(s, delim, std::back_inserter(elems));
     return elems;
