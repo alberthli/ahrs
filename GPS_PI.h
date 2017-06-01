@@ -13,6 +13,8 @@ public:
 	void startGPS();
 	void printRawData();
 	std::vector<std::string> split(const std::string &s, char delim);
+	template<typename Out>
+	void split(const std::string &s, char delim, Out result);
 
 private:
 	double lat;
