@@ -41,7 +41,7 @@ void GPS::startGPS() {
 
 void GPS::printRawData() {
 	while(true) {
-		printf(serialInterface.readLine().c_str()[0]); printf("\n");
+		cout << serialInterface.readLine().c_str()[0] << "\n";
 	}
 }
 
