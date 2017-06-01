@@ -5,6 +5,10 @@
 #include <string.h>
 #include <thread>
 #include <chrono>
+#include <sstream>
+#include <vector>
+#include <iterator>
+#include <iostream>
 
 #include "GPS_PI.h"
 #include "SerialInterface.h"
@@ -16,7 +20,6 @@ GPS::GPS() {
 	cmg = 0.0f;
 	numSats = 0;
 	hdop = 0.0f;
-	uart_filestream = -1;
 }
 
 GPS::~GPS() {
@@ -38,8 +41,18 @@ void GPS::startGPS() {
 
 void GPS::printRawData() {
 	while(true) {
-		printf(serialInterface.readLine().c_str()); printf("\n");
+		// printf(serialInterface.readLine().c_str()); printf("\n");
+		std::vector<std::string> lineData = split(serialInterface.readLine(), ',');
+		for (std::vector<std::string>::const_iterator i = lineData.begin(); i != lineData.end(); ++i) {
+    		std::cout << *i << ' ';
+		}
 	}
+}
+
+std::vector<std::string> split(const std::string &s, char delim) {
+    std::vector<std::string> elems;
+    split(s, delim, std::back_inserter(elems));
+    return elems;
 }
 
 int main() {

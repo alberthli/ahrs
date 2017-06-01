@@ -26,12 +26,10 @@ public:
         char c;
         std::string result;
 
-        for(;;)
-        {
+        for(;;) {
             asio::read(serial,asio::buffer(&c,1));
 
-            switch(c)
-            {
+            switch(c) {
                 case '\r':
                     break;
                 case '\n':
