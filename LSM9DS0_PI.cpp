@@ -188,7 +188,7 @@ float LSM9DS0::getTemp() {
 	}
 
 	float new_val = TEMP_INTERCEPT + (float)bitTemp * TEMP_GAIN;
-	float new_val = new_val * conj_p_weight + p_t * p_weight;
+	new_val = new_val * conj_p_weight + p_t * p_weight;
 	p_t = new_val;
 	return new_val;
 }
@@ -201,7 +201,7 @@ float LSM9DS0::getxAccel() {
 	int16_t xBitAccel = (uint16_t) xAccel_MSBs << 8 | xAccel_LSBs;
 
 	float new_val = xBitAccel * accelGain * GRAV_ACCEL;
-	float new_val = new_val * conj_p_weight + p_ax * p_weight;
+	new_val = new_val * conj_p_weight + p_ax * p_weight;
 	p_ax = new_val;
 	return new_val;
 }
@@ -214,7 +214,7 @@ float LSM9DS0::getyAccel() {
 	int16_t yBitAccel = (uint16_t) yAccel_MSBs << 8 | yAccel_LSBs;
 
 	float new_val = yBitAccel * accelGain * GRAV_ACCEL;
-	float new_val = new_val * conj_p_weight + p_ay * p_weight;
+	new_val = new_val * conj_p_weight + p_ay * p_weight;
 	p_ay = new_val;
 	return new_val;
 }
@@ -227,7 +227,7 @@ float LSM9DS0::getzAccel() {
 	int16_t zBitAccel = (uint16_t) zAccel_MSBs << 8 | zAccel_LSBs;
 
 	float new_val = zBitAccel * accelGain * GRAV_ACCEL;
-	float new_val = new_val * conj_p_weight + p_az * p_weight;
+	new_val = new_val * conj_p_weight + p_az * p_weight;
 	p_az = new_val;
 	return new_val;
 }
@@ -240,7 +240,7 @@ float LSM9DS0::getxMag() {
 	int16_t xBitMag = (uint16_t) xMag_MSBs << 8 | xMag_LSBs;
 
 	float new_val = xBitMag * magGain;
-	float new_val = new_val * conj_p_weight + p_mx * p_weight;
+	new_val = new_val * conj_p_weight + p_mx * p_weight;
 	p_mx = new_val;
 	return new_val;
 }
@@ -253,7 +253,7 @@ float LSM9DS0::getyMag() {
 	int16_t yBitMag = (uint16_t) yMag_MSBs << 8 | yMag_LSBs;
 
 	float new_val = yBitMag * magGain;
-	float new_val = new_val * conj_p_weight + p_my * p_weight;
+	new_val = new_val * conj_p_weight + p_my * p_weight;
 	p_my = new_val;
 	return new_val;
 }
@@ -266,7 +266,7 @@ float LSM9DS0::getzMag() {
 	int16_t zBitMag = (uint16_t) zMag_MSBs << 8 | zMag_LSBs;
 
 	float new_val = zBitMag * magGain;
-	float new_val = new_val * conj_p_weight + p_mz * p_weight;
+	new_val = new_val * conj_p_weight + p_mz * p_weight;
 	p_mz = new_val;
 	return new_val;
 }
@@ -279,7 +279,7 @@ float LSM9DS0::getxGyro() {
 	int16_t xBitGyro = (uint16_t) xGyro_MSBs << 8 | xGyro_LSBs;
 
 	float new_val = xBitGyro * gyroGain;;
-	float new_val = new_val * conj_p_weight + p_wx * p_weight;
+	new_val = new_val * conj_p_weight + p_wx * p_weight;
 	p_wx = new_val;
 	return new_val;
 }
@@ -292,7 +292,7 @@ float LSM9DS0::getyGyro() {
 	int16_t yBitGyro = (uint16_t) yGyro_MSBs << 8 | yGyro_LSBs;
 
 	float new_val = yBitGyro * gyroGain;;
-	float new_val = new_val * conj_p_weight + p_wy * p_weight;
+	new_val = new_val * conj_p_weight + p_wy * p_weight;
 	p_wy = new_val;
 	return new_val;
 }
@@ -305,7 +305,7 @@ float LSM9DS0::getzGyro() {
 	int16_t zBitGyro = (uint16_t) zGyro_MSBs << 8 | zGyro_LSBs;
 
 	float new_val = zBitGyro * gyroGain;;
-	float new_val = new_val * conj_p_weight + p_wz * p_weight;
+	new_val = new_val * conj_p_weight + p_wz * p_weight;
 	p_wz = new_val;
 	return new_val;
 }
