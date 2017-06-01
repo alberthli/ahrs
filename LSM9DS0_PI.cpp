@@ -647,7 +647,7 @@ void LSM9DS0::madgwickFilterUpdate() {
 	float prev_prev_prev_SEq[4] = {1, 0, 0, 0};
 	float prev_prev_prev_prev_SEq[4] = {1, 0, 0, 0};
 
-	float weight_prev = 0.21;
+	float weight_prev = 0.25;
 	float weight_prev_prev = 0.21;
 	float weight_prev_prev_prev = 0.21;
 	float weight_prev_prev_prev_prev = 0.21;
