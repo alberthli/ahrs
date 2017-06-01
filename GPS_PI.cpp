@@ -44,7 +44,7 @@ void GPS::printRawData() {
 		// printf(serialInterface.readLine().c_str()); printf("\n");
 		std::vector<std::string> lineData = split(serialInterface.readLine(), ',');
 		for (std::vector<std::string>::const_iterator i = lineData.begin(); i != lineData.end(); ++i) {
-    		std::cout << *i << ' ';
+    		printf(i.c_str()); printf("\n");
 		}
 	}
 }
