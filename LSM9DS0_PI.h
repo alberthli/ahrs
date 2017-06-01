@@ -633,12 +633,22 @@ private:
 	float mx, my, mz; // Magnetometer raw values
 	float wx, wy, wz; // Gyro raw values
 
+	//FOR RUDAMENTERY LPF OF SENSOR VALUES
+	float p_t = 0;
+	float p_ax = 0, p_ay = 0, p_az = 0;
+	float p_mx = 0, p_my = 0, p_mz = 0;
+	float p_wx = 0, p_wy = 0, p_wz = 0;
+	float p_weight = 0.4;
+	float conj_p_weight = 1 - p_weight; 
+
 	float bx, bz; // Earth magnetic field reference directions
 	float gyroBiases[3] = {0.0f, 0.0f, 0.0f}; // Dynamic gyro bias estimates
 
 	// Debug Variables
 	std::chrono::steady_clock::time_point lastPrintTime;
 	std::chrono::steady_clock::time_point startTime;
+
+
 
 };
 
