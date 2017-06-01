@@ -84,5 +84,6 @@ void GPS::printRawData() {
 
 int main() {
 	GPS gps = GPS();
+	gps.initialize();
 	gps.printRawData();
 }
