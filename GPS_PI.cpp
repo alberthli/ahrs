@@ -53,15 +53,6 @@ std::vector<std::string> GPS::splitString(const std::string &s, char delim) {
     return elems;
 }
 
-void GPS::split(const std::string &s, char delim, Out result) {
-	    std::stringstream ss;
-	    ss.str(s);
-	    std::string item;
-	    while (std::getline(ss, item, delim)) {
-	        *(result++) = item;
-	    }
-	}
-
 int main() {
 	GPS gps = GPS();
 	gps.initialize();
