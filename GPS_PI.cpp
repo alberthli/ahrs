@@ -13,8 +13,6 @@
 #include "GPS_PI.h"
 #include "SerialInterface.h"
 
-using namespace std;
-
 GPS::GPS() {
 	lat = 0.0;
 	lon = 0.0;
@@ -30,11 +28,11 @@ GPS::~GPS() {
 
 void GPS::initialize() {
 	serialInterface.writeString(BAUDRATE_115200_CODE);
-	this_thread::sleep_for(chrono::seconds(1));
+	std::this_thread::sleep_for(std::chrono::seconds(1));
 	serialInterface.changeBaudrate(115200);
-	this_thread::sleep_for(chrono::seconds(1));
+	std::this_thread::sleep_for(std::chrono::seconds(1));
 	serialInterface.writeString(UPDATE_10HZ_CODE);
-	this_thread::sleep_for(chrono::seconds(1));
+	std::this_thread::sleep_for(std::chrono::seconds(1));
 }
 
 void GPS::startGPS() {
@@ -47,9 +45,9 @@ void GPS::printRawData() {
 	}
 }
 
-vector<string> split(const string &s, char delim) {
-    vector<std::string> elems;
-    std::split(s, delim, back_inserter(elems));
+std::vector<std::string> split(const std::string &s, char delim) {
+    std::vector<std::string> elems;
+    split(s, delim, std::back_inserter(elems));
     return elems;
 }
 
