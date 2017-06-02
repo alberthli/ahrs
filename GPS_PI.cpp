@@ -169,9 +169,7 @@ void GPS::startGPS() {
 // Debug print method
 void GPS::printRawData() {
 	while(true) {
-		// cout << serialInterface.readLine().c_str()[0] << "\n";
-		vector<string> lineData = splitString(serialInterface.readLine(), ',');
-		cout << lineData.at(0) << "\n";
+		cout << serialInterface.readLine().c_str() << "\n";
 	}
 }
 
