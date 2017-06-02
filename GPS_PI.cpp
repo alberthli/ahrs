@@ -119,7 +119,7 @@ void GPS::startGPS() {
 		printf("lon: %f\n", lon);
 		printf("speed: %f\n", speed);
 		printf("cmg: %f\n", cmg);
-		printf("numSats: %f\n", numSats);
+		printf("numSats: %i\n", numSats);
 		printf("hdop: %f\n\n", hdop);
 
 	}
