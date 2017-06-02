@@ -86,7 +86,7 @@ void GPS::startGPS() {
 
 			// Getting course
 			if(lineData.at(8).length() > 0) {
-				speed = ::atof(lineData.at(8).c_str());
+				cmg = ::atof(lineData.at(8).c_str());
 			} else {
 				continue;
 			}
@@ -114,6 +114,14 @@ void GPS::startGPS() {
 		} else {
 			continue;
 		}
+
+		printf("lat: %f\n", lat);
+		printf("lon: %f\n", lon);
+		printf("speed: %f\n", speed);
+		printf("cmg: %f\n", cmg);
+		printf("numSats: %f\n", numSats);
+		printf("hdop: %f\n\n", hdop);
+
 	}
 }
 
@@ -134,5 +142,5 @@ vector<string> GPS::splitString(const string &s, char delim) {
 int main() {
 	GPS gps = GPS();
 	gps.initialize();
-	gps.printRawData();
+	gps.startGPS();
 }
