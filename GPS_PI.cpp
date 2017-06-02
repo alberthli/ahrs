@@ -46,17 +46,16 @@ void GPS::startGPS() {
 			if(!lineData.at(0).compare("$GPRMC")) {
 
 				// Determining validity of satellite data
-				if(lineData.at(1).length() > 0) {
-					cout << lineData.at(1) << "\n";
-					/*
-					if(!lineData.at(1).compare("A")) {
+				if(lineData.at(2).length() > 0) {
+					
+					if(!lineData.at(2).compare("A")) {
 						valid = true;
 
 					} else {
 						valid = false;
 						continue;
 					}
-					*/
+					
 				}
 
 				// Getting latitude
