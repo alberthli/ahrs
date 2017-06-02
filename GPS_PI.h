@@ -31,7 +31,7 @@ private:
 	float cmg;
 	int numSats;
 	float hdop;
-	int uart_filestream;
+	bool valid;
 };
 
 

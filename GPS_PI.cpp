@@ -22,6 +22,7 @@ GPS::GPS() {
 	cmg = 0.0f;
 	numSats = 0;
 	hdop = 0.0f;
+	valid = false;
 }
 
 GPS::~GPS() {
@@ -43,6 +44,17 @@ void GPS::startGPS() {
 			vector<string> lineData = splitString(serialInterface.readLine(), ',');
 
 			if(!lineData.at(0).compare("$GPRMC")) {
+
+				// Determining validity of satellite data
+				if(lineData.at(1) > 0) {
+					if(!lineData.at(1).compare("A")) {
+						valid = true;
+
+					} else {
+						valid = false;
+						continue;
+					}
+				}
 
 				// Getting latitude
 				string latString = lineData.at(3);
@@ -81,6 +93,7 @@ void GPS::startGPS() {
 				// Getting speed
 				if(lineData.at(7).length() > 0) {
 					speed = ::atof(lineData.at(7).c_str()) * 0.51444444f;
+
 				} else {
 					continue;
 				}
@@ -88,6 +101,7 @@ void GPS::startGPS() {
 				// Getting course
 				if(lineData.at(8).length() > 0) {
 					cmg = ::atof(lineData.at(8).c_str());
+
 				} else {
 					continue;
 				}
@@ -97,6 +111,7 @@ void GPS::startGPS() {
 				// Getting number of satellites
 				if(lineData.at(7).length() > 0) {
 					numSats = ::stoi(lineData.at(7).c_str());
+
 				} else {
 					continue;
 				}
@@ -106,6 +121,7 @@ void GPS::startGPS() {
 				// Getting the horizontal dilution of precision
 				if(lineData.at(16).length() > 0) {
 					hdop = ::atof(lineData.at(16).c_str());
+
 				} else {
 					continue;
 				}
@@ -116,6 +132,7 @@ void GPS::startGPS() {
 				continue;
 			}
 
+			printf(valid ? "true" : "false");
 			printf("lat: %f\n", lat);
 			printf("lon: %f\n", lon);
 			printf("speed: %f\n", speed);
