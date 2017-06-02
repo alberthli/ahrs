@@ -39,6 +39,15 @@ void GPS::initialize() {
 }
 
 void GPS::startGPS() {
+	// We receive 4 different sentence types that we can parse: 
+
+	// GPGGA - Time of Fix, Lat, Long, Fix Qual, Sats Tracked, HDOP, Alt (m) Above Mean Sea Level, Height of Geoid, Time Since Updating
+	// GPGSA - A/M Fix Selection, 3D Fix, PRN of Fix Sats, PDOP, HDOP, VDOP
+	// GPRMC - Time of Fix, A/V Status, Lat, Long, Speed (Knots), Track Angle (Deg), Date, Mag Variation
+	// GPVTG - True Track Made Good, Magnetic Track Made Good, Speed (Knots), Speed (KM/H)
+
+	// We basically can survive off of just GPRMC sentences, but it's useful to parse other sentences for potential weighting
+
 	try {
 		while(true) {
 			vector<string> lineData = splitString(serialInterface.readLine(), ',');
