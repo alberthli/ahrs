@@ -714,7 +714,7 @@ void LSM9DS0::madgwickFilterUpdate() {
 
 		// Multiple iterations of gradient descent //
 
-		int GD_ITERATIONS = 5; // iterations of gradient descent
+		int GD_ITERATIONS = 100; // iterations of gradient descent
 		float SEqhat_k[4] = {SEq[0], SEq[1], SEq[2], SEq[3]}; // best guess at the optimized orientation is the last estimated one
 
 		// Declaring auxiliary variables
