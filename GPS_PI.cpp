@@ -47,7 +47,7 @@ void GPS::startGPS() {
 			string latString = lineData.at(3);
 
 			if(latString.length() > 0) {
-				float lat1 = ::atof(latString.substr(0, 3).c_str());
+				float lat1 = ::atof(latString.substr(0, 2).c_str());
 				float lat2 = ::atof(latString.substr(2).c_str()) / 60.0f;
 
 				lat = lat1 + lat2;
@@ -64,7 +64,7 @@ void GPS::startGPS() {
 			string lonString = lineData.at(5);
 
 			if(latString.length() > 0) {
-				float lon1 = ::atof(lonString.substr(0, 4).c_str());
+				float lon1 = ::atof(lonString.substr(0, 3).c_str());
 				float lon2 = ::atof(lonString.substr(3).c_str()) / 60.0f;
 
 				lon = lon1 + lon2;
