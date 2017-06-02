@@ -52,6 +52,7 @@ void GPS::startGPS() {
 		while(true) {
 			vector<string> lineData = splitString(serialInterface.readLine(), ',');
 
+			// GPRMC CODES
 			if(!lineData.at(0).compare("$GPRMC")) {
 
 				// Determining validity of satellite data
@@ -117,6 +118,7 @@ void GPS::startGPS() {
 					continue;
 				}
 
+			// GPGGA CODES
 			} else if(!lineData.at(0).compare("$GPGGA")) {
 
 				// Getting number of satellites
@@ -127,6 +129,7 @@ void GPS::startGPS() {
 					continue;
 				}
 
+			// GPGSA CODES
 			} else if(!lineData.at(0).compare("$GPGSA")) {
 
 				// Getting the horizontal dilution of precision
@@ -137,12 +140,15 @@ void GPS::startGPS() {
 					continue;
 				}
 
+			// GPVTG CODES
 			} else if(!lineData.at(0).compare("$GPVTG")) {
 
 			} else {
 				continue;
 			}
 
+			// Debug prints
+			/*
 			printf("valid: %s\n", valid ? "true" : "false");
 			printf("lat: %f\n", lat);
 			printf("lon: %f\n", lon);
@@ -150,14 +156,17 @@ void GPS::startGPS() {
 			printf("cmg: %f\n", cmg);
 			printf("numSats: %i\n", numSats);
 			printf("hdop: %f\n\n", hdop);
+			*/
 
 		}
 
+	// Catching a parsing error - happens when comm accidentally skips bytes
 	} catch(std::invalid_argument) {
 		startGPS();
 	}
 }
 
+// Debug print method
 void GPS::printRawData() {
 	while(true) {
 		// cout << serialInterface.readLine().c_str()[0] << "\n";
@@ -166,6 +175,7 @@ void GPS::printRawData() {
 	}
 }
 
+// String splitting method
 vector<string> GPS::splitString(const string &s, char delim) {
     vector<string> elems;
     split(s, delim, back_inserter(elems));

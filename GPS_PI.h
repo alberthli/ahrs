@@ -14,6 +14,7 @@ public:
 	void printRawData();
 	std::vector<std::string> splitString(const std::string &s, char delim);
 
+	// Custom string splitter and vectorizer
 	template<typename Out>
 	void split(const std::string &s, char delim, Out result) {
 	    std::stringstream ss;
@@ -33,7 +34,5 @@ private:
 	float hdop;
 	bool valid;
 };
-
-
 
 #endif
