@@ -684,19 +684,8 @@ void LSM9DS0::madgwickFilterUpdate() {
 		dSEq2 = 2.0f * SEq[2];
 		dSEq3 = 2.0f * SEq[3];
 
-		float sSEq2 = SEq[2] * SEq[2];
-
 		float dbx = 2.0f * bx;
 		float dbz = 2.0f * bz;
-
-		float dbxSEq0 = dbx * SEq[0];
-		float dbxSEq1 = dbx * SEq[1];
-		float dbxSEq2 = dbx * SEq[2];
-		float dbxSEq3 = dbx * SEq[3];
-		float dbzSEq0 = dbz * SEq[0];
-		float dbzSEq1 = dbz * SEq[1];
-		float dbzSEq2 = dbz * SEq[2];
-		float dbzSEq3 = dbz * SEq[3];
 
 		float SEq0SEq2 = SEq[0] * SEq[2];
 		float SEq1SEq3 = SEq[1] * SEq[3];
@@ -726,7 +715,7 @@ void LSM9DS0::madgwickFilterUpdate() {
 		// Multiple iterations of gradient descent //
 
 		int GD_ITERATIONS = 5; // iterations of gradient descent
-		float SEqhat_k[4] = SEq; // best guess at the optimized orientation is the last estimated one
+		float SEqhat_k[4] = {SEq[0], SEq[1], SEq[2], SEq[3]}; // best guess at the optimized orientation is the last estimated one
 
 		// Declaring auxiliary variables
 		float dSEq0_k;
@@ -785,14 +774,14 @@ void LSM9DS0::madgwickFilterUpdate() {
 
 			// Combined cost function + Jacobian
 			// Functions from g-field
-			float f1_k = f1(SEqhat_k[0], SEqhat_k[1], SEqhat_k[2], SEqhat_k[3]);
-			float f2_k = f2(SEqhat_k[0], SEqhat_k[1], SEqhat_k[2], SEqhat_k[3]);
-			float f3_k = f3(SEqhat_k[0], SEqhat_k[1], SEqhat_k[2], SEqhat_k[3]);
+			float f1 = dSEq1_k * SEqhat_k[3] - dSEq0_k * SEqhat_k[2] - ax;
+			float f2 = dSEq0_k * SEqhat_k[1] + dSEq2_k * SEqhat_k[3] - ay;
+			float f3 = 1.0f - dSEq1_k * SEqhat_k[1] - dSEq2_k * SEqhat_k[2] - az;
 
 			// Functions from b-field
-			float f4_k = f4(SEqhat_k[0], SEqhat_k[1], SEqhat_k[2], SEqhat_k[3], dbx, dbz);
-			float f5_k = f5(SEqhat_k[0], SEqhat_k[1], SEqhat_k[2], SEqhat_k[3], dbx, dbz);
-			float f6_k = f6(SEqhat_k[0], SEqhat_k[1], SEqhat_k[2], SEqhat_k[3], dbx, dbz);
+			float f4 = dbx * (0.5f - sSEq2_k - SEqhat_k[3] * SEqhat_k[3]) + dbz * (SEq1SEq3_k - SEq0SEq2_k) - mx;
+			float f5 = dbx * (SEqhat_k[1] * SEqhat_k[2] - SEqhat_k[0] * SEqhat_k[3]) + dbz * (SEqhat_k[0] * SEqhat_k[1] + SEqhat_k[2] * SEqhat_k[3]) - my;
+			float f6 = dbx * (SEq0SEq2_k + SEq1SEq3_k) + dbz * (0.5f - SEqhat_k[1] * SEqhat_k[1] - sSEq2_k) - mz;
 
 			// Jacobian entries
 			float J1124 = dSEq2_k;
