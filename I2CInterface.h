@@ -38,6 +38,6 @@ private:
     char filename_[20];
     pthread_mutex_t I2Cmutex_;
 };
-extern I2CInterfaceClass I2CInterface;
+I2CInterfaceClass I2CInterface;
 
 #endif	/* I2CINTERFACE_H */
