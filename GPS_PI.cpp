@@ -47,6 +47,8 @@ void GPS::startGPS() {
 
 				// Determining validity of satellite data
 				if(lineData.at(1).length() > 0) {
+					cout << lineData.at(1) << "\n";
+					/*
 					if(!lineData.at(1).compare("A")) {
 						valid = true;
 
@@ -54,6 +56,7 @@ void GPS::startGPS() {
 						valid = false;
 						continue;
 					}
+					*/
 				}
 
 				// Getting latitude
@@ -132,7 +135,7 @@ void GPS::startGPS() {
 				continue;
 			}
 
-			printf(valid ? "true" : "false");
+			printf("valid: %s\n", valid ? "true" : "false");
 			printf("lat: %f\n", lat);
 			printf("lon: %f\n", lon);
 			printf("speed: %f\n", speed);
