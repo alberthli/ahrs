@@ -774,14 +774,14 @@ void LSM9DS0::madgwickFilterUpdate() {
 
 			// Combined cost function + Jacobian
 			// Functions from g-field
-			float f1 = dSEq1_k * SEqhat_k[3] - dSEq0_k * SEqhat_k[2] - ax;
-			float f2 = dSEq0_k * SEqhat_k[1] + dSEq2_k * SEqhat_k[3] - ay;
-			float f3 = 1.0f - dSEq1_k * SEqhat_k[1] - dSEq2_k * SEqhat_k[2] - az;
+			float f1_k = dSEq1_k * SEqhat_k[3] - dSEq0_k * SEqhat_k[2] - ax;
+			float f2_k = dSEq0_k * SEqhat_k[1] + dSEq2_k * SEqhat_k[3] - ay;
+			float f3_k = 1.0f - dSEq1_k * SEqhat_k[1] - dSEq2_k * SEqhat_k[2] - az;
 
 			// Functions from b-field
-			float f4 = dbx * (0.5f - sSEq2_k - SEqhat_k[3] * SEqhat_k[3]) + dbz * (SEq1SEq3_k - SEq0SEq2_k) - mx;
-			float f5 = dbx * (SEqhat_k[1] * SEqhat_k[2] - SEqhat_k[0] * SEqhat_k[3]) + dbz * (SEqhat_k[0] * SEqhat_k[1] + SEqhat_k[2] * SEqhat_k[3]) - my;
-			float f6 = dbx * (SEq0SEq2_k + SEq1SEq3_k) + dbz * (0.5f - SEqhat_k[1] * SEqhat_k[1] - sSEq2_k) - mz;
+			float f4_k = dbx * (0.5f - sSEq2_k - SEqhat_k[3] * SEqhat_k[3]) + dbz * (SEq1SEq3_k - SEq0SEq2_k) - mx;
+			float f5_k = dbx * (SEqhat_k[1] * SEqhat_k[2] - SEqhat_k[0] * SEqhat_k[3]) + dbz * (SEqhat_k[0] * SEqhat_k[1] + SEqhat_k[2] * SEqhat_k[3]) - my;
+			float f6_k = dbx * (SEq0SEq2_k + SEq1SEq3_k) + dbz * (0.5f - SEqhat_k[1] * SEqhat_k[1] - sSEq2_k) - mz;
 
 			// Jacobian entries
 			float J1124 = dSEq2_k;
