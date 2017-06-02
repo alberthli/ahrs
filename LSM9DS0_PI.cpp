@@ -629,6 +629,7 @@ void LSM9DS0::startLSM() {
 	madgwickFilterUpdate();
 }
 
+// Testing multiple iterations of GD
 void LSM9DS0::madgwickFilterUpdate() {
 	// pre declaring variables for speed
 	float hSEq0;
@@ -645,18 +646,6 @@ void LSM9DS0::madgwickFilterUpdate() {
 	float SEqdot1 = 0.5f;
 	float SEqdot2 = 0.5f;
 	float SEqdot3 = 0.5f;
-
-	//code for low pass filter
-	float prev_SEq[4] = {1, 0, 0, 0};
-	float prev_prev_SEq[4] = {1, 0, 0, 0};
-	float prev_prev_prev_SEq[4] = {1, 0, 0, 0};
-	float prev_prev_prev_prev_SEq[4] = {1, 0, 0, 0};
-
-	float weight_prev = 0.21;
-	float weight_prev_prev = 0.21;
-	float weight_prev_prev_prev = 0.21;
-	float weight_prev_prev_prev_prev = 0.21;
-	float conj = 1 - weight_prev - weight_prev_prev - weight_prev_prev_prev - weight_prev_prev_prev_prev;
 
 	while(true) {
 
@@ -714,7 +703,7 @@ void LSM9DS0::madgwickFilterUpdate() {
 
 		// Multiple iterations of gradient descent //
 
-		int GD_ITERATIONS = 100; // iterations of gradient descent
+		int GD_ITERATIONS = 1000; // iterations of gradient descent
 		float SEqhat_k[4] = {SEq[0], SEq[1], SEq[2], SEq[3]}; // best guess at the optimized orientation is the last estimated one
 
 		// Declaring auxiliary variables
@@ -886,32 +875,6 @@ void LSM9DS0::madgwickFilterUpdate() {
 		// Normalize flux vector to eliminate y component
 		bx = sqrt(hx * hx + hy * hy);
 		bz = hz;
-
-		// For dynamic low pass filtering
-		SEq[0] = SEq[0] * conj + weight_prev * prev_SEq[0] + weight_prev_prev * prev_prev_SEq[0] + weight_prev_prev_prev * prev_prev_prev_SEq[0] + weight_prev_prev_prev_prev * prev_prev_prev_prev_SEq[0];
-		SEq[1] = SEq[1] * conj + weight_prev * prev_SEq[1] + weight_prev_prev * prev_prev_SEq[1] + weight_prev_prev_prev * prev_prev_prev_SEq[1] + weight_prev_prev_prev_prev * prev_prev_prev_prev_SEq[1];
-		SEq[2] = SEq[2] * conj + weight_prev * prev_SEq[2] + weight_prev_prev * prev_prev_SEq[2] + weight_prev_prev_prev * prev_prev_prev_SEq[2] + weight_prev_prev_prev_prev * prev_prev_prev_prev_SEq[2];
-		SEq[3] = SEq[3] * conj + weight_prev * prev_SEq[3] + weight_prev_prev * prev_prev_SEq[3] + weight_prev_prev_prev * prev_prev_prev_SEq[3] + weight_prev_prev_prev_prev * prev_prev_prev_prev_SEq[3];
-
-		prev_prev_prev_prev_SEq[0] = prev_prev_prev_SEq[0];
-		prev_prev_prev_prev_SEq[1] = prev_prev_prev_SEq[1];
-		prev_prev_prev_prev_SEq[2] = prev_prev_prev_SEq[2];
-		prev_prev_prev_prev_SEq[3] = prev_prev_prev_SEq[3];
-		
-		prev_prev_prev_SEq[0] = prev_prev_SEq[0];
-		prev_prev_prev_SEq[1] = prev_prev_SEq[1];
-		prev_prev_prev_SEq[2] = prev_prev_SEq[2];
-		prev_prev_prev_SEq[3] = prev_prev_SEq[3];
-
-		prev_prev_SEq[0] = prev_SEq[0];
-		prev_prev_SEq[1] = prev_SEq[1];
-		prev_prev_SEq[2] = prev_SEq[2];
-		prev_prev_SEq[3] = prev_SEq[3];
-
-		prev_SEq[0] = SEq[0];
-		prev_SEq[1] = SEq[1];
-		prev_SEq[2] = SEq[2];
-		prev_SEq[3] = SEq[3];
 
 		// Debug Prints
 		calculateRPY();
