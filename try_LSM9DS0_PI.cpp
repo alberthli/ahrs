@@ -653,6 +653,8 @@ void LSM9DS0::madgwickFilterUpdate() {
 
 	float tempNorm;
 
+	float SEq0SEq2;
+	float SEq1SEq3; 
 
 	int iter = 100;
 
@@ -677,7 +679,7 @@ void LSM9DS0::madgwickFilterUpdate() {
 		/* Useful Variable Manipulations */
 		/*********************************/
 
-		int grad_SEq[4] = {SEq[0], SEq[1], SEq[2], SEq[3]};
+		float grad_SEq[4] = {SEq[0], SEq[1], SEq[2], SEq[3]};
 
 		for (int i; i<iter; i++) {
 
