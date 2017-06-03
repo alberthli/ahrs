@@ -25,7 +25,7 @@ LSM9DS0::LSM9DS0() {
 	Z_AB_OFFSET = -0.23f;
 
 	// Madgwick Variables Initialization
-	BETA = 12.25f;
+	BETA = 1.225f;
 	ZETA = 0.01f;
 	bx = 1.0f;
 	bz = 0.0f;
@@ -641,7 +641,22 @@ void LSM9DS0::madgwickFilterUpdate() {
 	float dSEq2; 
 	float dSEq3;
 
-	int iter = 10;
+	float dmx;
+	float dmy;
+	float dmz;
+
+	float SEqhatdot0;
+	float SEqhatdot1;
+	float SEqhatdot2;
+	float SEqhatdot3;
+	float sqrtOf;
+
+	float tempNorm;
+
+
+	int iter = 100;
+
+
 
 
 	while(true) {
@@ -651,7 +666,7 @@ void LSM9DS0::madgwickFilterUpdate() {
 		dt = std::chrono::duration_cast<std::chrono::microseconds>(currTime - prevTime).count() / 1000000.0f;
 		prevTime = currTime;
 
-		step = dt/iter;
+		float step = dt/iter;
 
 		// Poll new values
 		updateAccel();
@@ -698,8 +713,8 @@ void LSM9DS0::madgwickFilterUpdate() {
 			/**************************/
 
 			// Normalize acceleration and magnetometer values
-			float sqrtOf = ax * ax + ay * ay + az * az;
-			float tempNorm = invSqrt(sqrtOf);
+			sqrtOf = ax * ax + ay * ay + az * az;
+			tempNorm = invSqrt(sqrtOf);
 			ax *= tempNorm;
 			ay *= tempNorm;
 			az *= tempNorm;
@@ -710,9 +725,9 @@ void LSM9DS0::madgwickFilterUpdate() {
 			my *= tempNorm;
 			mz *= tempNorm;
 
-			float dmx = 2 * mx;
-			float dmy = 2 * my;
-			float dmz = 2 * mz;
+			dmx = 2 * mx;
+			dmy = 2 * my;
+			dmz = 2 * mz;
 
 			// Combined cost function + Jacobian
 			// Functions from g-field
@@ -747,10 +762,10 @@ void LSM9DS0::madgwickFilterUpdate() {
 
 			// Gradient Descent Optimization
 			// Gradients
-			float SEqhatdot0 = -J1124 * f1 + J1421 * f2 - J41 * f4 - J51 * f5 + J61 * f6;
-			float SEqhatdot1 = J1223 * f1 + J1322 * f2 - J32 * f3 + J42 * f4 + J52 * f5 + J62 * f6;
-			float SEqhatdot2 = -J1322 * f1 + J1223 * f2 - J33 * f3 - J43 * f4 + J53 * f5 + J63 * f6;
-			float SEqhatdot3 = J1421 * f1 + J1124 * f2 - J44 * f4 - J54 * f5 + J64 * f6;
+			SEqhatdot0 = -J1124 * f1 + J1421 * f2 - J41 * f4 - J51 * f5 + J61 * f6;
+			SEqhatdot1 = J1223 * f1 + J1322 * f2 - J32 * f3 + J42 * f4 + J52 * f5 + J62 * f6;
+			SEqhatdot2 = -J1322 * f1 + J1223 * f2 - J33 * f3 - J43 * f4 + J53 * f5 + J63 * f6;
+			SEqhatdot3 = J1421 * f1 + J1124 * f2 - J44 * f4 - J54 * f5 + J64 * f6;
 
 			// Normalizing Gradients
 			sqrtOf = SEqhatdot0 * SEqhatdot0 + SEqhatdot1 * SEqhatdot1 + SEqhatdot2 * SEqhatdot2 + SEqhatdot3 * SEqhatdot3;
