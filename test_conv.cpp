@@ -865,7 +865,7 @@ void LSM9DS0::madgwickFilterUpdate() {
 		printf("%f\n", error);
 		count ++;
 		//printf("%d\n", count);
-		if (error < 5.0f){
+		if (error < 20.0f){
 			break;
 		}
 		if (count > 1000){
