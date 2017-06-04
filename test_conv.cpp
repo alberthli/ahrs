@@ -906,12 +906,12 @@ float LSM9DS0::invSqrt(float x) {
 }
 
 void LSM9DS0::testConst() {
-	int ierations  = 10;
+	int iterations  = 100;
 	double check[3] = {1000000,0,0};
 	for(int i = 0; i < iterations; i ++){
-		BETA = 0.1*i;
+		BETA = 0.01*i;
 		for (int j = 0; j < iterations; j ++){
-			ZETA = 0.01*j;
+			ZETA = 0.001*j;
 			madgwickFilterUpdate();
 			if (count < check[0]){
 				check[0] = count;
