@@ -668,7 +668,8 @@ void LSM9DS0::madgwickFilterUpdate() {
 		dt = std::chrono::duration_cast<std::chrono::microseconds>(currTime - prevTime).count() / 1000000.0f;
 		prevTime = currTime;
 
-		float step = dt/iter;
+		float step = dt/ (float) iter;
+		printf("%d\n", step);
 
 		// Poll new values
 		updateAccel();
