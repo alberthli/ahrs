@@ -863,7 +863,7 @@ void LSM9DS0::madgwickFilterUpdate() {
 
 		error = abs(yaw - a_yaw) + abs(pitch - a_pitch) + abs(roll - a_roll);
 		count ++;
-		if (error > 2){
+		if (error < 5){
 			iserror = 0;
 		}
 
@@ -889,9 +889,9 @@ void LSM9DS0::calculateRPY() {
 	}
 
 	// Debug prints
-	printf("Yaw: %f\n", yaw);
+/*	printf("Yaw: %f\n", yaw);
 	printf("Pitch: %f\n", pitch);
-	printf("Roll: %f\n", roll);
+	printf("Roll: %f\n", roll);*/
 }
 
 /////////////////////
@@ -917,11 +917,12 @@ void LSM9DS0::testConst() {
 				check[0] = count;
 				check[1] = BETA;
 				check[2] = ZETA;
+				count = 0;
 			}
 
 		}
 	}
-	printf("BETA: %f, ZETA: %f\n", check[1], check[2]);
+	printf("BETA: %f, ZETA: %f\n, count: %f", check[1], check[2], check[0]);
 
 
 }
