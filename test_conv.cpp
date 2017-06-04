@@ -869,7 +869,7 @@ void LSM9DS0::madgwickFilterUpdate() {
 
 		// Debug Prints
 		calculateRPY();
-		printf("dt: %f\n\n", dt);
+		//printf("dt: %f\n\n", dt);
 	}
 }
 
@@ -917,12 +917,14 @@ void LSM9DS0::testConst() {
 				check[0] = count;
 				check[1] = BETA;
 				check[2] = ZETA;
+				printf("BETA: %f, ZETA: %f\n, count: %f", check[1], check[2], check[0]);
 				count = 0;
+
 			}
 
 		}
 	}
-	printf("BETA: %f, ZETA: %f\n, count: %f", check[1], check[2], check[0]);
+	printf("DONE::::---->>>   BETA: %f, ZETA: %f\n, count: %f", check[1], check[2], check[0]);
 
 
 }
