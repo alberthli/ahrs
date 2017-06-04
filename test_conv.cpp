@@ -867,6 +867,10 @@ void LSM9DS0::madgwickFilterUpdate() {
 		if (error < 5.0f){
 			break;
 		}
+		if (count > 1000000){
+			count = 100000000;
+			break;
+		}
 
 		// Debug Prints
 		calculateRPY();
