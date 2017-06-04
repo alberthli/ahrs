@@ -868,8 +868,8 @@ void LSM9DS0::madgwickFilterUpdate() {
 		if (error < 5.0f){
 			break;
 		}
-		if (count > 10000){
-			count = 100000000;
+		if (count > 1000){
+			count = 1000000;
 			break;
 		}
 
@@ -912,12 +912,12 @@ float LSM9DS0::invSqrt(float x) {
 }
 
 void LSM9DS0::testConst() {
-	int iterations  = 100;
+	int iterations  = 10;
 	double check[3] = {1000000,0,0};
-	for(int i = 10; i < iterations; i ++){
-		BETA = 0.01*i;
+	for(int i = 1; i < iterations; i ++){
+		BETA = 1*i;
 		for (int j = 1; j < iterations; j ++){
-			ZETA = 0.001*j;
+			ZETA = 0.01*j;
 			printf("Next Iteration\n");
 			madgwickFilterUpdate();
 			if (count < check[0]){
