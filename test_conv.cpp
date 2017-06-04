@@ -862,7 +862,7 @@ void LSM9DS0::madgwickFilterUpdate() {
 		}
 
 		error = abs(yaw - a_yaw) + abs(pitch - a_pitch) + abs(roll - a_roll);
-		printf("%f\n", error);
+		//printf("%f\n", error);
 		count ++;
 		//printf("%d\n", count);
 		if (error < 20.0f){
