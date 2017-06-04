@@ -875,7 +875,7 @@ void LSM9DS0::madgwickFilterUpdate() {
 
 			
 		}
-		if (count > 1000){
+		if (count > 10000){
 			count = 1123000;
 			break;
 		}
@@ -921,7 +921,7 @@ float LSM9DS0::invSqrt(float x) {
 void LSM9DS0::testConst() {
 	int iterations  = 100;
 	double check[3] = {1000000,0,0};
-	for(int i = 1; i < iterations; i ++){
+	for(int i = 50; i < iterations; i ++){
 		BETA = .1*i;
 		for (int j = 1; j < iterations/10; j ++){
 			ZETA = 0.01*j;
