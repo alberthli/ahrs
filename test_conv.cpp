@@ -908,9 +908,9 @@ float LSM9DS0::invSqrt(float x) {
 void LSM9DS0::testConst() {
 	int iterations  = 100;
 	double check[3] = {1000000,0,0};
-	for(int i = 0; i < iterations; i ++){
+	for(int i = 10; i < iterations; i ++){
 		BETA = 0.01*i;
-		for (int j = 0; j < iterations; j ++){
+		for (int j = 1; j < iterations; j ++){
 			ZETA = 0.001*j;
 			madgwickFilterUpdate();
 			if (count < check[0]){
