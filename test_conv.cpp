@@ -862,9 +862,9 @@ void LSM9DS0::madgwickFilterUpdate() {
 		}
 
 		error = abs(yaw - a_yaw) + abs(pitch - a_pitch) + abs(roll - a_roll);
-		//printf("%f\n", error);
+		printf("%f\n", error);
 		count ++;
-		printf("%d\n", count);
+		//printf("%d\n", count);
 		if (error < 5.0f){
 			break;
 		}
@@ -920,6 +920,7 @@ void LSM9DS0::testConst() {
 			ZETA = 0.01*j;
 			printf("Next Iteration\n");
 			madgwickFilterUpdate();
+			printf("%d\n", count);
 			if (count < check[0]){
 				check[0] = count;
 				check[1] = BETA;
