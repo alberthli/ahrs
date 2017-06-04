@@ -867,7 +867,7 @@ void LSM9DS0::madgwickFilterUpdate() {
 		if (error < 5.0f){
 			break;
 		}
-		if (count > 1000000){
+		if (count > 10000){
 			count = 100000000;
 			break;
 		}
