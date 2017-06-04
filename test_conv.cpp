@@ -5,7 +5,7 @@
 #include "LSM9DS0_PI.h"
 
 using namespace std;
-float LSM9DS0::testConst();
+void LSM9DS0::testConst();
 
 LSM9DS0::LSM9DS0() {
 	// Sensor Default Offsets
@@ -905,7 +905,7 @@ float LSM9DS0::invSqrt(float x) {
    return tmp * (1.69000231f - 0.714158168f * x * tmp * tmp);
 }
 
-float LSM9DS0::testConst() {
+void LSM9DS0::testConst() {
 	int ierations  = 10;
 	double check[3] = {1000000,0,0};
 	for(int i = 0; i < iterations; i ++){
