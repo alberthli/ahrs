@@ -669,7 +669,7 @@ void LSM9DS0::madgwickFilterUpdate() {
 		prevTime = currTime;
 
 		float step = dt/ (float) iter;
-		printf("%d\n", step);
+		printf("%f\n", step);
 
 		// Poll new values
 		updateAccel();
