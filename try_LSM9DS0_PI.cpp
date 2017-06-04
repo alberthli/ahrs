@@ -679,37 +679,39 @@ void LSM9DS0::madgwickFilterUpdate() {
 		/*********************************/
 		/* Useful Variable Manipulations */
 		/*********************************/
+		hSEq0 = 0.5f * SEq[0];
+		hSEq1 = 0.5f * SEq[1];
+		hSEq2 = 0.5f * SEq[2];
+		hSEq3 = 0.5f * SEq[3];
+		
+		dSEq0 = 2.0f * SEq[0];
+		dSEq1 = 2.0f * SEq[1];
+		dSEq2 = 2.0f * SEq[2];
+		dSEq3 = 2.0f * SEq[3];
+
+
 
 		float grad_SEq[4] = {SEq[0], SEq[1], SEq[2], SEq[3]};
 
 		for (int i; i<iter; i++) {
 
-			hSEq0 = 0.5f * SEq[0];
-			hSEq1 = 0.5f * SEq[1];
-			hSEq2 = 0.5f * SEq[2];
-			hSEq3 = 0.5f * SEq[3];
-			
-			dSEq0 = 2.0f * SEq[0];
-			dSEq1 = 2.0f * SEq[1];
-			dSEq2 = 2.0f * SEq[2];
-			dSEq3 = 2.0f * SEq[3];
 
-			float sSEq2 = SEq[2] * SEq[2];
+			float sSEq2 = grad_SEq[2] * grad_SEq[2];
 
 			float dbx = 2.0f * bx;
 			float dbz = 2.0f * bz;
 
-			float dbxSEq0 = dbx * SEq[0];
-			float dbxSEq1 = dbx * SEq[1];
-			float dbxSEq2 = dbx * SEq[2];
-			float dbxSEq3 = dbx * SEq[3];
-			float dbzSEq0 = dbz * SEq[0];
-			float dbzSEq1 = dbz * SEq[1];
-			float dbzSEq2 = dbz * SEq[2];
-			float dbzSEq3 = dbz * SEq[3];
+			float dbxSEq0 = dbx * grad_SEq[0];
+			float dbxSEq1 = dbx * grad_SEq[1];
+			float dbxSEq2 = dbx * grad_SEq[2];
+			float dbxSEq3 = dbx * grad_SEq[3];
+			float dbzSEq0 = dbz * grad_SEq[0];
+			float dbzSEq1 = dbz * grad_SEq[1];
+			float dbzSEq2 = dbz * grad_SEq[2];
+			float dbzSEq3 = dbz * grad_SEq[3];
 
-			float SEq0SEq2 = SEq[0] * SEq[2];
-			float SEq1SEq3 = SEq[1] * SEq[3];
+			float SEq0SEq2 = grad_SEq[0] * grad_SEq[2];
+			float SEq1SEq3 = grad_SEq[1] * grad_SEq[3];
 
 			/**************************/
 			/* Beginning of Algorithm */
@@ -783,6 +785,10 @@ void LSM9DS0::madgwickFilterUpdate() {
 			grad_SEq[2] -= BETA * SEqhatdot2 *step;
 			grad_SEq[3] -= BETA * SEqhatdot3 *step; 
 		}
+
+
+
+
 		// Angular estimated direction of gyro error
 		float wex = dSEq0 * SEqhatdot1 - dSEq1 * SEqhatdot0 - dSEq2 * SEqhatdot3 + dSEq3 * SEqhatdot2;
 		float wey = dSEq0 * SEqhatdot2 + dSEq1 * SEqhatdot3 - dSEq2 * SEqhatdot0 - dSEq3 * SEqhatdot1;
