@@ -554,7 +554,7 @@ public:
 
 
 
-	void LSM9DS0::testConst();
+	void testConst();
 
 
 	
