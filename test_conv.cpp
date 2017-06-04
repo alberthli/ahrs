@@ -925,7 +925,7 @@ void LSM9DS0::testConst() {
 		BETA = .1*i;
 		for (int j = 1; j < iterations/10; j ++){
 			ZETA = 0.01*j;
-			//printf("Next Iteration\n");
+			printf("Next Iteration\n");
 			madgwickFilterUpdate();
 			//printf("%d\n", count);
 			if (count < check[0]){
