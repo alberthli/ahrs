@@ -5,7 +5,7 @@
 #include "LSM9DS0_PI.h"
 
 using namespace std;
-void LSM9DS0::testConst();
+
 
 LSM9DS0::LSM9DS0() {
 	// Sensor Default Offsets

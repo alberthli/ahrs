@@ -551,6 +551,13 @@ class LSM9DS0 {
 public:
 	LSM9DS0();
 	virtual ~LSM9DS0();
+
+
+
+	void LSM9DS0::testConst();
+
+
+	
   	void initialize();
 
 	void initXM();
