@@ -663,6 +663,7 @@ void LSM9DS0::madgwickFilterUpdate() {
 
 	int iserror = 1;
 	float error = 0;
+	int times = 0;
 	while(iserror) {
 
 		// Keeping track of integration time step
@@ -865,11 +866,17 @@ void LSM9DS0::madgwickFilterUpdate() {
 		//printf("%f\n", error);
 		count ++;
 		//printf("%d\n", count);
-		if (error < 20.0f){
-			break;
+		if (error < 5.0f){
+			if(times > 10){
+				times = 0;
+				break;	
+			}
+			times ++;
+
+			
 		}
 		if (count > 1000){
-			count = 1000000;
+			count = 1123000;
 			break;
 		}
 
@@ -912,15 +919,15 @@ float LSM9DS0::invSqrt(float x) {
 }
 
 void LSM9DS0::testConst() {
-	int iterations  = 10;
+	int iterations  = 100;
 	double check[3] = {1000000,0,0};
 	for(int i = 1; i < iterations; i ++){
-		BETA = 1*i;
-		for (int j = 1; j < iterations; j ++){
+		BETA = .1*i;
+		for (int j = 1; j < iterations/10; j ++){
 			ZETA = 0.01*j;
-			printf("Next Iteration\n");
+			//printf("Next Iteration\n");
 			madgwickFilterUpdate();
-			printf("%d\n", count);
+			//printf("%d\n", count);
 			if (count < check[0]){
 				check[0] = count;
 				check[1] = BETA;
