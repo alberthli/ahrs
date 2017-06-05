@@ -642,16 +642,16 @@ void LSM9DS0::madgwickFilterUpdate() {
 	float dSEq3;
 
 	//code for low pass filter
-	float prev_SEq[4] = {1, 0, 0, 0};
-	float prev_prev_SEq[4] = {1, 0, 0, 0};
-	float prev_prev_prev_SEq[4] = {1, 0, 0, 0};
-	float prev_prev_prev_prev_SEq[4] = {1, 0, 0, 0};
+	// float prev_SEq[4] = {1, 0, 0, 0};
+	// float prev_prev_SEq[4] = {1, 0, 0, 0};
+	// float prev_prev_prev_SEq[4] = {1, 0, 0, 0};
+	// float prev_prev_prev_prev_SEq[4] = {1, 0, 0, 0};
 
-	float weight_prev = 0.2f;
-	float weight_prev_prev = 0.2f;
-	float weight_prev_prev_prev = 0.2f;
-	float weight_prev_prev_prev_prev = 0.2f;
-	float conj = 1 - weight_prev - weight_prev_prev - weight_prev_prev_prev - weight_prev_prev_prev_prev;
+	// float weight_prev = 0.2f;
+	// float weight_prev_prev = 0.2f;
+	// float weight_prev_prev_prev = 0.2f;
+	// float weight_prev_prev_prev_prev = 0.2f;
+	// float conj = 1 - weight_prev - weight_prev_prev - weight_prev_prev_prev - weight_prev_prev_prev_prev;
 
 	while(true) {
 
@@ -813,30 +813,30 @@ void LSM9DS0::madgwickFilterUpdate() {
 		bz = hz;
 
 		// For dynamic low pass filtering
-		SEq[0] = SEq[0] * conj + weight_prev * prev_SEq[0] + weight_prev_prev * prev_prev_SEq[0] + weight_prev_prev_prev * prev_prev_prev_SEq[0] + weight_prev_prev_prev_prev * prev_prev_prev_prev_SEq[0];
-		SEq[1] = SEq[1] * conj + weight_prev * prev_SEq[1] + weight_prev_prev * prev_prev_SEq[1] + weight_prev_prev_prev * prev_prev_prev_SEq[1] + weight_prev_prev_prev_prev * prev_prev_prev_prev_SEq[1];
-		SEq[2] = SEq[2] * conj + weight_prev * prev_SEq[2] + weight_prev_prev * prev_prev_SEq[2] + weight_prev_prev_prev * prev_prev_prev_SEq[2] + weight_prev_prev_prev_prev * prev_prev_prev_prev_SEq[2];
-		SEq[3] = SEq[3] * conj + weight_prev * prev_SEq[3] + weight_prev_prev * prev_prev_SEq[3] + weight_prev_prev_prev * prev_prev_prev_SEq[3] + weight_prev_prev_prev_prev * prev_prev_prev_prev_SEq[3];
+		// SEq[0] = SEq[0] * conj + weight_prev * prev_SEq[0] + weight_prev_prev * prev_prev_SEq[0] + weight_prev_prev_prev * prev_prev_prev_SEq[0] + weight_prev_prev_prev_prev * prev_prev_prev_prev_SEq[0];
+		// SEq[1] = SEq[1] * conj + weight_prev * prev_SEq[1] + weight_prev_prev * prev_prev_SEq[1] + weight_prev_prev_prev * prev_prev_prev_SEq[1] + weight_prev_prev_prev_prev * prev_prev_prev_prev_SEq[1];
+		// SEq[2] = SEq[2] * conj + weight_prev * prev_SEq[2] + weight_prev_prev * prev_prev_SEq[2] + weight_prev_prev_prev * prev_prev_prev_SEq[2] + weight_prev_prev_prev_prev * prev_prev_prev_prev_SEq[2];
+		// SEq[3] = SEq[3] * conj + weight_prev * prev_SEq[3] + weight_prev_prev * prev_prev_SEq[3] + weight_prev_prev_prev * prev_prev_prev_SEq[3] + weight_prev_prev_prev_prev * prev_prev_prev_prev_SEq[3];
 
-		prev_prev_prev_prev_SEq[0] = prev_prev_prev_SEq[0];
-		prev_prev_prev_prev_SEq[1] = prev_prev_prev_SEq[1];
-		prev_prev_prev_prev_SEq[2] = prev_prev_prev_SEq[2];
-		prev_prev_prev_prev_SEq[3] = prev_prev_prev_SEq[3];
+		// prev_prev_prev_prev_SEq[0] = prev_prev_prev_SEq[0];
+		// prev_prev_prev_prev_SEq[1] = prev_prev_prev_SEq[1];
+		// prev_prev_prev_prev_SEq[2] = prev_prev_prev_SEq[2];
+		// prev_prev_prev_prev_SEq[3] = prev_prev_prev_SEq[3];
 		
-		prev_prev_prev_SEq[0] = prev_prev_SEq[0];
-		prev_prev_prev_SEq[1] = prev_prev_SEq[1];
-		prev_prev_prev_SEq[2] = prev_prev_SEq[2];
-		prev_prev_prev_SEq[3] = prev_prev_SEq[3];
+		// prev_prev_prev_SEq[0] = prev_prev_SEq[0];
+		// prev_prev_prev_SEq[1] = prev_prev_SEq[1];
+		// prev_prev_prev_SEq[2] = prev_prev_SEq[2];
+		// prev_prev_prev_SEq[3] = prev_prev_SEq[3];
 
-		prev_prev_SEq[0] = prev_SEq[0];
-		prev_prev_SEq[1] = prev_SEq[1];
-		prev_prev_SEq[2] = prev_SEq[2];
-		prev_prev_SEq[3] = prev_SEq[3];
+		// prev_prev_SEq[0] = prev_SEq[0];
+		// prev_prev_SEq[1] = prev_SEq[1];
+		// prev_prev_SEq[2] = prev_SEq[2];
+		// prev_prev_SEq[3] = prev_SEq[3];
 
-		prev_SEq[0] = SEq[0];
-		prev_SEq[1] = SEq[1];
-		prev_SEq[2] = SEq[2];
-		prev_SEq[3] = SEq[3];
+		// prev_SEq[0] = SEq[0];
+		// prev_SEq[1] = SEq[1];
+		// prev_SEq[2] = SEq[2];
+		// prev_SEq[3] = SEq[3];
 
 		// Debug Prints
 		calculateRPY();
