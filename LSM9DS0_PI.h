@@ -108,7 +108,7 @@ NOTE: YOU MUST CHANGE THE ACCELEROMETER GAIN IF YOU CHANGE THE SCALE SELECTION!
 +/- 16g | 0.000732
 
 
-*** CTRL_REG3_XM/CTRL_REG4_XM Configuration ***
+*** CTRL_REG3_XM Configuration ***
 
 Boot on INT1_XM Pin Enable (Bit 1):
 0 | Disable
@@ -142,7 +142,40 @@ FIFO Empty Indication on INT1_XM (Bit 8):
 0 | Disable
 1 | Enable
 
--[!] CTRL_REG4_XM IS IDENTICAL EXCEPT ON PIN INT2_XM -
+
+*** CTRL_REG4_XM Configuration ***
+
+Tap Generator Interrupt on INT2_XM (Bit 1):
+0 | Disable
+1 | Enable
+
+Inertial Interrupt Generator 1 on INT2_XM (Bit 2):
+0 | Disable
+1 | Enable
+
+Inertial Interrupt Generator 2 on INT2_XM (Bit 3):
+0 | Disable
+1 | Enable
+
+Magnetic Interrupt Generator on INT2_XM (Bit 4):
+0 | Disable
+1 | Enable
+
+Accelerometer Data-Ready Signal on INT2_XM (Bit 5):
+0 | Disable
+1 | Enable
+
+Magnetometer Data-Ready Signal on INT2_XM (Bit 6):
+0 | Disable
+1 | Enable
+
+FIFO Overflow Interrupt on INT2_XM (Bit 7):
+0 | Disable
+1 | Enable
+
+FIFO Watermark Interrupt on INT2_XM (Bit 8):
+0 | Disable
+1 | Enable
 
 
 *** CTRL_REG5_XM Configuration ***
