@@ -54,9 +54,9 @@ void LSM9DS0::initXM() {
 	// Bit Register Configuration Info in Header File
 	writeXM(CTRL_REG0_XM, 0x00); // All disabled, defaults
 	writeXM(CTRL_REG1_XM, 0x57); // 100 Hz Accel. Sampling Rate, Continuous Update, All Axes Enabled
-	writeXM(CTRL_REG2_XM, 0x08); // 773 Hz AAFB, +/- 4g, Normal Self-Test, 4 Wire Interface
-	writeXM(CTRL_REG3_XM, 0x00); // Disable interrupts for now
-	writeXM(CTRL_REG4_XM, 0x00);
+	writeXM(CTRL_REG2_XM, 0xC8); // 50 Hz AAFB, +/- 4g, Normal Self-Test, 4 Wire Interface
+	writeXM(CTRL_REG3_XM, 0x04); // Accelerometer DRDY enabled on INT_XM1
+	writeXM(CTRL_REG4_XM, 0x04); // Magnetometer DRDY enabled on INT_XM2
 	writeXM(CTRL_REG5_XM, 0xF4); // Temperature Enabled, High Mag Res, 100 Hz Sampling, No Latched Ints
 	writeXM(CTRL_REG6_XM, 0x00); // +/- 2 Gauss Scale
 	writeXM(CTRL_REG7_XM, 0x00); // Defaults
@@ -71,7 +71,7 @@ void LSM9DS0::initG() {
 	// Bit Register Configuration Info in Header File
 	writeG(CTRL_REG_1_G, 0x0F); // Default ODR and Bandwidth, Normal Mode, All Axes Enabled
 	writeG(CTRL_REG_2_G, 0x00); // Normal Mode, 7.2 Hz HPF Cutoff Frequency
-	writeG(CTRL_REG_3_G, 0x00); // Defaults
+	writeG(CTRL_REG_3_G, 0x08); // Gyro DRDY enabled on DRDYG
 	writeG(CTRL_REG_4_G, 0x00); // Defaults, Gyro Scale +/- 245 DPS
 	writeG(CTRL_REG_5_G, 0x00); // Defaults
 
