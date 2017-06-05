@@ -1134,26 +1134,26 @@ void LSM9DS0::madgwickFilterUpdate() {
 // 	}
 // }
 
-// void LSM9DS0::calculateRPY() {
-// 	// Euler Angles from Orientation Quaternion
-// 	yaw = atan2(2.0f * (SEq[1] * SEq[2] - SEq[0] * SEq[3]), 2.0f * (SEq[0] * SEq[0] + SEq[1] * SEq[1]) - 1.0f);
-// 	pitch = asin(2.0f * (SEq[0] * SEq[2] - SEq[1] * SEq[3]));
-// 	roll = atan2(2.0f * (SEq[0] * SEq[1] + SEq[2] * SEq[3]), 1.0f - 2.0f * (SEq[1] * SEq[1] + SEq[2] * SEq[2]));
+void LSM9DS0::calculateRPY() {
+	// Euler Angles from Orientation Quaternion
+	yaw = atan2(2.0f * (SEq[1] * SEq[2] - SEq[0] * SEq[3]), 2.0f * (SEq[0] * SEq[0] + SEq[1] * SEq[1]) - 1.0f);
+	pitch = asin(2.0f * (SEq[0] * SEq[2] - SEq[1] * SEq[3]));
+	roll = atan2(2.0f * (SEq[0] * SEq[1] + SEq[2] * SEq[3]), 1.0f - 2.0f * (SEq[1] * SEq[1] + SEq[2] * SEq[2]));
 
-// 	// Angle conversion
-// 	yaw *= 180 / PI;
-// 	yaw += DECLINATION_ANGLE;
-// 	pitch *= 180 / PI;
-// 	roll = 180 - (roll * 180 / PI);
-// 	if(roll > 180) {
-// 		roll -= 360;
-// 	}
+	// Angle conversion
+	yaw *= 180 / PI;
+	yaw += DECLINATION_ANGLE;
+	pitch *= 180 / PI;
+	roll = 180 - (roll * 180 / PI);
+	if(roll > 180) {
+		roll -= 360;
+	}
 
-// 	// Debug prints
-// 	printf("Yaw: %f\n", yaw);
-// 	printf("Pitch: %f\n", pitch);
-// 	printf("Roll: %f\n", roll);
-// }
+	// Debug prints
+	printf("Yaw: %f\n", yaw);
+	printf("Pitch: %f\n", pitch);
+	printf("Roll: %f\n", roll);
+}
 
 /////////////////////
 // Math Operations //
