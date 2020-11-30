@@ -1,2 +1,2 @@
-# quadcopter
-RC-controlled quadcopter, with a RPi3 running Python3 as the flight controller
+# Attitude and Heading Reference System
+An AHRS mini-project that runs on a Raspberry Pi.
